@@ -2,12 +2,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import Layout from 'layouts'
 
-const Wrapper = styled.section`
-  p {
-    max-width: 943px;
-    margin: auto;
-  }
-`
+const Wrapper = styled.section``
 
 export default connect((state) => state)(function ({ metamask, library, ...props }) {
   // console.log(metamask, library, props)

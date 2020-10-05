@@ -27,6 +27,18 @@ const Content = styled.div`
   @media all and (max-width: 577px) {
     overflow: initial;
   }
+
+  section {
+    p {
+      max-width: 943px;
+      margin: 0 auto 30px;
+
+      a {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+    }
+  }
 `
 
 const Footer = styled.footer`
