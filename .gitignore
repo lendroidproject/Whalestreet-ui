@@ -1,0 +1,11 @@
+node_modules
+
+.next
+.vscode
+
+.env
+out
+build
+
+.DS_Store
+*.log

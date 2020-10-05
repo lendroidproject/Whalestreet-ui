@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="26px" viewBox="0 0 16 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group 9</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="01-PAYOUT-TOKEN" transform="translate(-688.000000, -557.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="Group-9" transform="translate(687.000000, 557.000000)">
+                <g id="Group" transform="translate(0.206349, 9.698413)">
+                    <polygon id="Path" points="8.79522343 0.301587302 0.793650794 3.78128655 8.79522343 8.3015873 16.7936508 3.78128655"></polygon>
+                </g>
+                <g id="Group" transform="translate(1.000000, 0.000000)">
+                    <polygon id="Path" points="0.0189320907 12.7694682 8.04761905 9.25262451 8.04613856 0"></polygon>
+                </g>
+                <g id="Group" transform="translate(9.000000, 0.000000)">
+                    <polygon id="Path" points="0 0 0.0461385581 9.25262451 8.02405112 12.7694682"></polygon>
+                </g>
+                <g id="Group" transform="translate(1.000000, 14.000000)">
+                    <polygon id="Path" points="0.0189320907 0.00948978962 8.04613856 11.3466251 8.04613856 4.76387439"></polygon>
+                </g>
+                <g id="Group" transform="translate(9.000000, 14.000000)">
+                    <polygon id="Path" points="0 4.76387439 0 11.3466251 8.03036182 0.00948978962"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
