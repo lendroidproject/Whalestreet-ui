@@ -2,111 +2,23 @@ import React from 'react'
 import Head from 'next/head'
 import NextApp from 'next/app'
 import { ThemeProvider } from 'styled-components'
-import Web3 from 'web3'
 
 import { Provider } from 'react-redux'
 import withRedux from 'next-redux-wrapper'
 import configureStore from 'store'
-import Library from 'library'
+
+import Layout from 'layouts'
+
+import '@trendmicro/react-dropdown/dist/react-dropdown.css';
 
 const theme = {
   primary: 'default',
 }
 
 class App extends NextApp {
-  state = {
-    address: '',
-    balance: '',
-    addressTimer: null,
-    balanceTimer: null,
-  }
-
   static async getInitialProps({ Component, ctx }) {
     const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {}
     return { pageProps }
-  }
-
-  async componentDidMount() {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
-      if (ethereum._metamask.isEnabled() && (await ethereum._metamask.isUnlocked())) {
-        this.initMetamask()
-      } else {
-        ethereum
-          .enable()
-          .then(() => this.initMetamask())
-          .catch(console.log)
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    const { addressTimer, balanceTimer } = this.state
-    if (addressTimer) clearTimeout(addressTimer)
-    if (balanceTimer) clearTimeout(balanceTimer)
-  }
-
-  initMetamask() {
-    const addressTimer = setInterval(() => {
-      const { address } = this.state
-      if (address !== ethereum.selectedAddress) {
-        return this.saveMetamask({ address: ethereum.selectedAddress }, () => this.getBalance())
-      }
-    }, 1 * 1000)
-    const balanceTimer = setInterval(() => {
-      const { address } = this.state
-      if (address !== ethereum.selectedAddress) {
-        return this.saveMetamask({ address: ethereum.selectedAddress }, () => this.getBalance())
-      }
-      this.getBalance()
-    }, 15 * 1000)
-    this.saveMetamask({ address: ethereum.selectedAddress, balanceTimer, addressTimer }, () => this.getBalance())
-
-    const { store } = this.props
-    const handleEvent = (event) => {
-      console.info(event)
-      switch (event.event) {
-        case 'PayoutCreated':
-          store.dispatch({
-            type: 'PAYOUT_CREATED',
-            payload: {
-              [event.transactionHash]: event.returnValues.payoutAddress,
-            },
-          })
-          break
-        default:
-          break
-      }
-    }
-    const library = Library(ethereum, {
-      onEvent: handleEvent,
-    })
-    store.dispatch({
-      type: 'INIT_CONTRACTS',
-      payload: library,
-    })
-  }
-
-  saveMetamask(metamask, callback) {
-    const { store } = this.props
-    store.dispatch({
-      type: 'METAMASK',
-      payload: metamask,
-    })
-    this.setState(metamask, callback)
-  }
-
-  getBalance() {
-    const { address, balance: origin } = this.state
-    if (address) {
-      window.web3.eth
-        .getBalance(address)
-        .then((res) => {
-          const balance = Number(web3.utils.fromWei(res))
-          if (origin !== balance) this.saveMetamask({ balance })
-        })
-        .catch(console.log)
-    }
   }
 
   render() {
@@ -131,13 +43,18 @@ class App extends NextApp {
               :root {
                 --color-black: #000000;
                 --color-white: #ffffff;
+                --color-border: #d6d6d6;
+                --color-grey: #f2f2f2;
+                --color-button-border: #979797;
+                --color-button-back: #f0f0f0;
               }
               body { font-family: 'Quicksand', sans-serif; font-size: 16px; line-height: 20px; color: var(--color-black); }
               body * { box-sizing: border-box; }
-              #__next { max-width: 1440px; margin: auto; }
+              #__next { max-width: 1440px; margin: auto; min-height: 100vh }
               a, button, .cursor { cursor: pointer; user-select: none; }
               .center { text-align: center; }
               .flex { display: flex; }
+              .flex-all { display: flex; flex-direction: column; justify-content: center; align-items: center; }
               .flex-wrap { display: flex; flex-wrap: wrap; }
               .flex-center { display: flex; align-items: center; }
               .flex-column { display: flex; flex-direction: column; }
@@ -147,6 +64,14 @@ class App extends NextApp {
               .justify-around { justify-content: space-around; }
               .relative { position: relative }
               .fill { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+              button { border: none; }
+              h1, h2, h3, h4, h5, p { margin-top: 0; }
+              .uppercase { text-transform: uppercase; }
+
+              *::-webkit-scrollbar { width: 5px; }
+              *::-webkit-scrollbar-track { background: var(--color-white); }
+              *::-webkit-scrollbar-thumb { border-radius: 5px; background-color: var(--color-black); }
+              *::-webkit-scrollbar-thumb:hover { background: var(--color-grey); }
             `,
             }}
           />
@@ -181,7 +106,9 @@ class App extends NextApp {
         </Head>
         <ThemeProvider theme={theme}>
           <Provider store={store}>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </Provider>
         </ThemeProvider>
       </>

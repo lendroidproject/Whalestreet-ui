@@ -6,9 +6,9 @@ module.exports = withOffline({
   env: {
     MAIN_NETWORK: process.env.MAIN_NETWORK === 'true',
   },
-  reactStrictMode: true,
   trailingSlash: false,
   poweredByHeader: false,
+  // reactStrictMode: true,
   // target: 'serverless',
   // exportPathMap: async function (defaultPathMap, { dev, dir, outDir, distDir, buildId }) {
   //   return {
@@ -19,9 +19,9 @@ module.exports = withOffline({
   //     '/p/deploy-nextjs': { page: '/post', query: { title: 'deploy-nextjs' } },
   //   }
   // },
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
+  // onDemandEntries: {
+  //   maxInactiveAge: 25 * 1000,
+  //   pagesBufferLength: 2,
+  // },
   ...withImages(),
 })

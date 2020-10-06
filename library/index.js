@@ -1,5 +1,6 @@
 import Web3 from 'web3'
 import HRIMP from './HRIMP.json'
+import LSTWETHUNIV2 from './LSTWETHUNIV2.json'
 import LSTETHPool from './LSTETHPool.json'
 
 const addresses = {
@@ -24,6 +25,7 @@ export default function Index(provider, { onEvent: eventHandler }) {
   const web3 = new Web3(provider)
   const contracts = {
     HRIMP: new web3.eth.Contract(HRIMP, addresses.$HRIMP),
+    LSTWETHUNIV2: new web3.eth.Contract(LSTWETHUNIV2, addresses.LST_WETH_UNI_V2),
     LSTETHPool: new web3.eth.Contract(LSTETHPool, addresses.LSTETHPool),
   }
   const methods = {
@@ -44,9 +46,18 @@ export default function Index(provider, { onEvent: eventHandler }) {
       //   })
       // },
     },
+    LSTWETHUNIV2: {},
     LSTETHPool: {},
   }
   contracts.HRIMP.events
+    .allEvents(
+      {
+        // ...
+      },
+      console.info
+    )
+    .on('data', eventHandler)
+  contracts.LSTWETHUNIV2.events
     .allEvents(
       {
         // ...

@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/lendroidproject/Whalestreet-ui#readme",
   "dependencies": {
+    "@trendmicro/react-dropdown": "^1.4.0",
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "next": "^9.5.3",

@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
   width: 100%;
-  height: 60px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +90,7 @@ const Wrapper = styled.div`
   }
   .spin {
     width: 60px;
-    height: 100%;
+    height: 60px;
     position: relative;
     transform: translateZ(0) scale(0.6);
     backface-visibility: hidden;
@@ -98,21 +101,23 @@ const Wrapper = styled.div`
   }
 `
 
-const Spinner = ({ className = '', ...props }) => <Wrapper className={`spinner ${className}`} {...props}>
-  <div className="spin">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-</Wrapper>;
+const Spinner = ({ className = '', ...props }) => (
+  <Wrapper className={`spinner ${className}`} {...props}>
+    <div className="spin">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </Wrapper>
+)
 
-export default Spinner;
+export default Spinner
