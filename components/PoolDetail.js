@@ -94,6 +94,7 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
   const [unstakeForm, setUnstakeForm] = useState({ amount: 0 })
   const [unstakeTx, setUnstakeTx] = useState(null)
   const [mode, setMode] = useState('')
+  const [storage, setStorage] = useState({})
 
   useEffect(() => {
     console.log(transactions)
@@ -106,6 +107,10 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
       setUnstakeTx(null)
     }
   }, [transactions])
+
+  useEffect(() => {
+    setStorage(JSON.parse(localStorage.getItem('whalestree-data') || '{}'))
+  }, [])
 
   const handleMode = (mode) => {
     mode === 'stake' && setStakeForm({ amount: 0 })
@@ -122,12 +127,12 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
       })
       .on('receipt', function (receipt) {
         console.log(receipt)
-        dispatch({
-          type: 'METAMASK',
-          payload: {
-            aLSTWETHUNIV2: Number(web3.utils.fromWei(receipt.events.Approval.returnValues.value)),
-          },
-        })
+        const newStorage = {
+          ...storage,
+          aLSTWETHUNIV2: Number(web3.utils.fromWei(receipt.events.Approval.returnValues.value)),
+        }
+        setStorage(newStorage)
+        localStorage.setItem('whalestree-data', JSON.stringify(newStorage))
         setApproveTx(null)
       })
       .on('error', (err) => {
@@ -201,12 +206,14 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
             <div className="actions flex">
               <button
                 onClick={() =>
-                  metamask.aLSTWETHUNIV2 >= metamask.LSTWETHUNIV2 ? handleMode('stake') : handleApprove()
+                  (storage.aLSTWETHUNIV2 || metamask.aLSTWETHUNIV2) > metamask.LSTWETHUNIV2
+                    ? handleMode('stake')
+                    : handleApprove()
                 }
                 disabled={!metamask.LSTWETHUNIV2 || approveTx}
               >
                 <img src="/assets/stake.svg" alt="Stake" />
-                {metamask.aLSTWETHUNIV2 >= metamask.LSTWETHUNIV2 ? 'Stake' : 'Unlock'}
+                {(storage.aLSTWETHUNIV2 || metamask.aLSTWETHUNIV2) > metamask.LSTWETHUNIV2 ? 'Stake' : 'Unlock'}
               </button>
               {/* <button onClick={() => setMode('unstake')} disabled={!metamask.LSTETHPool}> */}
               <button onClick={() => setMode('unstake')}>
