@@ -30,24 +30,20 @@ export default function Index(provider, { onEvent: eventHandler }) {
   }
   const methods = {
     HRIMP: {
-      // create: send(contracts.PayoutFactory.methods.create),
-      // payoutTokenAddress: call(contracts.PayoutFactory.methods.payoutTokenAddress),
-      // getWallets: () => {
-      //   return new Promise((resolve, reject) => {
-      //     call(contracts.PayoutFactory.methods.totalDaos)()
-      //       .then((total) => {
-      //         Promise.all(
-      //           new Array(Number(total)).fill(1).map((_, idx) => call(contracts.PayoutFactory.methods.daos)(idx + 1))
-      //         )
-      //           .then(resolve)
-      //           .catch(reject)
-      //       })
-      //       .catch(reject)
-      //   })
-      // },
+      getBalance: call(contracts.HRIMP.methods.balanceOf),
+      getAllowance: (addr) => call(contracts.HRIMP.methods.allowance)(addresses.$HRIMP, addr),
+      approve: send(contracts.HRIMP.methods.approve),
     },
-    LSTWETHUNIV2: {},
-    LSTETHPool: {},
+    LSTWETHUNIV2: {
+      getBalance: call(contracts.LSTWETHUNIV2.methods.balanceOf),
+      getAllowance: (addr) => call(contracts.LSTWETHUNIV2.methods.allowance)(addresses.LST_WETH_UNI_V2, addr),
+      approve: send(contracts.LSTWETHUNIV2.methods.increaseAllowance),
+    },
+    LSTETHPool: {
+      getBalance: call(contracts.LSTETHPool.methods.balanceOf),
+      stake: send(contracts.LSTETHPool.methods.stake),
+      unstake: send(contracts.LSTETHPool.methods.unstake),
+    },
   }
   contracts.HRIMP.events
     .allEvents(
@@ -75,6 +71,7 @@ export default function Index(provider, { onEvent: eventHandler }) {
     .on('data', eventHandler)
   return {
     web3,
+    addresses,
     contracts,
     methods,
   }

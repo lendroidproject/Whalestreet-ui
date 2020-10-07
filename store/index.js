@@ -6,6 +6,9 @@ const reducer = (state, action) => {
       return { ...state, metamask: { ...state.metamask, ...action.payload } }
     case 'INIT_CONTRACTS':
       return { ...state, library: action.payload }
+    case 'STAKED':
+    case 'UNSTAKED':
+      return { ...state, transactions: { ...state.transactions, ...action.payload } }
     default:
       return state
   }
@@ -13,6 +16,7 @@ const reducer = (state, action) => {
 
 const defaults = {
   metamask: {},
+  transactions: {},
 }
 
 function Store(initialState = defaults) {

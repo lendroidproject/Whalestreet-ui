@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Web3 from 'web3'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
 import Library from 'library'
+import { shorten } from 'utils/string'
 
 const Wrapper = styled.div`
   .connect {
@@ -20,12 +21,60 @@ const Wrapper = styled.div`
   }
 `
 
-const Balances = styled.div``
+const Balances = styled.div`
+  width: 188px;
+
+  *[role='menu'] {
+    border-radius: 0 0 4px 4px;
+    background-color: #f1f1f1;
+    border: 0;
+    box-shadow: none;
+    width: 100%;
+    padding: 0;
+
+    *[role='menuitem'] {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--color-white);
+
+      font-size: 14px;
+      line-height: 16px;
+
+      small {
+        font-size: 8px;
+      }
+
+      img {
+        margin-right: 8px;
+      }
+    }
+  }
+`
+
+const Address = styled.div`
+  padding: 4px;
+  border-radius: 4px 4px 0 0;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+
+  &.active {
+    background: var(--color-black);
+    color: var(--color-white);
+  }
+
+  img {
+    margin: 0 4px;
+  }
+`
+const Balance = styled.div`
+  color: red;
+`
 
 class Account extends Component {
   state = {
-    address: '',
-    balance: '',
     addressTimer: null,
     balanceTimer: null,
   }
@@ -57,29 +106,32 @@ class Account extends Component {
   initMetamask() {
     this.clearTimer()
     const addressTimer = setInterval(() => {
-      const { address } = this.state
+      const { address } = this.props.metamask
       if (address !== ethereum.selectedAddress) {
         return this.saveMetamask({ address: ethereum.selectedAddress }, () => this.getBalance())
       }
     }, 1 * 1000)
     const balanceTimer = setInterval(() => {
-      const { address } = this.state
+      const { address } = this.props.metamask
       if (address !== ethereum.selectedAddress) {
         return this.saveMetamask({ address: ethereum.selectedAddress }, () => this.getBalance())
       }
       this.getBalance()
-    }, 15 * 1000)
-    this.saveMetamask({ address: ethereum.selectedAddress, balanceTimer, addressTimer }, () => this.getBalance())
+    }, 5 * 1000)
+    this.saveMetamask({ address: ethereum.selectedAddress, state: { balanceTimer, addressTimer } }, () =>
+      this.getBalance(ethereum.selectedAddress)
+    )
 
     const { dispatch } = this.props
     const handleEvent = (event) => {
       console.info(event)
       switch (event.event) {
-        case 'PayoutCreated':
+        case 'Staked':
+        case 'Unstaked':
           dispatch({
-            type: 'PAYOUT_CREATED',
+            type: event.event.toUpperCase(),
             payload: {
-              [event.transactionHash]: event.returnValues.payoutAddress,
+              [event.transactionHash]: event.returnValues,
             },
           })
           break
@@ -96,24 +148,39 @@ class Account extends Component {
     })
   }
 
-  saveMetamask(metamask, callback) {
-    console.log(metamask)
+  saveMetamask({ state, ...metamask }, callback) {
     const { dispatch } = this.props
     dispatch({
       type: 'METAMASK',
       payload: metamask,
     })
-    this.setState(metamask, callback)
+    if (state) this.setState(state)
+    callback && callback()
   }
 
-  getBalance() {
-    const { address, balance: origin } = this.state
-    if (address) {
-      window.web3.eth
-        .getBalance(address)
-        .then((res) => {
-          const balance = Number(web3.utils.fromWei(res))
-          if (origin !== balance) this.saveMetamask({ balance })
+  getBalance(suggest) {
+    const { metamask, library } = this.props
+    const { address, balance: origin } = metamask
+    if (suggest || address) {
+      Promise.all([
+        window.web3.eth.getBalance(suggest || address),
+        library ? library.methods.LSTWETHUNIV2.getBalance(suggest || address) : Promise.resolve('0'),
+        library ? library.methods.LSTWETHUNIV2.getBalance(suggest || address) : Promise.resolve('0'),
+        library ? library.methods.LSTWETHUNIV2.getAllowance(library.addresses.LSTETHPool) : Promise.resolve('0'),
+        library ? library.methods.LSTETHPool.getBalance(suggest || address) : Promise.resolve('0'),
+      ])
+        .then(([balance1, balance2, allowance2, balance3]) => {
+          const balance = Number(web3.utils.fromWei(balance1))
+          const LSTWETHUNIV2 = Number(web3.utils.fromWei(balance2))
+          const aLSTWETHUNIV2 = Number(web3.utils.fromWei(allowance2))
+          const LSTETHPool = Number(web3.utils.fromWei(balance3))
+          if (
+            origin !== balance ||
+            metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
+            metamask.aLSTWETHUNIV2 !== aLSTWETHUNIV2 ||
+            metamask.LSTETHPool !== LSTETHPool
+          )
+            this.saveMetamask({ balance, LSTWETHUNIV2, aLSTWETHUNIV2, LSTETHPool })
         })
         .catch(console.log)
     }
@@ -125,29 +192,63 @@ class Account extends Component {
       <Wrapper>
         {metamask.address ? (
           <Balances>
-            {metamask.address}
-            <Dropdown onSelect={(eventKey) => {}}>
-              <Dropdown.Toggle btnStyle="flat">Toggler</Dropdown.Toggle>
+            <Dropdown
+              onSelect={(eventKey) => {
+                console.log(eventKey)
+              }}
+            >
+              <Dropdown.Toggle
+                btnStyle="flat"
+                btnSize="sm"
+                noCaret
+                componentClass={({ className, children, ...props }) => {
+                  const expanded = props['aria-expanded']
+                  return (
+                    <Address
+                      className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
+                      {...props}
+                    >
+                      <img src={`/assets/wallet${expanded ? '-hover' : ''}.svg`} alt="MetaMask" />
+                      {children}
+                      <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
+                    </Address>
+                  )
+                }}
+              >
+                {shorten(metamask.address)}
+              </Dropdown.Toggle>
               <Dropdown.Menu>
-                <MenuItem header>Header</MenuItem>
-                <MenuItem eventKey={1}>link</MenuItem>
-                <MenuItem divider />
-                <MenuItem header>Header</MenuItem>
-                <MenuItem eventKey={2}>link</MenuItem>
-                <MenuItem eventKey={3} disabled>
-                  disabled
+                <MenuItem eventKey={1}>
+                  <img src={`/assets/balance-uni-eth-lst.svg`} alt="LST-ETH-UNI-V2" />
+                  <span>
+                    <small>LST-ETH-UNI-V2</small>
+                    <br />
+                    {metamask.LSTWETHUNIV2 || 0}
+                  </span>
                 </MenuItem>
-                <MenuItem eventKey={4} title="link with title">
-                  link with title
+                {/* <MenuItem eventKey={2}>
+                  <img src={`/assets/balance-uni-eth-shrimp.svg`} alt="LST-$hrimp-UNI-V2" />
+                  <span>
+                    <small>LST-$hrimp-UNI-V2</small>
+                    <br />
+                    464
+                  </span>
+                </MenuItem> */}
+                <MenuItem eventKey={3}>
+                  <img src={`/assets/balance-eth.svg`} alt="ETH" />
+                  <span>
+                    <small>ETH</small>
+                    <br />
+                    {metamask.balance || 0}
+                  </span>
                 </MenuItem>
-                <MenuItem
-                  eventKey={5}
-                  active
-                  onSelect={(eventKey) => {
-                    alert(`Alert from menu item.\neventKey: ${eventKey}`)
-                  }}
-                >
-                  link that alerts
+                <MenuItem eventKey={3}>
+                  <img src={`/assets/balance-uni.svg`} alt="UNI" />
+                  <span>
+                    <small>UNI</small>
+                    <br />
+                    1000
+                  </span>
                 </MenuItem>
               </Dropdown.Menu>
             </Dropdown>
