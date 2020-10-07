@@ -41,7 +41,7 @@ export default function Index(provider, { onEvent: eventHandler }) {
     },
     LSTETHPool: {
       getBalance: call(contracts.LSTETHPool.methods.balanceOf),
-      getRewards: call(contracts.LSTETHPool.methods.rewards),
+      getEarned: call(contracts.LSTETHPool.methods.earned),
       stake: send(contracts.LSTETHPool.methods.stake),
       unstake: send(contracts.LSTETHPool.methods.unstake),
       claim: send(contracts.LSTETHPool.methods.claim),

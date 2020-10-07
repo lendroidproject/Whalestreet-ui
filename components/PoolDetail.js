@@ -235,9 +235,9 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
           </div>
           <div className="claim">
             <label>Unclaimed {rewardBase} Tokens</label>
-            <p>{metamask.rLSTETHPool || 0}</p>
+            <p>{metamask.eLSTETHPool || 0}</p>
             <div className="actions flex">
-              <button onClick={() => setMode('claim')} disabled={!metamask.rLSTETHPool}>
+              <button onClick={() => setMode('claim')} disabled={!metamask.eLSTETHPool}>
                 <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
                 Claim {rewardBase}
               </button>
@@ -283,7 +283,7 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
         <Claim>
           <div className="input">
             <label>Unclaimed {rewardBase} Tokens</label>
-            <p>{metamask.rLSTETHPool || 0}</p>
+            <p>{metamask.eLSTETHPool || 0}</p>
           </div>
           <button disabled={!!claimTx} onClick={handleClaim}>
             Claim Now
