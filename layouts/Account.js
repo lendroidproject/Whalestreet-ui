@@ -165,8 +165,7 @@ class Account extends Component {
       Promise.all([
         window.web3.eth.getBalance(suggest || address),
         library ? library.methods.LSTWETHUNIV2.getBalance(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.LSTWETHUNIV2.getBalance(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.LSTWETHUNIV2.getAllowance(library.addresses.LSTETHPool) : Promise.resolve('0'),
+        library ? library.methods.LSTWETHUNIV2.getAllowance(suggest || address) : Promise.resolve('0'),
         library ? library.methods.LSTETHPool.getBalance(suggest || address) : Promise.resolve('0'),
       ])
         .then(([balance1, balance2, allowance2, balance3]) => {

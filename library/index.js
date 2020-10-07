@@ -31,13 +31,13 @@ export default function Index(provider, { onEvent: eventHandler }) {
   const methods = {
     HRIMP: {
       getBalance: call(contracts.HRIMP.methods.balanceOf),
-      getAllowance: (addr) => call(contracts.HRIMP.methods.allowance)(addresses.$HRIMP, addr),
+      getAllowance: (addr) => call(contracts.HRIMP.methods.allowance)(addr, addresses.LSTETHPool),
       approve: send(contracts.HRIMP.methods.approve),
     },
     LSTWETHUNIV2: {
       getBalance: call(contracts.LSTWETHUNIV2.methods.balanceOf),
-      getAllowance: (addr) => call(contracts.LSTWETHUNIV2.methods.allowance)(addresses.LST_WETH_UNI_V2, addr),
-      approve: send(contracts.LSTWETHUNIV2.methods.increaseAllowance),
+      getAllowance: (addr) => call(contracts.LSTWETHUNIV2.methods.allowance)(addr, addresses.LSTETHPool),
+      approve: send(contracts.LSTWETHUNIV2.methods.approve),
     },
     LSTETHPool: {
       getBalance: call(contracts.LSTETHPool.methods.balanceOf),
