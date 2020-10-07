@@ -128,6 +128,7 @@ class Account extends Component {
       switch (event.event) {
         case 'Staked':
         case 'Unstaked':
+        case 'RewardClaimed':
           dispatch({
             type: event.event.toUpperCase(),
             payload: {
@@ -167,19 +168,22 @@ class Account extends Component {
         library ? library.methods.LSTWETHUNIV2.getBalance(suggest || address) : Promise.resolve('0'),
         library ? library.methods.LSTWETHUNIV2.getAllowance(suggest || address) : Promise.resolve('0'),
         library ? library.methods.LSTETHPool.getBalance(suggest || address) : Promise.resolve('0'),
+        library ? library.methods.LSTETHPool.getRewards(suggest || address) : Promise.resolve('0'),
       ])
-        .then(([balance1, balance2, allowance2, balance3]) => {
+        .then(([balance1, balance2, allowance2, balance3, rewards3]) => {
           const balance = Number(web3.utils.fromWei(balance1))
           const LSTWETHUNIV2 = Number(web3.utils.fromWei(balance2))
           const aLSTWETHUNIV2 = Number(web3.utils.fromWei(allowance2))
           const LSTETHPool = Number(web3.utils.fromWei(balance3))
+          const rLSTETHPool = Number(web3.utils.fromWei(rewards3))
           if (
             origin !== balance ||
             metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
             metamask.aLSTWETHUNIV2 !== aLSTWETHUNIV2 ||
-            metamask.LSTETHPool !== LSTETHPool
+            metamask.LSTETHPool !== LSTETHPool ||
+            metamask.rLSTETHPool !== rLSTETHPool
           )
-            this.saveMetamask({ balance, LSTWETHUNIV2, aLSTWETHUNIV2, LSTETHPool })
+            this.saveMetamask({ balance, LSTWETHUNIV2, aLSTWETHUNIV2, LSTETHPool, rLSTETHPool })
         })
         .catch(console.log)
     }

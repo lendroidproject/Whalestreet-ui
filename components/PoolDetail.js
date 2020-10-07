@@ -61,7 +61,10 @@ const Detail = styled.div`
 
 const Stake = styled.div`
   .input {
-    margin-top: 30px;
+    label + p {
+      margin-top: 12px;
+      margin-bottom: 0;
+    }
   }
 
   > button {
@@ -77,12 +80,9 @@ const Unstake = styled(Stake)`
   .input {
     text-align: left;
   }
-
-  .input label + p {
-    margin-top: 12px;
-    margin-bottom: 0;
-  }
 `
+
+const Claim = styled(Stake)``
 
 function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, transactions, dispatch }) {
   console.log(metamask)
@@ -93,6 +93,7 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
   const [stakeTx, setStakeTx] = useState(null)
   const [unstakeForm, setUnstakeForm] = useState({ amount: 0 })
   const [unstakeTx, setUnstakeTx] = useState(null)
+  const [claimTx, setClaimTx] = useState(null)
   const [mode, setMode] = useState('')
 
   useEffect(() => {
@@ -104,6 +105,11 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
     if (unstakeTx && transactions[unstakeTx]) {
       console.log(transactions[unstakeTx])
       setUnstakeTx(null)
+    }
+    if (claimTx && transactions[claimTx]) {
+      console.log(transactions[claimTx])
+      setClaimTx(null)
+      if (mode === 'claim') setMode('')
     }
   }, [transactions])
 
@@ -169,6 +175,22 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
       })
   }
 
+  const handleClaim = () => {
+    const { claim } = library.methods.LSTETHPool
+    claim({ from: address })
+      .send()
+      .on('transactionHash', function (hash) {
+        setClaimTx(hash)
+      })
+      .on('receipt', function (receipt) {
+        // setClaimTx(null)
+      })
+      .on('error', (err) => {
+        console.log(err)
+        setClaimTx(null)
+      })
+  }
+
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
       <Link href={`/${base.toLowerCase()}`}>
@@ -213,10 +235,10 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
           </div>
           <div className="claim">
             <label>Unclaimed {rewardBase} Tokens</label>
-            <p>{info.claim || 0}</p>
+            <p>{metamask.rLSTETHPool || 0}</p>
             <div className="actions flex">
-              <button onClick={() => setMode('claim')} disabled={!info.claim}>
-                <img src={`/assets/claim-${rewardBase}.svg`} alt="Unstake" />
+              <button onClick={() => setMode('claim')} disabled={!metamask.rLSTETHPool}>
+                <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
                 Claim {rewardBase}
               </button>
             </div>
@@ -245,7 +267,7 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
               <p>{metamask.LSTETHPool || 0}</p>
             </div>
             <MaxInput
-              label={stake}
+              label="Amount Losable"
               value={unstakeForm.amount}
               min={0}
               onChange={(e) => setUnstakeForm({ amount: Math.min(e.target.value, metamask.LSTETHPool) })}
@@ -256,6 +278,17 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
             Unstake Now
           </button>
         </Unstake>
+      )}
+      {mode === 'claim' && (
+        <Claim>
+          <div className="input">
+            <label>Unclaimed {rewardBase} Tokens</label>
+            <p>{metamask.rLSTETHPool || 0}</p>
+          </div>
+          <button disabled={!!claimTx} onClick={handleClaim}>
+            Claim Now
+          </button>
+        </Claim>
       )}
     </Wrapper>
   )
