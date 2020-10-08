@@ -124,7 +124,6 @@ class Account extends Component {
 
     const { dispatch } = this.props
     const handleEvent = (event) => {
-      console.info(event)
       switch (event.event) {
         case 'Staked':
         case 'Unstaked':
@@ -137,6 +136,7 @@ class Account extends Component {
           })
           break
         default:
+          console.info(event)
           break
       }
     }

@@ -85,9 +85,7 @@ const Unstake = styled(Stake)`
 const Claim = styled(Stake)``
 
 function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, transactions, dispatch }) {
-  console.log(metamask)
   const { address } = metamask
-  const [info, setInfo] = useState(detail ? {} : null)
   const [stakeForm, setStakeForm] = useState({ amount: 0 })
   const [approveTx, setApproveTx] = useState(null)
   const [stakeTx, setStakeTx] = useState(null)
@@ -97,7 +95,6 @@ function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, 
   const [mode, setMode] = useState('')
 
   useEffect(() => {
-    console.log(transactions)
     if (stakeTx && transactions[stakeTx]) {
       console.log(transactions[stakeTx])
       setStakeTx(null)

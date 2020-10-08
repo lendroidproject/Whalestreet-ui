@@ -8,6 +8,7 @@ const reducer = (state, action) => {
       return { ...state, library: action.payload }
     case 'STAKED':
     case 'UNSTAKED':
+    case 'REWARDCLAIMED':
       return { ...state, transactions: { ...state.transactions, ...action.payload } }
     default:
       return state

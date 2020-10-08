@@ -34,6 +34,11 @@ const RewardTokens = styled.div`
       font-weight: bold;
     }
   }
+
+  .coming-soon {
+    opacity: 0.24;
+    cursor: not-allowed;
+  }
 `
 
 const OurTokens = styled.div`
@@ -47,12 +52,11 @@ const OurTokens = styled.div`
   button {
     border-radius: 25px;
     width: 130px;
+    cursor: initial;
   }
 `
 
-export default connect((state) => state)(function ({ metamask, library, ...props }) {
-  // console.log(metamask, library, props)
-
+export default connect((state) => state)(function ({ metamask, library }) {
   return (
     <Wrapper className="center">
       <h1>Welcome to Whale Street.</h1>
@@ -84,23 +88,25 @@ export default connect((state) => state)(function ({ metamask, library, ...props
         </div>
       </Statics>
       <RewardTokens className="flex-center justify-center">
-        <div className="reward-token flex-all">
-          <img src="/assets/shrimp.svg" alt="Farm Shrimp" />
-          <label>Farm Shrimp</label>
-        </div>
-        <div className="reward-token flex-all">
+        <Link href="/lst">
+          <div className="reward-token cursor flex-all">
+            <img src="/assets/shrimp.svg" alt="Farm Shrimp" />
+            <label>Farm Shrimp</label>
+          </div>
+        </Link>
+        <div className="reward-token cursor flex-all coming-soon">
           <img src="/assets/gaffehoard.svg" alt="Gaffe Hoard" />
           <label>Gaffe Hoard</label>
         </div>
-        <div className="reward-token flex-all">
+        <div className="reward-token cursor flex-all coming-soon">
           <img src="/assets/swapmaster.svg" alt="Swap Master" />
           <label>Swap Master</label>
         </div>
-        <div className="reward-token flex-all">
+        <div className="reward-token cursor flex-all coming-soon">
           <img src="/assets/whaleswap.svg" alt="Whale Swap" />
           <label>Whale Swap</label>
         </div>
-        <div className="reward-token flex-all">
+        <div className="reward-token cursor flex-all coming-soon">
           <img src="/assets/noon-rpeort.svg" alt="Noon Report" />
           <label>Noon Report</label>
         </div>
@@ -108,11 +114,9 @@ export default connect((state) => state)(function ({ metamask, library, ...props
       <OurTokens>
         <h2>Our Tokens</h2>
         <div className="buttons flex-center justify-center">
-          <button disabled>$hrimp</button>
-          <Link href="/lst">
-            <button>LST</button>
-          </Link>
-          <button disabled>NFT</button>
+          <button>$hrimp</button>
+          <button>LST</button>
+          <button>NFT</button>
         </div>
       </OurTokens>
     </Wrapper>
