@@ -57,6 +57,13 @@ const Detail = styled.div`
       }
     }
   }
+
+  .claim p {
+    max-width: 220px;
+    width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 `
 
 const Stake = styled.div`
@@ -84,7 +91,7 @@ const Unstake = styled(Stake)`
 
 const Claim = styled(Stake)``
 
-function PoolDetail({ detail, base, pair, rewardBase, stake, metamask, library, transactions, dispatch }) {
+function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transactions, dispatch }) {
   const { address } = metamask
   const [stakeForm, setStakeForm] = useState({ amount: 0 })
   const [approveTx, setApproveTx] = useState(null)
