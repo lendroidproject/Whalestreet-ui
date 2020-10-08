@@ -55,7 +55,7 @@ export default function Pool({ base, pair, apy, rewardBase, rewards, coming }) {
           Coming soon
         </button>
       ) : (
-        <Link href={`/${base.toLowerCase()}/${pair.toLowerCase()}`}>
+        <Link href="/[base]/[pair]" as={`/${base.toLowerCase()}/${pair.toLowerCase()}`}>
           <button className="uppercase">Select</button>
         </Link>
       )}

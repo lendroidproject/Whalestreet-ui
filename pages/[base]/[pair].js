@@ -16,7 +16,7 @@ export default connect((state) => state)(function (props) {
   useEffect(() => {
     const pool = pools.find((item) => item.base.toLowerCase() === base && item.pair.toLowerCase() === pair)
     if (!pool) router.replace(`/${base}`)
-    else setTimeout(() => setPool(pool), 500)
+    else setTimeout(() => setPool(pool), 250)
   }, [base, pair])
 
   return !pool ? (

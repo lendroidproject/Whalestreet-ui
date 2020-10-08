@@ -197,7 +197,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
 
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
-      <Link href={`/${base.toLowerCase()}`}>
+      <Link href="/[base]" as={`/${base.toLowerCase()}`}>
         <button
           className="white"
           onClick={(e) => {

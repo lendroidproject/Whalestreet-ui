@@ -88,7 +88,7 @@ export default connect((state) => state)(function ({ metamask, library }) {
         </div>
       </Statics>
       <RewardTokens className="flex-center justify-center">
-        <Link href="/lst">
+        <Link href="/[base]" as="/lst">
           <div className="reward-token cursor flex-all">
             <img src="/assets/shrimp.svg" alt="Farm Shrimp" />
             <label>Farm Shrimp</label>

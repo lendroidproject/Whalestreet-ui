@@ -16,7 +16,7 @@ export default connect(({ library }) => ({ library }))(function ({ library }) {
   useEffect(() => {
     const basePools = pools.filter((item) => item.base.toLowerCase() === base)
     if (!basePools.length) router.replace('/')
-    else setTimeout(() => setPools(basePools), 500)
+    else setTimeout(() => setPools(basePools), 250)
   }, [base])
 
   return !basePools ? (
