@@ -4,15 +4,17 @@ import styled from 'styled-components'
 export const Wrapper = styled.div`
   width: 307px;
   max-width: 100%;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-cyan);
   border-radius: 12px;
-  background-color: var(--color-white);
+  background-color: var(--color-blue);
   padding: 23px 20px 26px;
   text-align: center;
   margin: 20px;
+  color: var(--color-white);
 
   h2 {
     margin: 15px 0;
+    color: var(--color-gold);
   }
 
   p {
@@ -22,13 +24,18 @@ export const Wrapper = styled.div`
   > button {
     width: 223px;
     border-radius: 7px;
+    border: 2px solid var(--color-gold);
+    box-shadow: var(--box-shadow);
   }
 `
 
 export const PoolIcon = styled.div`
   padding: 9px 20px 8px;
   border-radius: 30.5px;
-  background-color: var(--color-black);
+  border: 2px solid var(--color-cyan);
+  background-color: var(--color-blue);
+  color: var(--color-white);
+  box-shadow: var(--box-shadow-narrow);
 
   img {
     width: 44px;

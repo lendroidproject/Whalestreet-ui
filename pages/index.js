@@ -6,7 +6,8 @@ const Wrapper = styled.section``
 
 const Statics = styled.div`
   border-radius: 12px;
-  background-color: var(--color-grey);
+  background-color: var(--color-black);
+  color: var(--color-white);
   max-width: 943px;
   margin: 0 auto 53px;
   padding: 11px 20px 7px;
@@ -21,9 +22,12 @@ const RewardTokens = styled.div`
   .reward-token {
     height: 181px;
     width: 181px;
-    border: 1px solid var(--color-black);
+    border: 2px solid var(--color-red);
+    background-color: var(--color-light-blue);
+    color: var(--color-black);
     border-radius: 50%;
     margin: 12px;
+    box-shadow: var(--box-shadow);
 
     img {
       height: 74px;
@@ -33,11 +37,20 @@ const RewardTokens = styled.div`
     label {
       font-weight: bold;
     }
+
+    &:hover {
+      border-color: var(--color-gold);
+      background-color: var(--color-red);
+      color: var(--color-white);
+    }
   }
 
   .coming-soon {
     opacity: 0.24;
     cursor: not-allowed;
+    border-color: var(--color-red) !important;
+    background-color: var(--color-light-blue) !important;
+    color: var(--color-black) !important;
   }
 `
 
@@ -50,6 +63,10 @@ const OurTokens = styled.div`
   }
 
   button {
+    border: 2px solid var(--color-gold);
+    background-color: var(--color-blue);
+    color: var(--color-gold);
+    box-shadow: var(--box-shadow);
     border-radius: 25px;
     width: 130px;
     cursor: initial;

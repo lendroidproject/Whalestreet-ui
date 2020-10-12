@@ -9,7 +9,7 @@ import configureStore from 'store'
 
 import Layout from 'layouts'
 
-import '@trendmicro/react-dropdown/dist/react-dropdown.css';
+import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 
 const theme = {
   primary: 'default',
@@ -43,14 +43,20 @@ class App extends NextApp {
               :root {
                 --color-black: #000000;
                 --color-white: #ffffff;
-                --color-border: #d6d6d6;
+                --color-red: #eb0f0f;
+                --color-blue: #3500fe;
+                --color-gold: #fff400;
+                --color-cyan: #3d9fff;
+                --color-light-blue: #daf5ff;
                 --color-grey: #f2f2f2;
+                --color-border: #d6d6d6;
                 --color-button-border: #979797;
-                --color-button-back: #f0f0f0;
+                --color-button-back: #54dcdb;
+                --box-shadow: 1px 7px 3px 0 rgba(0,0,0,0.5);
+                --box-shadow-narrow: 0 2px 4px 0 rgba(0,0,0,0.5);
               }
               body { font-family: 'Quicksand', sans-serif; font-size: 16px; line-height: 20px; color: var(--color-black); }
               body * { box-sizing: border-box; }
-              #__next { max-width: 1440px; margin: auto; min-height: 100vh }
               a, button, .cursor { cursor: pointer; user-select: none; }
               .center { text-align: center; }
               .flex { display: flex; }

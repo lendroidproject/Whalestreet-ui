@@ -10,6 +10,7 @@ const Wrapper = styled(PoolWrapper)`
   width: 654px;
   margin-top: 75px;
   position: relative;
+  padding-top: 40px;
 
   > button {
     font-size: 20px;
@@ -17,7 +18,9 @@ const Wrapper = styled(PoolWrapper)`
     line-height: 25px;
     padding: 0;
     width: auto;
-    border-raidus: 0;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
 
     position: absolute;
     left: 0;
@@ -27,6 +30,11 @@ const Wrapper = styled(PoolWrapper)`
       margin-right: 9px;
     }
   }
+`
+
+const PoolDetailIcon = styled(PoolIcon)`
+  position: absolute;
+  top: -33px;
 `
 
 const Detail = styled.div`
@@ -41,10 +49,11 @@ const Detail = styled.div`
     margin: 29px -7px -7px;
 
     button {
-      border: 1px solid var(--color-button-border);
+      border: 2px solid var(--color-gold);
+      background-color: var(--color-red);
+      color: var(--color-white);
+      box-shadow: var(--box-shadow);
       border-radius: 10px;
-      background-color: var(--color-button-back);
-      color: var(--color-black);
       font-weight: normal;
 
       display: flex;
@@ -74,10 +83,21 @@ const Stake = styled.div`
     }
   }
 
+  p.label {
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: 15px;
+    margin-bottom: 0;
+  }
+
   > button {
+    border: 2px solid var(--color-gold);
     padding: 10px 50px;
     border-radius: 7px;
     margin-top: 30px;
+    box-shadow: var(--box-shadow);
   }
 `
 
@@ -211,10 +231,10 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           Back
         </button>
       </Link>
-      <PoolIcon className="flex-center">
+      <PoolDetailIcon className="flex-center">
         <img src={`/assets/${base.toLowerCase()}.svg`} alt={base} />
         <img src={`/assets/${pair.toLowerCase()}.svg`} alt={pair} />
-      </PoolIcon>
+      </PoolDetailIcon>
       <h2>
         {base}/{pair} POOL
       </h2>
@@ -258,7 +278,8 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             onChange={(e) => setStakeForm({ amount: Math.min(e.target.value, metamask.LSTWETHUNIV2) })}
             onMax={() => setStakeForm({ amount: metamask.LSTWETHUNIV2 })}
           />
-          <button disabled={!!stakeTx} onClick={handleStake}>
+          <p className="label">Balnace : {metamask.LSTWETHUNIV2}</p>
+          <button disabled={!!stakeTx || stakeForm.amount === 0} onClick={handleStake}>
             Stake Now
           </button>
         </Stake>
@@ -278,7 +299,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
               onMax={() => setUnstakeForm({ amount: metamask.LSTETHPool })}
             />
           </div>
-          <button disabled={!!unstakeTx} onClick={handleUnstake}>
+          <button disabled={!!unstakeTx || unstakeForm.amount === 0} onClick={handleUnstake}>
             Unstake Now
           </button>
         </Unstake>
@@ -289,7 +310,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             <label>Unclaimed {rewardBase} Tokens</label>
             <p>{metamask.eLSTETHPool || 0}</p>
           </div>
-          <button disabled={!!claimTx} onClick={handleClaim}>
+          <button disabled={!!claimTx || metamask.eLSTETHPool === 0} onClick={handleClaim}>
             Claim Now
           </button>
         </Claim>

@@ -7,10 +7,27 @@ import Account from './Account'
 const Wrapper = styled.div`
   height: 100vh;
 
+  > * {
+    max-width: 1440px;
+    margin: auto;
+
+    &:not(footer) {
+      width: 100%;
+    }
+  }
+
+  footer {
+    min-width: 654px;
+    border: 2px solid var(--color-blue);
+    border-bottom: 0;
+    border-radius: 7px 7px 0 0;
+  }
+
   h1 {
-    font-size: 24px;
-    line-height: 30px;
-    margin-bottom: 14px;
+    font-size: 32px;
+    line-height: 49px;
+    margin-bottom: 8px;
+    color: var(--color-red);
   }
 
   h2 {
@@ -40,7 +57,7 @@ const Wrapper = styled.div`
   }
 
   button {
-    background-color: var(--color-black);
+    background-color: var(--color-red);
     color: var(--color-white);
 
     font-size: 20px;
@@ -55,7 +72,7 @@ const Wrapper = styled.div`
 
     &.white {
       background-color: var(--color-white);
-      color: var(--color-black);
+      color: var(--color-red);
     }
   }
 `
@@ -89,7 +106,8 @@ const Content = styled.div`
 
       a {
         font-weight: bold;
-        text-decoration: underline;
+        text-decoration: underline dotted;
+        color: var(--color-red);
       }
     }
   }
@@ -97,20 +115,20 @@ const Content = styled.div`
 
 const Footer = styled.footer`
   background: var(--color-black);
-  padding: 15px;
+  padding: 12px;
 
   a {
     font-size: 16px;
     line-height: 20px;
     color: var(--color-white);
-    margin: 0 15px;
+    margin: 0 12px;
   }
 `
 
 export default connect(({ library }) => ({ library }))(function Index({ library, children }) {
   return (
     <Wrapper className="flex-column">
-      <Header className="flex-center justify-between">
+      <Header className="flex-center justify-center relative">
         <div className="menu">
           <div className="hamburger"></div>
           <Link href="/">

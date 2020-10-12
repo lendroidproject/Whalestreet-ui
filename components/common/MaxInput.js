@@ -12,13 +12,16 @@ const Wrapper = styled.div`
 
   input {
     width: 100%;
-    padding: 8px 0;
+    padding: 5px 0;
     font-size: 24px;
     letter-spacing: 0;
-    line-height: 30px;
+    line-height: 37px;
     border: 0;
     border-bottom: 1px solid var(--color-button-border);
     outline: none;
+
+    background: transparent;
+    color: var(--color-white);
   }
 
   button {

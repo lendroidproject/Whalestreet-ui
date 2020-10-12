@@ -8,16 +8,19 @@ import Library from 'library'
 import { shorten } from 'utils/string'
 
 const Wrapper = styled.div`
+  position: absolute;
+  right: 60px;
+
   .connect {
     font-size: 12px;
     font-weight: 500;
     line-height: 15px;
 
-    border: 1px solid var(--color-black);
     border-radius: 14px;
-    background-color: var(--color-black);
+    background-color: var(--color-red);
     color: var(--color-white);
     padding: 6px 15px;
+    box-shadow: var(--box-shadow);
   }
 `
 
@@ -26,7 +29,7 @@ const Balances = styled.div`
 
   *[role='menu'] {
     border-radius: 0 0 4px 4px;
-    background-color: #f1f1f1;
+    background-color: var(--color-light-blue);
     border: 0;
     box-shadow: none;
     width: 100%;
