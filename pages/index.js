@@ -73,7 +73,7 @@ const OurTokens = styled.div`
   }
 `
 
-export default connect((state) => state)(function ({ metamask, library }) {
+export default function Index() {
   return (
     <Wrapper className="center">
       <h1>Welcome to Whale Street.</h1>
@@ -138,4 +138,4 @@ export default connect((state) => state)(function ({ metamask, library }) {
       </OurTokens>
     </Wrapper>
   )
-})
+}
