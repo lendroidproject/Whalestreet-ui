@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
-  width: 100%;
   position: relative;
   text-align: left;
-  max-width: 300px;
 
   label + .input-field {
     margin-top: 4px;
@@ -17,18 +15,17 @@ const Wrapper = styled.div`
     letter-spacing: 0;
     line-height: 37px;
     border: 0;
-    border-bottom: 1px solid var(--color-button-border);
+    border-bottom: 1px solid var(--color-white);
     outline: none;
 
-    background: transparent;
+    background-color: transparent;
     color: var(--color-white);
   }
 
   button {
     border-radius: 6px;
-    background-color: var(--color-button-back);
-    color: var(--color-black);
-    font-weight: normal;
+    background-color: var(--color-white);
+    color: var(--color-blue);
     padding: 7px 15px;
     margin-left: 9px;
 

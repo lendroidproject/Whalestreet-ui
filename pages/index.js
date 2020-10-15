@@ -1,8 +1,19 @@
 import styled from 'styled-components'
-import { connect } from 'react-redux'
 import Link from 'next/link'
 
-const Wrapper = styled.section``
+const Wrapper = styled.section`
+  .watch-video {
+    display: inline-flex;
+    align-items: center;
+
+    text-decoration: underline;
+    color: var(--color-red);
+
+    img {
+      margin-right: 10px;
+    }
+  }
+`
 
 const Statics = styled.div`
   border-radius: 12px;
@@ -22,54 +33,44 @@ const RewardTokens = styled.div`
   .reward-token {
     height: 181px;
     width: 181px;
-    border: 2px solid var(--color-red);
-    background-color: var(--color-light-blue);
-    color: var(--color-black);
+    background-color: var(--color-red);
     border-radius: 50%;
     margin: 12px;
     box-shadow: var(--box-shadow);
 
-    img {
-      height: 74px;
-      margin-bottom: 16px;
-    }
+    margin-bottom: 30px;
 
     label {
-      font-weight: bold;
-    }
-
-    &:hover {
-      border-color: var(--color-gold);
-      background-color: var(--color-red);
+      font-style: italic;
       color: var(--color-white);
+      position: absolute;
+      bottom: -30px;
     }
   }
 
   .coming-soon {
     opacity: 0.24;
     cursor: not-allowed;
-    border-color: var(--color-red) !important;
-    background-color: var(--color-light-blue) !important;
-    color: var(--color-black) !important;
   }
 `
 
 const OurTokens = styled.div`
   margin-top: 28px;
-  margin-bottom: 20px;
 
   h2 {
-    marign-bottom: 30px;
+    color: var(--color-white);
+    marigin-bottom: 17px;
   }
 
   button {
-    border: 2px solid var(--color-gold);
-    background-color: var(--color-blue);
-    color: var(--color-gold);
-    box-shadow: var(--box-shadow);
-    border-radius: 25px;
     width: 130px;
     cursor: initial;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+
+    font-size: 24px;
+    line-height: 1;
+    font-weight: bold;
   }
 `
 
@@ -77,14 +78,16 @@ export default function Index() {
   return (
     <Wrapper className="center">
       <h1>Welcome to Whale Street.</h1>
-      <p>
+      <p className="intro">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
         magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
-        vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-        consequuntur magni.
+        vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
         <br />
         <br />
-        <a>Watch Video</a>
+        <a className="watch-video">
+          <img src="/assets/video.png" alt="Welcome to Whale Street" />
+          Watch Video
+        </a>
       </p>
       <Statics className="flex-center justify-between">
         <div className="statics__item">
@@ -106,25 +109,25 @@ export default function Index() {
       </Statics>
       <RewardTokens className="flex-center justify-center">
         <Link href="/[base]" as="/lst">
-          <div className="reward-token cursor flex-all">
-            <img src="/assets/shrimp.svg" alt="Farm Shrimp" />
+          <div className="reward-token cursor flex-all relative">
+            <img src="/assets/shrimp-farm.png" alt="Farm Shrimp" />
             <label>Farm Shrimp</label>
           </div>
         </Link>
-        <div className="reward-token cursor flex-all coming-soon">
-          <img src="/assets/gaffehoard.svg" alt="Gaffe Hoard" />
+        <div className="reward-token cursor flex-all relative coming-soon">
+          <img src="/assets/gaffe-hoard.png" alt="Gaffe Hoard" />
           <label>Gaffe Hoard</label>
         </div>
-        <div className="reward-token cursor flex-all coming-soon">
-          <img src="/assets/swapmaster.svg" alt="Swap Master" />
+        <div className="reward-token cursor flex-all relative coming-soon">
+          <img src="/assets/swapmaster.png" alt="Swap Master" />
           <label>Swap Master</label>
         </div>
-        <div className="reward-token cursor flex-all coming-soon">
-          <img src="/assets/whaleswap.svg" alt="Whale Swap" />
+        <div className="reward-token cursor flex-all relative coming-soon">
+          <img src="/assets/whaleswap.png" alt="Whale Swap" />
           <label>Whale Swap</label>
         </div>
-        <div className="reward-token cursor flex-all coming-soon">
-          <img src="/assets/noon-rpeort.svg" alt="Noon Report" />
+        <div className="reward-token cursor flex-all relative coming-soon">
+          <img src="/assets/noon-report.png" alt="Noon Report" />
           <label>Noon Report</label>
         </div>
       </RewardTokens>

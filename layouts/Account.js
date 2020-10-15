@@ -9,37 +9,46 @@ import { shorten } from 'utils/string'
 
 const Wrapper = styled.div`
   position: absolute;
-  right: 60px;
+  right: 65px;
+  top: 58px;
 
   .connect {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 14px;
     line-height: 15px;
 
     border-radius: 14px;
-    background-color: var(--color-red);
-    color: var(--color-white);
     padding: 6px 15px;
-    box-shadow: var(--box-shadow);
   }
 `
 
 const Balances = styled.div`
-  width: 188px;
+  z-index: 1;
+  position: relative;
 
   *[role='menu'] {
     border-radius: 0 0 4px 4px;
-    background-color: var(--color-light-blue);
+    background-color: var(--color-blue);
     border: 0;
     box-shadow: none;
     width: 100%;
     padding: 0;
+    z-index: -1;
+    top: 0;
+    border-radius: 14px;
+    padding-top: 28px;
+    overflow: hidden;
+
+    *[role='presentation'] {
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--color-white);
+      }
+    }
 
     *[role='menuitem'] {
       display: flex;
       align-items: center;
       padding: 10px;
-      border-bottom: 1px solid var(--color-white);
+      color: var(--color-white);
 
       font-size: 14px;
       line-height: 16px;
@@ -51,29 +60,37 @@ const Balances = styled.div`
       img {
         margin-right: 8px;
       }
+
+      span {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      &:hover {
+        background-color: var(--color-red);
+        color: var(--color-white);
+      }
     }
   }
 `
 
 const Address = styled.div`
-  padding: 4px;
-  border-radius: 4px 4px 0 0;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--color-blue);
+  color: var(--color-white);
 
   font-size: 12px;
-  font-weight: 500;
   line-height: 15px;
 
   &.active {
-    background: var(--color-black);
-    color: var(--color-white);
+    background: var(--color-red);
   }
 
   img {
-    margin: 0 4px;
+    margin: 0 6px;
   }
-`
-const Balance = styled.div`
-  color: red;
 `
 
 class Account extends Component {
@@ -214,7 +231,7 @@ class Account extends Component {
                       className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
                       {...props}
                     >
-                      <img src={`/assets/wallet${expanded ? '-hover' : ''}.svg`} alt="MetaMask" />
+                      <img src="/assets/metamask.svg" alt="MetaMask" />
                       {children}
                       <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
                     </Address>
@@ -225,23 +242,22 @@ class Account extends Component {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <MenuItem eventKey={1}>
-                  <img src={`/assets/balance-uni-eth-lst.svg`} alt="LST-ETH-UNI-V2" />
+                  <img src={`/assets/lst-eth-uni.svg`} alt="LST-ETH-UNI-V2" />
                   <span>
                     <small>LST-ETH-UNI-V2</small>
                     <br />
                     {metamask.LSTWETHUNIV2 || 0}
                   </span>
                 </MenuItem>
-                {/* <MenuItem eventKey={2}>
-                  <img src={`/assets/balance-uni-eth-shrimp.svg`} alt="LST-$hrimp-UNI-V2" />
+                <MenuItem eventKey={2}>
+                  <img src={`/assets/shrimp-eth-uni.svg`} alt="LST-$hrimp-UNI-V2" />
                   <span>
-                    <small>LST-$hrimp-UNI-V2</small>
-                    <br />
-                    464
+                    <small>$hrimp-ETH-UNI-V2</small>
+                    <br />0
                   </span>
-                </MenuItem> */}
+                </MenuItem>
                 <MenuItem eventKey={3}>
-                  <img src={`/assets/balance-eth.svg`} alt="ETH" />
+                  <img src={`/assets/eth.svg`} alt="ETH" />
                   <span>
                     <small>ETH</small>
                     <br />
@@ -249,7 +265,7 @@ class Account extends Component {
                   </span>
                 </MenuItem>
                 <MenuItem eventKey={3}>
-                  <img src={`/assets/balance-uni.svg`} alt="UNI" />
+                  <img src={`/assets/uni.svg`} alt="UNI" />
                   <span>
                     <small>UNI</small>
                     <br />
@@ -260,7 +276,7 @@ class Account extends Component {
             </Dropdown>
           </Balances>
         ) : (
-          <button className="connect" onClick={() => this.initMetamask()}>
+          <button className="connect blue" onClick={() => this.initMetamask()}>
             Connect Wallet
           </button>
         )}

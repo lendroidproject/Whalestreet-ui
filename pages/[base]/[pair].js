@@ -26,7 +26,8 @@ export default connect((state) => state)(function (props) {
       <h1>Stake, Unstake &amp; Claim </h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat.
+        magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
+        vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
       </p>
       <div className="flex-center justify-center">
         <PoolDetail detail {...pool} />

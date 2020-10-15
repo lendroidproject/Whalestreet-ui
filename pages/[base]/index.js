@@ -23,10 +23,11 @@ export default connect(({ library }) => ({ library }))(function ({ library }) {
     <Spinner />
   ) : (
     <Wrapper className="center">
-      <h1>Farm Shrimp</h1>
+      <h1>FARM $HRIMP</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat.
+        magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
+        vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
       </p>
       <div className="flex-center justify-center">{basePools.map(Pool)}</div>
     </Wrapper>

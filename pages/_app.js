@@ -33,31 +33,28 @@ class App extends NextApp {
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
           <meta charSet="utf-8" />
           <link href="https://necolas.github.io/normalize.css/latest/normalize.css" rel="stylesheet" type="text/css" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
-          />
+          <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
           <style
             dangerouslySetInnerHTML={{
               __html: `
               :root {
+                --font-family: 'Space Mono', monospace;
                 --color-black: #000000;
                 --color-white: #ffffff;
                 --color-red: #eb0f0f;
-                --color-blue: #3500fe;
+                --color-blue: #0600cc;
                 --color-gold: #fff400;
                 --color-cyan: #3d9fff;
-                --color-light-blue: #daf5ff;
+                --color-light-blue: #413bff;
                 --color-grey: #f2f2f2;
                 --color-border: #d6d6d6;
-                --color-button-border: #979797;
-                --color-button-back: #54dcdb;
                 --box-shadow: 1px 7px 3px 0 rgba(0,0,0,0.5);
                 --box-shadow-narrow: 0 2px 4px 0 rgba(0,0,0,0.5);
               }
-              body { font-family: 'Quicksand', sans-serif; font-size: 16px; line-height: 20px; color: var(--color-black); }
+              body { font-family: var(--font-family); font-weight: bold; font-size: 16px; line-height: 24px; color: var(--color-black); }
               body * { box-sizing: border-box; }
               a, button, .cursor { cursor: pointer; user-select: none; }
+              button, input { font-weight: bold; }
               .center { text-align: center; }
               .flex { display: flex; }
               .flex-all { display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -73,9 +70,10 @@ class App extends NextApp {
               button { border: none; }
               h1, h2, h3, h4, h5, p { margin-top: 0; }
               .uppercase { text-transform: uppercase; }
+              .light { font-weight: normal; }
 
               *::-webkit-scrollbar { width: 5px; }
-              *::-webkit-scrollbar-track { background: var(--color-white); }
+              *::-webkit-scrollbar-track { background: transparent; }
               *::-webkit-scrollbar-thumb { border-radius: 5px; background-color: var(--color-black); }
               *::-webkit-scrollbar-thumb:hover { background: var(--color-grey); }
             `,

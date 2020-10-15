@@ -10,17 +10,22 @@ const Wrapper = styled(PoolWrapper)`
   width: 654px;
   margin-top: 75px;
   position: relative;
-  padding-top: 40px;
+  padding-top: 0;
+
+  h2 {
+    font-size: 26px;
+    padding: 15px;
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid var(--color-light-blue);
+    margin-bottom: 37px;
+  }
 
   > button {
-    font-size: 20px;
-    font-weight: bold;
-    line-height: 25px;
     padding: 0;
     width: auto;
     border-radius: 0;
     border: 0;
-    box-shadow: none;
 
     position: absolute;
     left: 0;
@@ -33,8 +38,8 @@ const Wrapper = styled(PoolWrapper)`
 `
 
 const PoolDetailIcon = styled(PoolIcon)`
-  position: absolute;
-  top: -33px;
+  padding: 0;
+  margin-right: 12px;
 `
 
 const Detail = styled.div`
@@ -49,12 +54,7 @@ const Detail = styled.div`
     margin: 29px -7px -7px;
 
     button {
-      border: 2px solid var(--color-gold);
-      background-color: var(--color-red);
-      color: var(--color-white);
-      box-shadow: var(--box-shadow);
       border-radius: 10px;
-      font-weight: normal;
 
       display: flex;
       align-items: center;
@@ -76,7 +76,12 @@ const Detail = styled.div`
 `
 
 const Stake = styled.div`
+  width: 100%;
+
   .input {
+    text-align: left;
+    max-width: 300px;
+
     label + p {
       margin-top: 12px;
       margin-bottom: 0;
@@ -93,21 +98,13 @@ const Stake = styled.div`
   }
 
   > button {
-    border: 2px solid var(--color-gold);
     padding: 10px 50px;
     border-radius: 7px;
-    margin-top: 30px;
-    box-shadow: var(--box-shadow);
+    margin-top: 35px;
   }
 `
 
-const Unstake = styled(Stake)`
-  width: 100%;
-
-  .input {
-    text-align: left;
-  }
-`
+const Unstake = styled(Stake)``
 
 const Claim = styled(Stake)``
 
@@ -219,7 +216,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
       <Link href="/[base]" as={`/${base.toLowerCase()}`}>
         <button
-          className="white"
+          className="white uppercase"
           onClick={(e) => {
             if (mode) {
               e.preventDefault()
@@ -231,11 +228,11 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           Back
         </button>
       </Link>
-      <PoolDetailIcon className="flex-center">
-        <img src={`/assets/${base.toLowerCase()}.svg`} alt={base} />
-        <img src={`/assets/${pair.toLowerCase()}.svg`} alt={pair} />
-      </PoolDetailIcon>
-      <h2>
+      <h2 className="flex-center justify-center">
+        <PoolDetailIcon className="flex-center">
+          <img src={`/assets/${base.toLowerCase()}-token.svg`} alt={base} />
+          <img src={`/assets/${pair.toLowerCase()}-token.svg`} alt={pair} />
+        </PoolDetailIcon>
         {base}/{pair} POOL
       </h2>
       {!mode && (
@@ -245,13 +242,14 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             <p>{metamask.LSTETHPool || 0}</p>
             <div className="actions flex">
               <button
+                className="uppercase red"
                 onClick={() => (metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? handleMode('stake') : handleApprove())}
                 disabled={!metamask.LSTWETHUNIV2 || approveTx}
               >
                 <img src="/assets/stake.svg" alt="Stake" />
                 {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? 'Stake' : 'Unlock'}
               </button>
-              <button onClick={() => setMode('unstake')} disabled={!metamask.LSTETHPool}>
+              <button className="uppercase red" onClick={() => handleMode('unstake')} disabled={!metamask.LSTETHPool}>
                 <img src="/assets/unstake.svg" alt="Unstake" />
                 Unstake
               </button>
@@ -261,7 +259,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             <label>Unclaimed {rewardBase} Tokens</label>
             <p>{metamask.eLSTETHPool || 0}</p>
             <div className="actions flex">
-              <button onClick={() => setMode('claim')} disabled={!metamask.eLSTETHPool}>
+              <button className="uppercase red" onClick={() => handleMode('claim')} disabled={!metamask.eLSTETHPool}>
                 <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
                 Claim {rewardBase}
               </button>
@@ -271,15 +269,21 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
       )}
       {mode === 'stake' && (
         <Stake>
-          <MaxInput
-            label={stake}
-            value={stakeForm.amount}
-            min={0}
-            onChange={(e) => setStakeForm({ amount: Math.min(e.target.value, metamask.LSTWETHUNIV2) })}
-            onMax={() => setStakeForm({ amount: metamask.LSTWETHUNIV2 })}
-          />
-          <p className="label">Balnace : {metamask.LSTWETHUNIV2}</p>
-          <button disabled={!!stakeTx || stakeForm.amount === 0} onClick={handleStake}>
+          <div className="flex justify-around">
+            <div className="input">
+              <label>{stake} Balnace</label>
+              <p>{metamask.LSTWETHUNIV2 || 0}</p>
+            </div>
+            <MaxInput
+              label="Amount to Stake"
+              value={stakeForm.amount}
+              min={0}
+              onChange={(e) => setStakeForm({ amount: Math.min(e.target.value, metamask.LSTWETHUNIV2) })}
+              onMax={() => setStakeForm({ amount: metamask.LSTWETHUNIV2 })}
+            />
+          </div>
+          {/* <p className="label">Balnace : {metamask.LSTWETHUNIV2}</p> */}
+          <button className="uppercase red" disabled={!!stakeTx || stakeForm.amount === 0} onClick={handleStake}>
             Stake Now
           </button>
         </Stake>
@@ -299,18 +303,20 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
               onMax={() => setUnstakeForm({ amount: metamask.LSTETHPool })}
             />
           </div>
-          <button disabled={!!unstakeTx || unstakeForm.amount === 0} onClick={handleUnstake}>
+          <button className="uppercase red" disabled={!!unstakeTx || unstakeForm.amount === 0} onClick={handleUnstake}>
             Unstake Now
           </button>
         </Unstake>
       )}
       {mode === 'claim' && (
         <Claim>
-          <div className="input">
-            <label>Unclaimed {rewardBase} Tokens</label>
-            <p>{metamask.eLSTETHPool || 0}</p>
+          <div className="flex justify-around">
+            <div className="input">
+              <label>Unclaimed {rewardBase} Tokens</label>
+              <p>{metamask.eLSTETHPool || 0}</p>
+            </div>
           </div>
-          <button disabled={!!claimTx || metamask.eLSTETHPool === 0} onClick={handleClaim}>
+          <button className="uppercase red" disabled={!!claimTx || metamask.eLSTETHPool === 0} onClick={handleClaim}>
             Claim Now
           </button>
         </Claim>
