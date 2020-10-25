@@ -48,6 +48,7 @@ class App extends NextApp {
                 --color-light-blue: #413bff;
                 --color-grey: #f2f2f2;
                 --color-border: #d6d6d6;
+                --color-border2: #5752fc;
                 --box-shadow: 1px 7px 3px 0 rgba(0,0,0,0.5);
                 --box-shadow-narrow: 0 2px 4px 0 rgba(0,0,0,0.5);
               }
@@ -71,6 +72,9 @@ class App extends NextApp {
               h1, h2, h3, h4, h5, p { margin-top: 0; }
               .uppercase { text-transform: uppercase; }
               .light { font-weight: normal; }
+              @media all and (max-width: 577px) {
+                body { font-size: 12px; line-height: 17px; }
+              }
 
               *::-webkit-scrollbar { width: 5px; }
               *::-webkit-scrollbar-track { background: transparent; }
@@ -92,6 +96,7 @@ class App extends NextApp {
           <link rel="icon" type="image/png" sizes="32x32" href="/manifest/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="96x96" href="/manifest/favicon-96x96.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/manifest/favicon-16x16.png" />
+          <link rel="icon" href="/manifest/favicon.ico" />
           <link rel="manifest" href="/manifest/manifest.json" />
           <meta name="msapplication-TileColor" content="#ffffff" />
           <meta name="msapplication-TileImage" content="/manifest/ms-icon-144x144.png" />

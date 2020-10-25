@@ -2,13 +2,32 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
+import Marquee from 'components/common/Marquee'
 import Account from './Account'
 
 const Wrapper = styled.div`
   height: 100vh;
-  background-image: url(/assets/bg.jpg);
-  background-position: center;
-  background-repeat: no-repeat;
+  padding: 0 30px;
+
+  @media all and (max-width: 577px) {
+    padding: 0 20px;
+
+    .marquee {
+      opacity: 0;
+      z-index: -1;
+    }
+  }
+
+  .bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    max-width: unset;
+    justify-content: stretch;
+  }
 
   > * {
     max-width: 1440px;
@@ -21,11 +40,20 @@ const Wrapper = styled.div`
     line-height: 36px;
     margin-bottom: 6px;
     color: var(--color-red);
+    text-transform: uppercase;
+    @media all and (max-width: 577px) {
+      font-size: 20px;
+      line-height: 29px;
+    }
   }
 
   h2 {
     font-size: 24px;
     line-height: 30px;
+    @media all and (max-width: 577px) {
+      font-size: 20px;
+      line-height: 24px;
+    }
   }
 
   label {
@@ -38,6 +66,10 @@ const Wrapper = styled.div`
     font-size: 24px;
     line-height: 30px;
     margin-bottom: 0;
+    @media all and (max-width: 577px) {
+      font-size: 18px;
+      line-height: 26px;
+    }
   }
 
   .buttons {
@@ -53,6 +85,11 @@ const Wrapper = styled.div`
     font-size: 20px;
     line-height: 25px;
     padding: 10px;
+    @media all and (max-width: 577px) {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 8px;
+    }
 
     &:disabled {
       opacity: 0.8;
@@ -76,6 +113,19 @@ const Wrapper = styled.div`
 
 const Header = styled.header`
   padding: 44px 65px 24px;
+
+  @media all and (max-width: 577px) {
+    padding: 16px 24px 12px;
+    flex-direction: column-reverse;
+
+    .account {
+      margin-bottom: 16px;
+    }
+
+    .logo {
+      height: 50px;
+    }
+  }
 `
 
 const Content = styled.div`
@@ -95,6 +145,11 @@ const Content = styled.div`
 
       max-width: 943px;
       margin: 0 auto 24px;
+
+      @media all and (max-width: 577px) {
+        font-size: 12px;
+        line-height: 12px;
+      }
     }
   }
 
@@ -107,19 +162,48 @@ const Footer = styled.footer`
   background: var(--color-white);
   padding: 8px;
 
+  max-width: unset;
+  z-index: 10;
+  width: calc(100% + 56px);
+  left: -28px;
+  position: relative;
+  @media all and (max-width: 577px) {
+    padding: 12px;
+    width: calc(100% + 40px);
+    left: -20px;
+  }
+
   a {
     margin: 0 24px;
+    white-space: nowrap;
+    @media all and (max-width: 577px) {
+      font-size: 11px;
+      line-height: 16px;
+      margin: 0 10px;
+    }
   }
 `
 
-export default connect(({ library }) => ({ library }))(function Index({ library, children }) {
+export default connect((state) => state)(function Index({ library, metamask, children }) {
+  const text = `SHRIMP BALANCE- ${metamask.shrimp || 2909} SHRIMP PRICE ${
+    metamask.shrimpPrice || 0.2909
+  } SHRIMP TOTAL SUPPLY ${metamask.shrimpSupply || '98,231'} LST PRICE ${metamask.lstPrice || '1.234'}.`
+
   return (
     <Wrapper className="flex-column">
+      <div className="bg flex-all">
+        <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
+          <source src="/assets/bg.mp4" type="video/mp4" />
+        </video>
+        <Marquee text={`${text} ${text}`} />
+        <Marquee text={`${text} ${text}`} dir={1} />
+        <Marquee text={`${text} ${text}`} dir={3} />
+      </div>
       <Header className="flex-center justify-center relative">
-        <div className="menu">
+        <div className="menu flex">
           <div className="hamburger"></div>
           <Link href="/">
-            <img className="logo cursor" src="/assets/logo.png" alt="WHALE STREET" />
+            <img className="logo cursor" src="/assets/logo.svg" alt="WHALE STREET" />
           </Link>
         </div>
         <Account />

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
 import { useRouter } from 'next/router'
 import PoolDetail from 'components/PoolDetail'
 import { pools } from 'library/constants'
@@ -8,7 +7,7 @@ import Spinner from 'components/common/Spinner'
 
 const Wrapper = styled.section``
 
-export default connect((state) => state)(function (props) {
+export default function Pair() {
   const [pool, setPool] = useState(null)
   const router = useRouter()
   const { base, pair } = router.query
@@ -34,4 +33,4 @@ export default connect((state) => state)(function (props) {
       </div>
     </Wrapper>
   )
-})
+}

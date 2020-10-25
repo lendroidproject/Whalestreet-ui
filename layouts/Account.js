@@ -8,9 +8,11 @@ import Library from 'library'
 import { shorten } from 'utils/string'
 
 const Wrapper = styled.div`
-  position: absolute;
-  right: 65px;
-  top: 58px;
+  @media all and (min-width: 578px) {
+    position: absolute;
+    right: 65px;
+    top: 58px;
+  }
 
   .connect {
     font-size: 14px;
@@ -212,7 +214,7 @@ class Account extends Component {
   render() {
     const { metamask } = this.props
     return (
-      <Wrapper>
+      <Wrapper className="account">
         {metamask.address ? (
           <Balances>
             <Dropdown

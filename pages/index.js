@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Link from 'next/link'
+import { connect } from 'react-redux'
 
 const Wrapper = styled.section`
   .watch-video {
@@ -11,6 +12,9 @@ const Wrapper = styled.section`
 
     img {
       margin-right: 10px;
+      @media all and (max-width: 577px) {
+        height: 10px;
+      }
     }
   }
 `
@@ -23,28 +27,58 @@ const Statics = styled.div`
   margin: 0 auto 53px;
   padding: 11px 20px 7px;
   text-align: left;
+  @media all and (max-width: 577px) {
+    margin-bottom: 22px;
+    padding: 7px 12px;
+  }
 
   .statics__item {
     margin: 10px 20px;
+    white-space: nowrap;
+    @media all and (max-width: 577px) {
+      margin: 5px 10px;
+      width: calc(50% - 20px);
+    }
   }
 `
 
 const RewardTokens = styled.div`
+  margin: -12px;
+  @media all and (max-width: 577px) {
+    margin: -12px -20px;
+  }
+
   .reward-token {
     height: 181px;
     width: 181px;
     background-color: var(--color-red);
     border-radius: 50%;
-    margin: 12px;
+    margin: 12px 12px 30px;
     box-shadow: var(--box-shadow);
 
-    margin-bottom: 30px;
+    @media all and (max-width: 577px) {
+      height: 101px;
+      width: 101px;
+    }
 
     label {
       font-style: italic;
       color: var(--color-white);
       position: absolute;
       bottom: -30px;
+
+      @media all and (max-width: 577px) {
+        bottom: -27px;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+
+    img {
+      max-height: 100%;
+      @media all and (max-width: 577px) {
+        max-height: 65px;
+      }
     }
   }
 
@@ -59,22 +93,30 @@ const OurTokens = styled.div`
 
   h2 {
     color: var(--color-white);
-    marigin-bottom: 17px;
+    margin-bottom: 17px;
   }
 
   button {
     width: 130px;
-    cursor: initial;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
 
     font-size: 24px;
     line-height: 1;
     font-weight: bold;
+
+    &:hover {
+      background: var(--color-red);
+    }
+    @media all and (max-width: 577px) {
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
 `
 
-export default function Index() {
+export default connect((state) => state)(function Index(props) {
+  console.log(props)
   return (
     <Wrapper className="center">
       <h1>Welcome to Whale Street.</h1>
@@ -89,7 +131,7 @@ export default function Index() {
           Watch Video
         </a>
       </p>
-      <Statics className="flex-center justify-between">
+      <Statics className="flex-center flex-wrap justify-between">
         <div className="statics__item">
           <label>$hrimp Balance</label>
           <p>2402</p>
@@ -107,7 +149,7 @@ export default function Index() {
           <p>$0.00119713</p>
         </div>
       </Statics>
-      <RewardTokens className="flex-center justify-center">
+      <RewardTokens className="flex-wrap justify-center">
         <Link href="/[base]" as="/lst">
           <div className="reward-token cursor flex-all relative">
             <img src="/assets/shrimp-farm.png" alt="Farm Shrimp" />
@@ -141,4 +183,4 @@ export default function Index() {
       </OurTokens>
     </Wrapper>
   )
-}
+})
