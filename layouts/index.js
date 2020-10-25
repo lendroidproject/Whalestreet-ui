@@ -130,7 +130,7 @@ const Header = styled.header`
 
 const Content = styled.div`
   flex: 1;
-  overflow: auto;
+  overflow: hidden auto;
   position: relative;
   @media all and (max-width: 577px) {
     overflow: initial;
