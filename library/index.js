@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import HRIMP from './HRIMP.json'
+import $HRIMP from './$HRIMP.json'
 import LSTWETHUNIV2 from './LSTWETHUNIV2.json'
 import LSTETHPool from './LSTETHPool.json'
 
@@ -24,15 +24,16 @@ const send = (method) => (...args) => {
 export default function Index(provider, { onEvent: eventHandler }) {
   const web3 = new Web3(provider)
   const contracts = {
-    HRIMP: new web3.eth.Contract(HRIMP, addresses.$HRIMP),
+    $HRIMP: new web3.eth.Contract($HRIMP, addresses.$HRIMP),
     LSTWETHUNIV2: new web3.eth.Contract(LSTWETHUNIV2, addresses.LST_WETH_UNI_V2),
     LSTETHPool: new web3.eth.Contract(LSTETHPool, addresses.LSTETHPool),
   }
   const methods = {
-    HRIMP: {
-      getBalance: call(contracts.HRIMP.methods.balanceOf),
-      getAllowance: (addr) => call(contracts.HRIMP.methods.allowance)(addr, addresses.LSTETHPool),
-      approve: send(contracts.HRIMP.methods.approve),
+    $HRIMP: {
+      getBalance: call(contracts.$HRIMP.methods.balanceOf),
+      totalSupply: call(contracts.$HRIMP.methods.totalSupply),
+      getAllowance: (addr) => call(contracts.$HRIMP.methods.allowance)(addr, addresses.LSTETHPool),
+      approve: send(contracts.$HRIMP.methods.approve),
     },
     LSTWETHUNIV2: {
       getBalance: call(contracts.LSTWETHUNIV2.methods.balanceOf),
@@ -47,7 +48,7 @@ export default function Index(provider, { onEvent: eventHandler }) {
       claim: send(contracts.LSTETHPool.methods.claim),
     },
   }
-  contracts.HRIMP.events
+  contracts.$HRIMP.events
     .allEvents(
       {
         // ...

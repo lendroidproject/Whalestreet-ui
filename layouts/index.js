@@ -185,19 +185,21 @@ const Footer = styled.footer`
 `
 
 export default connect((state) => state)(function Index({ library, metamask, children }) {
-  const text = `SHRIMP BALANCE- ${metamask.shrimp || 2909} SHRIMP PRICE ${
+  const text = `$HRIMP BALANCE - ${(metamask.$HRIMP || 0).toFixed(2)} $HRIMP PRICE ${
     metamask.shrimpPrice || 0.2909
-  } SHRIMP TOTAL SUPPLY ${metamask.shrimpSupply || '98,231'} LST PRICE ${metamask.lstPrice || '1.234'}.`
+  } $HRIMP TOTAL SUPPLY ${(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')} LST PRICE ${
+    metamask.lstPrice || '1.234'
+  }.`
 
   return (
     <Wrapper className="flex-column">
       <div className="bg flex-all">
         <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
-          <source src="/assets/bg.mp4" type="video/mp4" />
+          {/* <source src="/assets/bg.mp4" type="video/mp4" /> */}
         </video>
-        <Marquee text={`${text} ${text}`} />
-        <Marquee text={`${text} ${text}`} dir={1} />
-        <Marquee text={`${text} ${text}`} dir={3} />
+        <Marquee text={`${text} ${text} ${text}`} />
+        <Marquee text={`${text} ${text} ${text}`} dir={1} />
+        <Marquee text={`${text} ${text} ${text}`} dir={3} />
       </div>
       <Header className="flex-center justify-center relative">
         <div className="menu flex">

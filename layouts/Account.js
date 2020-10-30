@@ -191,21 +191,27 @@ class Account extends Component {
         library ? library.methods.LSTWETHUNIV2.getAllowance(suggest || address) : Promise.resolve('0'),
         library ? library.methods.LSTETHPool.getBalance(suggest || address) : Promise.resolve('0'),
         library ? library.methods.LSTETHPool.getEarned(suggest || address) : Promise.resolve('0'),
+        library ? library.methods.$HRIMP.getBalance(suggest || address) : Promise.resolve('0'),
+        library ? library.methods.$HRIMP.totalSupply() : Promise.resolve('0'),
       ])
-        .then(([balance1, balance2, allowance2, balance3, earned3]) => {
+        .then(([balance1, balance2, allowance2, balance3, earned3, balance4, supply4]) => {
           const balance = Number(web3.utils.fromWei(balance1))
           const LSTWETHUNIV2 = Number(web3.utils.fromWei(balance2))
           const aLSTWETHUNIV2 = Number(web3.utils.fromWei(allowance2))
           const LSTETHPool = Number(web3.utils.fromWei(balance3))
           const eLSTETHPool = Number(web3.utils.fromWei(earned3))
+          const $HRIMP = Number(web3.utils.fromWei(balance4))
+          const s$HRIMP = Number(web3.utils.fromWei(supply4))
           if (
             origin !== balance ||
             metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
             metamask.aLSTWETHUNIV2 !== aLSTWETHUNIV2 ||
             metamask.LSTETHPool !== LSTETHPool ||
-            metamask.eLSTETHPool !== eLSTETHPool
+            metamask.eLSTETHPool !== eLSTETHPool ||
+            metamask.$HRIMP !== $HRIMP ||
+            metamask.s$HRIMP !== s$HRIMP
           )
-            this.saveMetamask({ balance, LSTWETHUNIV2, aLSTWETHUNIV2, LSTETHPool, eLSTETHPool })
+            this.saveMetamask({ balance, LSTWETHUNIV2, aLSTWETHUNIV2, LSTETHPool, eLSTETHPool, $HRIMP, s$HRIMP })
         })
         .catch(console.log)
     }

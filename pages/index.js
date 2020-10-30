@@ -115,8 +115,7 @@ const OurTokens = styled.div`
   }
 `
 
-export default connect((state) => state)(function Index(props) {
-  console.log(props)
+export default connect((state) => state)(function Index({ metamask }) {
   return (
     <Wrapper className="center">
       <h1>Welcome to Whale Street.</h1>
@@ -134,7 +133,7 @@ export default connect((state) => state)(function Index(props) {
       <Statics className="flex-center flex-wrap justify-between">
         <div className="statics__item">
           <label>$hrimp Balance</label>
-          <p>2402</p>
+          <p>{(metamask.$HRIMP || 0).toFixed(2)}</p>
         </div>
         <div className="statics__item">
           <label>$hrimp Price</label>
@@ -142,7 +141,7 @@ export default connect((state) => state)(function Index(props) {
         </div>
         <div className="statics__item">
           <label>$hrimp Total Supply</label>
-          <p>92,292,34</p>
+          <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
         </div>
         <div className="statics__item">
           <label>LST Price</label>
@@ -152,8 +151,8 @@ export default connect((state) => state)(function Index(props) {
       <RewardTokens className="flex-wrap justify-center">
         <Link href="/[base]" as="/lst">
           <div className="reward-token cursor flex-all relative">
-            <img src="/assets/shrimp-farm.png" alt="Farm Shrimp" />
-            <label>Farm Shrimp</label>
+            <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />
+            <label>Farm $hrimp</label>
           </div>
         </Link>
         <div className="reward-token cursor flex-all relative coming-soon">
