@@ -27,6 +27,21 @@ const Balances = styled.div`
   z-index: 1;
   position: relative;
 
+  .balance-item {
+    background: var(--color-blue);
+    padding: 4px 8px 4px 6px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-white);
+    border-radius: 15px;
+    margin-right: 12px;
+
+    img {
+      height: 20px;
+      margin-right: 4px;
+    }
+  }
+
   *[role='menu'] {
     border-radius: 0 0 4px 4px;
     background-color: var(--color-blue);
@@ -222,7 +237,11 @@ class Account extends Component {
     return (
       <Wrapper className="account">
         {metamask.address ? (
-          <Balances>
+          <Balances className="flex">
+            <div className="balance-item flex">
+              <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
+              {(metamask.$HRIMP || 0).toFixed(2)}
+            </div>
             <Dropdown
               onSelect={(eventKey) => {
                 console.log(eventKey)
