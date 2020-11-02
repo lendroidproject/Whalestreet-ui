@@ -4,7 +4,7 @@ import { withRouter } from 'next/router'
 import { connect } from 'react-redux'
 import Web3 from 'web3'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
-import Library from 'library'
+import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
 
 const Wrapper = styled.div`
@@ -179,6 +179,11 @@ class Account extends Component {
     }
     const library = Library(ethereum, {
       onEvent: handleEvent,
+      addresses: {
+        $HRIMP: '0x7186013ABe25De7dd79e191f3251bE73B72Db037',
+        LST_WETH_UNI_V2: '0xFB5b443ae22080b456C4b5ff2c06a4aD987B89A7',
+        LSTETHPool: '0xdF011A6c60Ca415a24D2db7Feb862E8Dc2664f7D',
+      },
     })
     dispatch({
       type: 'INIT_CONTRACTS',

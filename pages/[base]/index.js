@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pool from 'components/Pool'
-import { pools } from 'library/constants'
+import { pools } from 'assets/constants'
 import Spinner from 'components/common/Spinner'
 
 const Wrapper = styled.section`
