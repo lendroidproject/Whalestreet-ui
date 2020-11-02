@@ -195,7 +195,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
     <Wrapper className="flex-column">
       <div className="bg flex-all">
         <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
-          {/* <source src="/assets/bg.mp4" type="video/mp4" /> */}
+          <source src="/assets/bg.mp4" type="video/mp4" />
         </video>
         <Marquee text={`${text} ${text} ${text}`} />
         <Marquee text={`${text} ${text} ${text}`} dir={1} />
