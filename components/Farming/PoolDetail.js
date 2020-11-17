@@ -1,8 +1,7 @@
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import MaxInput from './common/MaxInput'
+import MaxInput from 'components/common/MaxInput'
 
 import { Wrapper as PoolWrapper, PoolIcon } from './Pool'
 
@@ -213,7 +212,7 @@ const Claim = styled(Stake)`
   }
 `
 
-function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transactions, dispatch }) {
+function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
   const { address } = metamask
   const [stakeForm, setStakeForm] = useState({ amount: 0 })
   const [approveTx, setApproveTx] = useState(null)
@@ -247,7 +246,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
 
   const handleApprove = () => {
     const { approve } = library.methods.LSTWETHUNIV2
-    approve(library.addresses.LSTETHPool, web3.utils.toWei((10 ** 8).toString()), { from: address })
+    approve(library.addresses.LSTETHPool, library.web3.utils.toWei((10 ** 8).toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
         setApproveTx(hash)
@@ -256,7 +255,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
         dispatch({
           type: 'METAMASK',
           payload: {
-            aLSTWETHUNIV2: Number(web3.utils.fromWei(receipt.events.Approval.returnValues.value)),
+            aLSTWETHUNIV2: Number(library.web3.utils.fromWei(receipt.events.Approval.returnValues.value)),
           },
         })
         setApproveTx(null)
@@ -270,7 +269,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   const handleStake = () => {
     const { amount } = stakeForm
     const { stake } = library.methods.LSTETHPool
-    stake(web3.utils.toWei(amount.toString()), { from: address })
+    stake(library.web3.utils.toWei(amount.toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
         setStakeTx(hash)
@@ -287,7 +286,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   const handleUnstake = () => {
     const { amount } = unstakeForm
     const { unstake } = library.methods.LSTETHPool
-    unstake(web3.utils.toWei(amount.toString()), { from: address })
+    unstake(library.web3.utils.toWei(amount.toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
         setUnstakeTx(hash)
@@ -319,20 +318,10 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
 
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
-      <Link href="/[base]" as={`/${base.toLowerCase()}`}>
-        <button
-          className="white uppercase"
-          onClick={(e) => {
-            if (mode) {
-              e.preventDefault()
-              setMode('')
-            }
-          }}
-        >
-          <img src="/assets/back.svg" alt="Go Back" />
-          Back
-        </button>
-      </Link>
+      <button className="white uppercase" onClick={onBack}>
+        <img src="/assets/back.svg" alt="Go Back" />
+        Back
+      </button>
       <h2 className="flex-center justify-center">
         <PoolDetailIcon className="flex-center">
           <img src={`/assets/${base.toLowerCase()}-token.svg`} alt={base} />

@@ -33,7 +33,10 @@ class App extends NextApp {
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
           <meta charSet="utf-8" />
           <link href="https://necolas.github.io/normalize.css/latest/normalize.css" rel="stylesheet" type="text/css" />
-          <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+          />
           <style
             dangerouslySetInnerHTML={{
               __html: `
@@ -47,10 +50,14 @@ class App extends NextApp {
                 --color-cyan: #3d9fff;
                 --color-light-blue: #413bff;
                 --color-grey: #f2f2f2;
+                --color-dark-grey: #979797;
                 --color-border: #d6d6d6;
                 --color-border2: #5752fc;
                 --box-shadow: 1px 7px 3px 0 rgba(0,0,0,0.5);
                 --box-shadow-narrow: 0 2px 4px 0 rgba(0,0,0,0.5);
+                --box-shadow-dark: 6px 6px 17px 0 #121120;;
+
+                --color-red1: #ff0006;
               }
               body { font-family: var(--font-family); font-weight: bold; font-size: 16px; line-height: 24px; color: var(--color-black); }
               body * { box-sizing: border-box; }

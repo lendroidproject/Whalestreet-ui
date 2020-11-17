@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import React from 'react'
 import styled from 'styled-components'
 
 export const Wrapper = styled.div`
@@ -112,7 +112,7 @@ export const PoolIcon = styled.div`
   }
 `
 
-export default function Pool({ base, pair, apy, rewardBase, rewards, coming }) {
+export default function Pool({ base, pair, apy, rewardBase, rewards, coming, onSelect }) {
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
       <div className="pool-info">
@@ -137,9 +137,9 @@ export default function Pool({ base, pair, apy, rewardBase, rewards, coming }) {
             Select
           </button>
         ) : (
-          <Link href="/[base]/[pair]" as={`/${base.toLowerCase()}/${pair.toLowerCase()}`}>
-            <button className="uppercase red">Select</button>
-          </Link>
+          <button className="uppercase red" onClick={onSelect}>
+            Select
+          </button>
         )}
       </div>
     </Wrapper>

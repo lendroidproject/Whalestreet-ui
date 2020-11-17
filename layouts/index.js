@@ -2,7 +2,7 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
-import Marquee from 'components/common/Marquee'
+import PriceMarquee from 'components/common/PriceMarquee'
 import Account from './Account'
 
 const Wrapper = styled.div`
@@ -27,6 +27,11 @@ const Wrapper = styled.div`
     z-index: -1;
     max-width: unset;
     justify-content: stretch;
+
+    img {
+      width: 100%;
+      min-height: 100%;
+    }
   }
 
   > * {
@@ -136,6 +141,10 @@ const Content = styled.div`
     overflow: initial;
   }
 
+  * {
+    transition: all 0.2s;
+  }
+
   section {
     padding-bottom: 36px;
 
@@ -164,8 +173,8 @@ const Footer = styled.footer`
 
   max-width: unset;
   z-index: 10;
-  width: calc(100% + 56px);
-  left: -28px;
+  width: calc(100% + 60px);
+  left: -30px;
   position: relative;
   @media all and (max-width: 577px) {
     padding: 12px;
@@ -193,14 +202,6 @@ export default connect((state) => state)(function Index({ library, metamask, chi
 
   return (
     <Wrapper className="flex-column">
-      <div className="bg flex-all">
-        <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
-          <source src="/assets/bg.mp4" type="video/mp4" />
-        </video>
-        <Marquee text={`${text} ${text} ${text}`} />
-        <Marquee text={`${text} ${text} ${text}`} dir={1} />
-        <Marquee text={`${text} ${text} ${text}`} dir={3} />
-      </div>
       <Header className="flex-center justify-center relative">
         <div className="menu flex">
           <div className="hamburger"></div>
@@ -218,6 +219,9 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <a className="uppercase">Developer Docs</a>
         <a className="uppercase">Forum</a>
       </Footer>
+      <div className="bg flex-all">
+        <PriceMarquee />
+      </div>
     </Wrapper>
   )
 })

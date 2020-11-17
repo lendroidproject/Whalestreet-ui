@@ -2,7 +2,6 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'next/router'
 import { connect } from 'react-redux'
-import Web3 from 'web3'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
@@ -118,7 +117,6 @@ class Account extends Component {
 
   async componentDidMount() {
     if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
       if (ethereum._metamask.isEnabled() && (await ethereum._metamask.isUnlocked())) {
         this.initMetamask()
       } else {
@@ -180,9 +178,9 @@ class Account extends Component {
     const library = Library(ethereum, {
       onEvent: handleEvent,
       addresses: {
-        $HRIMP: '0x7186013ABe25De7dd79e191f3251bE73B72Db037',
-        LST_WETH_UNI_V2: '0xFB5b443ae22080b456C4b5ff2c06a4aD987B89A7',
-        LSTETHPool: '0xdF011A6c60Ca415a24D2db7Feb862E8Dc2664f7D',
+        $HRIMP: '0x0cb480318dfc892cBDd275AE8BDFD5b1Bb83fEbA',
+        LST_WETH_UNI_V2: '0x1F1536859d748D7B8998E9d15D9aC7aedDaD9275',
+        LSTETHPool: '0xFE148E2920758766b27A0AFC0932935757E21bF8',
       },
     })
     dispatch({
@@ -204,24 +202,25 @@ class Account extends Component {
   getBalance(suggest) {
     const { metamask, library } = this.props
     const { address, balance: origin } = metamask
-    if (suggest || address) {
+
+    if (library && (suggest || address)) {
       Promise.all([
-        window.web3.eth.getBalance(suggest || address),
-        library ? library.methods.LSTWETHUNIV2.getBalance(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.LSTWETHUNIV2.getAllowance(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.LSTETHPool.getBalance(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.LSTETHPool.getEarned(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.$HRIMP.getBalance(suggest || address) : Promise.resolve('0'),
-        library ? library.methods.$HRIMP.totalSupply() : Promise.resolve('0'),
+        library.web3.eth.getBalance(suggest || address),
+        library.methods.LSTWETHUNIV2.getBalance(suggest || address),
+        library.methods.LSTWETHUNIV2.getAllowance(suggest || address),
+        library.methods.LSTETHPool.getBalance(suggest || address),
+        library.methods.LSTETHPool.getEarned(suggest || address),
+        library.methods.$HRIMP.getBalance(suggest || address),
+        library.methods.$HRIMP.totalSupply(),
       ])
         .then(([balance1, balance2, allowance2, balance3, earned3, balance4, supply4]) => {
-          const balance = Number(web3.utils.fromWei(balance1))
-          const LSTWETHUNIV2 = Number(web3.utils.fromWei(balance2))
-          const aLSTWETHUNIV2 = Number(web3.utils.fromWei(allowance2))
-          const LSTETHPool = Number(web3.utils.fromWei(balance3))
-          const eLSTETHPool = Number(web3.utils.fromWei(earned3))
-          const $HRIMP = Number(web3.utils.fromWei(balance4))
-          const s$HRIMP = Number(web3.utils.fromWei(supply4))
+          const balance = Number(library.web3.utils.fromWei(balance1))
+          const LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
+          const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
+          const LSTETHPool = Number(library.web3.utils.fromWei(balance3))
+          const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
+          const $HRIMP = Number(library.web3.utils.fromWei(balance4))
+          const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
           if (
             origin !== balance ||
             metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
