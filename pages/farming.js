@@ -1,13 +1,12 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+
+import SEO from "layouts/seo"
 import Farming from 'components/Farming'
 
 export default function FarmingPage() {
   return (
     <>
-      <Helmet>
-        <title>Farming</title>
-      </Helmet>
+      <SEO title="Farming" />
       <Farming />
     </>
   )

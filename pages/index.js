@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Helmet } from 'react-helmet'
 import Link from 'next/link'
 
+import SEO from "layouts/seo"
 import PriceMarquee from 'components/common/PriceMarquee'
 import { PageWrapper as Wrapper } from 'components/styles'
 
@@ -16,9 +16,7 @@ const Modules = styled.div`
 export default function Index() {
   return (
     <>
-      <Helmet>
-        <title>Home</title>
-      </Helmet>
+      <SEO title="Home" />
       <div className="bg flex-all">
         <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted></video>
         <PriceMarquee />
