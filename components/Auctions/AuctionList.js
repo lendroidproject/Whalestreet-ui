@@ -104,28 +104,30 @@ export default function AuctionList({ auctions }) {
       {auctions.map(({ id, epoc, price, expiry }) => (
         <Auction key={id}>
           <table>
-            <tr>
-              <th className="epoc">Epoc</th>
-              <th className="price">Price</th>
-              <th className="remaining">Remaining Time</th>
-              <th className="actions" rowSpan={2}>
-                <button>Purchase</button>
-              </th>
-            </tr>
-            <tr>
-              <td>
-                <Epoc className="flex-all">{epoc}</Epoc>
-              </td>
-              <td>
-                <Price className="flex-center">
-                  <img src="/assets/$hrimp-token.svg" alt="" />
-                  {price}
-                </Price>
-              </td>
-              <td>
-                <Remaining>{getRemaining(expiry, now)}</Remaining>
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <th className="epoc">Epoc</th>
+                <th className="price">Price</th>
+                <th className="remaining">Remaining Time</th>
+                <th className="actions" rowSpan={2}>
+                  <button>Purchase</button>
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  <Epoc className="flex-all">{epoc}</Epoc>
+                </td>
+                <td>
+                  <Price className="flex-center">
+                    <img src="/assets/$hrimp-token.svg" alt="" />
+                    {price}
+                  </Price>
+                </td>
+                <td>
+                  <Remaining>{getRemaining(expiry, now)}</Remaining>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </Auction>
       ))}

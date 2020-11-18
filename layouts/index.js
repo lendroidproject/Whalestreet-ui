@@ -1,9 +1,11 @@
+import React from 'react'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
 import PriceMarquee from 'components/common/PriceMarquee'
 import Account from './Account'
+import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -119,6 +121,10 @@ const Wrapper = styled.div`
 const Header = styled.header`
   padding: 44px 65px 24px;
 
+  .menu a {
+    display: flex;
+  }
+
   @media all and (max-width: 577px) {
     padding: 16px 24px 12px;
     flex-direction: column-reverse;
@@ -185,6 +191,8 @@ const Footer = styled.footer`
   a {
     margin: 0 24px;
     white-space: nowrap;
+    color: var(--color-black);
+    text-decoration: none;
     @media all and (max-width: 577px) {
       font-size: 11px;
       line-height: 16px;
@@ -194,12 +202,6 @@ const Footer = styled.footer`
 `
 
 export default connect((state) => state)(function Index({ library, metamask, children }) {
-  const text = `$HRIMP BALANCE - ${(metamask.$HRIMP || 0).toFixed(2)} $HRIMP PRICE ${
-    metamask.shrimpPrice || 0.2909
-  } $HRIMP TOTAL SUPPLY ${(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')} LST PRICE ${
-    metamask.lstPrice || '1.234'
-  }.`
-
   return (
     <Wrapper className="flex-column">
       <Header className="flex-center justify-center relative">
@@ -213,11 +215,21 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       </Header>
       <Content>{library ? children : <p className="fill flex-all no-wallet">No connected wallet</p>}</Content>
       <Footer className="flex-center justify-center">
-        <a className="uppercase">Discord</a>
-        <a className="uppercase">Github</a>
-        <a className="uppercase">Twitter</a>
-        <a className="uppercase">Developer Docs</a>
-        <a className="uppercase">Forum</a>
+        <a className="uppercase" href="/">
+          Discord
+        </a>
+        <a className="uppercase" href="/">
+          Github
+        </a>
+        <a className="uppercase" href="/">
+          Twitter
+        </a>
+        <a className="uppercase" href="/">
+          Developer Docs
+        </a>
+        <a className="uppercase" href="/">
+          Forum
+        </a>
       </Footer>
       <div className="bg flex-all">
         <PriceMarquee />

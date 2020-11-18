@@ -1,7 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Helmet } from 'react-helmet'
 import Link from 'next/link'
-import PriceMarquee from 'components/common/PriceMarquee'
 
+import PriceMarquee from 'components/common/PriceMarquee'
 import { PageWrapper as Wrapper } from 'components/styles'
 
 const Modules = styled.div`
@@ -14,6 +16,9 @@ const Modules = styled.div`
 export default function Index() {
   return (
     <>
+      <Helmet>
+        <title>Home</title>
+      </Helmet>
       <div className="bg flex-all">
         <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted></video>
         <PriceMarquee />
@@ -26,7 +31,7 @@ export default function Index() {
           vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
           <br />
           <br />
-          <a className="watch-video">
+          <a className="watch-video" href="/">
             <img src="/assets/video.png" alt="Welcome to Whale Street" />
             Watch Video
           </a>

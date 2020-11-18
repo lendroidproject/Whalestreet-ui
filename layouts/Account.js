@@ -1,6 +1,5 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
-import { withRouter } from 'next/router'
 import { connect } from 'react-redux'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
 import Library from 'whalestreet-js'
@@ -117,10 +116,10 @@ class Account extends Component {
 
   async componentDidMount() {
     if (window.ethereum) {
-      if (ethereum._metamask.isEnabled() && (await ethereum._metamask.isUnlocked())) {
+      if (window.ethereum._metamask.isEnabled() && (await window.ethereum._metamask.isUnlocked())) {
         this.initMetamask()
       } else {
-        ethereum
+        window.ethereum
           .enable()
           .then(() => this.initMetamask())
           .catch(console.log)
@@ -142,19 +141,19 @@ class Account extends Component {
     this.clearTimer()
     const addressTimer = setInterval(() => {
       const { address } = this.props.metamask
-      if (address !== ethereum.selectedAddress) {
-        return this.saveMetamask({ address: ethereum.selectedAddress }, () => this.getBalance())
+      if (address !== window.ethereum.selectedAddress) {
+        return this.saveMetamask({ address: window.ethereum.selectedAddress }, () => this.getBalance())
       }
     }, 1 * 1000)
     const balanceTimer = setInterval(() => {
       const { address } = this.props.metamask
-      if (address !== ethereum.selectedAddress) {
-        return this.saveMetamask({ address: ethereum.selectedAddress }, () => this.getBalance())
+      if (address !== window.ethereum.selectedAddress) {
+        return this.saveMetamask({ address: window.ethereum.selectedAddress }, () => this.getBalance())
       }
       this.getBalance()
     }, 5 * 1000)
-    this.saveMetamask({ address: ethereum.selectedAddress, state: { balanceTimer, addressTimer } }, () =>
-      this.getBalance(ethereum.selectedAddress)
+    this.saveMetamask({ address: window.ethereum.selectedAddress, state: { balanceTimer, addressTimer } }, () =>
+      this.getBalance(window.ethereum.selectedAddress)
     )
 
     const { dispatch } = this.props
@@ -175,7 +174,7 @@ class Account extends Component {
           break
       }
     }
-    const library = Library(ethereum, {
+    const library = Library(window.ethereum, {
       onEvent: handleEvent,
       addresses: {
         $HRIMP: '0x0cb480318dfc892cBDd275AE8BDFD5b1Bb83fEbA',
@@ -316,4 +315,4 @@ class Account extends Component {
   }
 }
 
-export default connect((state) => state)(withRouter(Account))
+export default connect((state) => state)(Account)

@@ -9,8 +9,6 @@ import configureStore from 'store'
 
 import Layout from 'layouts'
 
-import '@trendmicro/react-dropdown/dist/react-dropdown.css'
-
 const theme = {
   primary: 'default',
 }

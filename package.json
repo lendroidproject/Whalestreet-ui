@@ -40,7 +40,6 @@
     "redux": "^4.0.5",
     "styled-components": "^4.4.1",
     "tinyurl": "^1.1.6",
-    "web3": "^1.2.9",
     "whalestreet-js": "^1.0.0"
   },
   "devDependencies": {
