@@ -1,44 +1,15 @@
 import React from 'react'
-import styled from 'styled-components'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import SEO from "layouts/seo"
-import PriceMarquee from 'components/common/PriceMarquee'
-import { PageWrapper as Wrapper } from 'components/styles'
+import SEO from 'layouts/seo'
+import Home from 'components/Home'
 
-const Modules = styled.div`
-  a {
-    margin: 5px 10px;
-    text-decoration: none;
-  }
-`
-
-export default function Index() {
+export default function HomePage() {
+  const router = useRouter()
   return (
     <>
       <SEO title="Home" />
-      <div className="bg flex-all">
-        <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted></video>
-        <PriceMarquee />
-      </div>
-      <Wrapper className="center">
-        <h1>Welcome to Whale Street.</h1>
-        <p className="intro">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
-          vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
-          <br />
-          <br />
-          <a className="watch-video" href="/">
-            <img src="/assets/video.png" alt="Welcome to Whale Street" />
-            Watch Video
-          </a>
-        </p>
-        <Modules className="flex-wrap justify-center">
-          <Link href="/farming">Farming</Link>
-          <Link href="/auctions">Auctions</Link>
-        </Modules>
-      </Wrapper>
+      <Home onModule={(module) => router.push(`/${module}`)} />
     </>
   )
 }
