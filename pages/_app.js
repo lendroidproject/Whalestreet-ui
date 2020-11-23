@@ -29,7 +29,7 @@ class App extends NextApp {
         <Head>
           <title>Whalestreet UI</title>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <meta charSet="utf-8" />
+          <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
           <link href="https://necolas.github.io/normalize.css/latest/normalize.css" rel="stylesheet" type="text/css" />
           <link
             href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
