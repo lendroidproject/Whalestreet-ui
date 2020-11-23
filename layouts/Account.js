@@ -5,6 +5,12 @@ import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
 
+const addresses = {
+  $HRIMP: '0xB3Bc8B0849cE6Ccc6f78B9624AC5426A3212F67A',
+  LST_WETH_UNI_V2: '0xd2eFff4ea9177ba2B220FA1Aec84BDD0ae4199b3',
+  LSTETHPool: '0xe846D7aB0BFfF2F0b9B9A818B845Fb99C94786c2',
+}
+
 const Wrapper = styled.div`
   @media all and (min-width: 578px) {
     position: absolute;
@@ -174,13 +180,9 @@ class Account extends Component {
           break
       }
     }
-    const library = Library(window.ethereum, {
+    const library = Library.Farming(window.ethereum, {
       onEvent: handleEvent,
-      addresses: {
-        $HRIMP: '0x0cb480318dfc892cBDd275AE8BDFD5b1Bb83fEbA',
-        LST_WETH_UNI_V2: '0x1F1536859d748D7B8998E9d15D9aC7aedDaD9275',
-        LSTETHPool: '0xFE148E2920758766b27A0AFC0932935757E21bF8',
-      },
+      addresses,
     })
     dispatch({
       type: 'INIT_CONTRACTS',
