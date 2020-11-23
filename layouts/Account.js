@@ -11,6 +11,11 @@ const addresses = {
   LSTETHPool: '0xe846D7aB0BFfF2F0b9B9A818B845Fb99C94786c2',
 }
 
+const auctions = {
+  AuctionRegistry: '0xB06b995A40f7752581ec92CBf106872a3B96590B',
+  WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
+}
+
 const Wrapper = styled.div`
   @media all and (min-width: 578px) {
     position: absolute;
@@ -281,27 +286,12 @@ class Account extends Component {
                     {metamask.LSTWETHUNIV2 || 0}
                   </span>
                 </MenuItem>
-                <MenuItem eventKey={2}>
-                  <img src={`/assets/shrimp-eth-uni.svg`} alt="LST-$hrimp-UNI-V2" />
-                  <span>
-                    <small>$hrimp-ETH-UNI-V2</small>
-                    <br />0
-                  </span>
-                </MenuItem>
                 <MenuItem eventKey={3}>
                   <img src={`/assets/eth.svg`} alt="ETH" />
                   <span>
                     <small>ETH</small>
                     <br />
                     {metamask.balance || 0}
-                  </span>
-                </MenuItem>
-                <MenuItem eventKey={3}>
-                  <img src={`/assets/uni.svg`} alt="UNI" />
-                  <span>
-                    <small>UNI</small>
-                    <br />
-                    1000
                   </span>
                 </MenuItem>
               </Dropdown.Menu>

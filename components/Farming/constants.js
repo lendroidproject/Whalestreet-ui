@@ -8,14 +8,4 @@ export const pools = [
     rewardBase: '$hrimp',
     stake: 'LST-ETH-UNI-V2',
   },
-  {
-    farm: '$hrimp',
-    base: 'LST',
-    pair: '$hrimp',
-    apy: 32,
-    rewards: 12.3,
-    rewardBase: '$hrimp',
-    stake: 'LST-ETH-UNI-V2',
-    coming: true,
-  },
 ]
