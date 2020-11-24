@@ -5,7 +5,7 @@ const reducer = (state, action) => {
     case 'METAMASK':
       return { ...state, metamask: { ...state.metamask, ...action.payload } }
     case 'INIT_CONTRACTS':
-      return { ...state, library: action.payload }
+      return { ...state, library: action.payload[0], auctions: action.payload[1] }
     case 'STAKED':
     case 'UNSTAKED':
     case 'REWARDCLAIMED':

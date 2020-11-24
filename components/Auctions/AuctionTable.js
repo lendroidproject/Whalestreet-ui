@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import AuctionDetail from './AuctionDetail'
+import AuctionDetail, { DetailEpoc, getDate } from './AuctionDetail'
 
 const Wrapper = styled.div`
   max-width: 788px;
@@ -8,6 +8,7 @@ const Wrapper = styled.div`
 
   .epoc {
     width: 15%;
+    text-align: center;
   }
 
   .purchases {
@@ -51,31 +52,14 @@ const Auction = styled.div`
   padding: 13px 10px;
 `
 
-const Epoc = styled.div`
-  font-size: 17px;
-  line-height: 17px;
-  margin: auto;
-
-  height: 26px;
-  width: 26px;
+const PurchasedEpoc = styled(DetailEpoc)`
   background-color: var(--color-black);
-  border-radius: 50%;
   color: var(--color-white);
 `
+
 const Duration = styled.div``
 
-function getDuration(start, end) {
-  const startTime = new Date(start).getTime()
-  const endTime = new Date(end).getTime()
-  let duration = parseInt((endTime - startTime) / 1000)
-  const seconds = `00${duration % 60}`.slice(-2)
-  duration = (duration - (duration % 60)) / 60
-  const mins = `00${duration % 60}`.slice(-2)
-  const hours = `00${(duration - (duration % 60)) / 60}`.slice(-2)
-  return `${hours}:${mins}:${seconds}`
-}
-
-export default function AuctionTable({ auctions }) {
+export default function AuctionTable({ purchases }) {
   const [auction, setAuction] = useState(null)
   useEffect(() => {
     setAuction(null)
@@ -91,16 +75,16 @@ export default function AuctionTable({ auctions }) {
         <div className="duration">Time</div>
         <div className="actions" />
       </Header>
-      {auctions.map(({ id, epoc, purchaes, price, finalPrice, createdAt, completedAt }) => (
+      {purchases.map(({ id, epoch, purchases, amount, timestamp }) => (
         <Auction key={id} className="flex">
           <div className="epoc">
-            <Epoc className="flex-all">{epoc}</Epoc>
+            <PurchasedEpoc>{epoch}</PurchasedEpoc>
           </div>
-          <div className="purchases">{purchaes}</div>
-          <div className="starting">{price.toFixed(2)}</div>
-          <div className="ending">{finalPrice.toFixed(2)}</div>
+          <div className="purchases">{purchases.length}</div>
+          <div className="starting">{amount.toFixed(2)}</div>
+          <div className="ending">{amount.toFixed(2)}</div>
           <div className="duration">
-            <Duration>{getDuration(createdAt, completedAt)}</Duration>
+            <Duration>{getDate(timestamp)}</Duration>
           </div>
           <div className="actions flex-all">
             <img src="/assets/arrow-point-to-right.svg" alt="" className="cursor" onClick={() => setAuction(id)} />
@@ -108,7 +92,7 @@ export default function AuctionTable({ auctions }) {
         </Auction>
       ))}
       {auction && (
-        <AuctionDetail auction={auctions.find((item) => item.id === auction)} onClose={() => setAuction(null)} />
+        <AuctionDetail auction={purchases.find((item) => item.id === auction)} onClose={() => setAuction(null)} />
       )}
     </Wrapper>
   )

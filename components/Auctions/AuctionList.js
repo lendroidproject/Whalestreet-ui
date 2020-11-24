@@ -56,27 +56,34 @@ const Auction = styled.div`
   }
 `
 
-const Epoc = styled.div`
+export const Epoc = styled.div`
   font-size: 17px;
   line-height: 17px;
 
   height: 26px;
-  width: 26px;
+  min-width: 26px;
   background-color: var(--color-white);
   border-radius: 50%;
   color: var(--color-blue);
+
+  display: inline-flex;
+  padding: 0 5px;
+  align-items: center;
+  justify-content: center;
 `
+
 const Price = styled.div`
   img {
     height: 26px;
     margin-right: 6px;
   }
 `
+
 const Remaining = styled.div``
 
-function getRemaining(date, now) {
-  const time = new Date(date).getTime()
-  let remaining = parseInt((now - time) / 1000)
+export function getDuration(start, end) {
+  if (start >= end) return false
+  let remaining = parseInt((end - start) / 1000)
   const seconds = `00${remaining % 60}`.slice(-2)
   remaining = (remaining - (remaining % 60)) / 60
   const mins = `00${remaining % 60}`.slice(-2)
@@ -96,13 +103,20 @@ function useTicker() {
   return [now]
 }
 
-export default function AuctionList({ auctions }) {
+export default function AuctionList({ current, getCurrent, allowance, onPurchase, pending }) {
   const [now] = useTicker()
+  const duration = current && getDuration(now, current.timestamp * 1000)
+
+  useEffect(() => {
+    if (current && !duration) {
+      getCurrent()
+    }
+  }, [current, duration])
 
   return (
     <Wrapper className="auction-list">
-      {auctions.map(({ id, epoc, price, expiry }) => (
-        <Auction key={id}>
+      {current && (
+        <Auction>
           <table>
             <tbody>
               <tr>
@@ -110,27 +124,29 @@ export default function AuctionList({ auctions }) {
                 <th className="price">Price</th>
                 <th className="remaining">Remaining Time</th>
                 <th className="actions" rowSpan={2}>
-                  <button>Purchase</button>
+                  <button onClick={onPurchase} disabled={pending || current.price === 0}>
+                    {allowance > 0 ? 'Purchase' : 'Unlock'}
+                  </button>
                 </th>
               </tr>
               <tr>
                 <td>
-                  <Epoc className="flex-all">{epoc}</Epoc>
+                  <Epoc>{current.epoch}</Epoc>
                 </td>
                 <td>
                   <Price className="flex-center">
                     <img src="/assets/$hrimp-token.svg" alt="" />
-                    {price}
+                    {current.price}
                   </Price>
                 </td>
                 <td>
-                  <Remaining>{getRemaining(expiry, now)}</Remaining>
+                  <Remaining>{duration || '00:00:00'}</Remaining>
                 </td>
               </tr>
             </tbody>
           </table>
         </Auction>
-      ))}
+      )}
     </Wrapper>
   )
 }

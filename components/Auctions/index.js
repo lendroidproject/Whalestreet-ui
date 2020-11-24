@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
@@ -14,8 +14,104 @@ const Wrapper = styled(PageWrapper)`
   }
 `
 
-export default connect((state) => state)(function Auctions() {
+export default connect((state) => state)(function Auctions({ metamask: { address, a$HRIMP }, auctions: library }) {
   const [active, setActive] = useState('ongoing')
+  const [current, setCurrent] = useState(null)
+  const getCurrent = () => {
+    const { currentEpoch, currentPrice, epochEndTimeFromTimestamp } = library.methods.AuctionRegistry
+    library.methods.web3
+      .getBlock()
+      .then((timestamp) => {
+        Promise.all([
+          currentEpoch(),
+          currentPrice().then(library.web3.utils.fromWei),
+          epochEndTimeFromTimestamp(timestamp),
+        ])
+          .then(([epoch, price, timestamp]) => {
+            setCurrent({ epoch, price, timestamp })
+          })
+          .catch(console.log)
+      })
+      .catch(console.log)
+  }
+  const [approveTx, setApproveTx] = useState(null)
+  const handleUnlock = () => {
+    const { approve } = library.methods.$HRIMP
+    approve(library.addresses.AuctionRegistry, library.web3.utils.toWei((10 ** 8).toString()), { from: address })
+      .send()
+      .on('transactionHash', function (hash) {
+        setApproveTx(hash)
+      })
+      .on('receipt', function (receipt) {
+        dispatch({
+          type: 'METAMASK',
+          payload: {
+            a$HRIMP: Number(library.web3.utils.fromWei(receipt.events.Approval.returnValues.value)),
+          },
+        })
+        setApproveTx(null)
+      })
+      .on('error', (err) => {
+        console.log(err)
+        setApproveTx(null)
+      })
+  }
+  const [totalPurchase, setTotalPurchase] = useState(0)
+  const getTotalPurchase = () => {
+    const { totalPurchases } = library.methods.AuctionRegistry
+    totalPurchases().then(Number).then(setTotalPurchase).catch(console.log)
+  }
+  const [purchaseTx, setPurchaseTx] = useState(null)
+  const handlePurchase = () => {
+    if (a$HRIMP > 0) {
+      const { purchase } = library.methods.AuctionRegistry
+      purchase({ from: address })
+        .send()
+        .on('transactionHash', function (hash) {
+          setPurchaseTx(hash)
+        })
+        .on('receipt', function (receipt) {
+          setPurchaseTx(null)
+          getTotalPurchase()
+        })
+        .on('error', (err) => {
+          console.log(err)
+          setPurchaseTx(null)
+        })
+    } else {
+      handleUnlock()
+    }
+  }
+  const [purchases, setPurchases] = useState([])
+  const handlePurchases = ({ auctionTokenId: id, epoch, purchaser, amount, timestamp }) => {
+    setPurchases([
+      {
+        id,
+        epoch,
+        purchases: [purchaser],
+        amount: Number(library.web3.utils.fromWei(amount)),
+        timestamp,
+      },
+      ...purchases,
+    ])
+  }
+  const getPurchase = () => {
+    if (totalPurchase && totalPurchase > purchases.length) {
+      const { purchases: fetchPurchase } = library.methods.AuctionRegistry
+      fetchPurchase(purchases.length).then(handlePurchases).catch(console.log)
+    }
+  }
+  useEffect(() => {
+    getPurchase()
+  }, [totalPurchase, purchases])
+
+  useEffect(() => {
+    if (library) {
+      getCurrent()
+      getTotalPurchase()
+    }
+  }, [library])
+
   return (
     <>
       <div className="bg flex-all">
@@ -44,72 +140,14 @@ export default connect((state) => state)(function Auctions() {
         />
         {active === 'ongoing' && (
           <AuctionList
-            auctions={[
-              {
-                id: 1,
-                epoc: 6,
-                price: 27.33,
-                expiry: '2020-12-01',
-              },
-            ]}
+            current={current}
+            getCurrent={getCurrent}
+            allowance={a$HRIMP}
+            pending={approveTx || purchaseTx}
+            onPurchase={handlePurchase}
           />
         )}
-        {active === 'completed' && (
-          <AuctionTable
-            auctions={[
-              {
-                id: 1,
-                epoc: 6,
-                price: 183.03,
-                expiry: '2020-12-01',
-                purchaes: 20,
-                finalPrice: 20.45,
-                createdAt: '2020-09-09',
-                completedAt: '2020-11-09',
-              },
-              {
-                id: 2,
-                epoc: 6,
-                price: 183.03,
-                expiry: '2020-12-01',
-                purchaes: 20,
-                finalPrice: 20.45,
-                createdAt: '2020-09-09',
-                completedAt: '2020-11-09',
-              },
-              {
-                id: 3,
-                epoc: 6,
-                price: 183.03,
-                expiry: '2020-12-01',
-                purchaes: 20,
-                finalPrice: 20.45,
-                createdAt: '2020-09-09',
-                completedAt: '2020-11-09',
-              },
-              {
-                id: 4,
-                epoc: 6,
-                price: 183.03,
-                expiry: '2020-12-01',
-                purchaes: 20,
-                finalPrice: 20.45,
-                createdAt: '2020-09-09',
-                completedAt: '2020-11-09',
-              },
-              {
-                id: 5,
-                epoc: 6,
-                price: 183.03,
-                expiry: '2020-12-01',
-                purchaes: 20,
-                finalPrice: 20.45,
-                createdAt: '2020-09-09',
-                completedAt: '2020-11-09',
-              },
-            ]}
-          />
-        )}
+        {active === 'completed' && <AuctionTable purchases={purchases} />}
       </Wrapper>
     </>
   )

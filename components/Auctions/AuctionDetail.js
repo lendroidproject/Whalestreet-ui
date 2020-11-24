@@ -3,6 +3,7 @@ import ReactDom from 'react-dom'
 import styled from 'styled-components'
 
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
+import { Epoc } from './AuctionList'
 
 const Wrapper = styled.div`
   z-index: 101;
@@ -54,6 +55,7 @@ const Auction = styled.div`
 
   .epoc {
     width: 15%;
+    text-align: center;
   }
 
   .purchases {
@@ -82,17 +84,12 @@ const Auction = styled.div`
   }
 `
 
-const Epoc = styled.div`
-  font-size: 17px;
-  line-height: 17px;
+export const DetailEpoc = styled(Epoc)`
   margin: auto;
-
-  height: 26px;
-  width: 26px;
   background-color: var(--color-white);
-  border-radius: 50%;
   color: var(--color-black);
 `
+
 const Duration = styled.div``
 
 const Graph = styled.div`
@@ -133,20 +130,10 @@ const Graph = styled.div`
   }
 `
 
-function getDuration(start, end) {
-  const startTime = new Date(start).getTime()
-  const endTime = new Date(end).getTime()
-  let duration = parseInt((endTime - startTime) / 1000)
-  const seconds = `00${duration % 60}`.slice(-2)
-  duration = (duration - (duration % 60)) / 60
-  const mins = `00${duration % 60}`.slice(-2)
-  const hours = `00${(duration - (duration % 60)) / 60}`.slice(-2)
-  return `${hours}:${mins}:${seconds}`
-}
+export const getDate = (timestamp) => new Date(timestamp * 1000).toISOString().split('T')[0]
 
 const CustomTooltip = (props) => {
   const { active, payload } = props
-  console.log(props)
   if (active) {
     return <div className="custom-tooltip">Start Price @ {payload[0].value}$hrimp</div>
   }
@@ -189,7 +176,7 @@ const data = [
 ]
 
 export default function AuctionDetail({ auction, onClose }) {
-  const { id, epoc, purchaes, price, finalPrice, createdAt, completedAt } = auction
+  const { id, epoch, purchases, amount, timestamp } = auction
   return ReactDom.createPortal(
     <Wrapper className="auction-detail portal fill flex-all">
       <Overlay className="fill" />
@@ -200,13 +187,13 @@ export default function AuctionDetail({ auction, onClose }) {
         </Close>
         <Auction className="flex" key={id}>
           <div className="epoc">
-            <Epoc className="flex-all">{epoc}</Epoc>
+            <DetailEpoc>{epoch}</DetailEpoc>
           </div>
-          <div className="purchases">{purchaes}</div>
-          <div className="starting">{price.toFixed(2)}</div>
-          <div className="ending">{finalPrice.toFixed(2)}</div>
+          <div className="purchases">{purchases.length}</div>
+          <div className="starting">{amount.toFixed(2)}</div>
+          <div className="ending">{amount.toFixed(2)}</div>
           <div className="duration">
-            <Duration>{getDuration(createdAt, completedAt)}</Duration>
+            <Duration>{getDate(timestamp)}</Duration>
           </div>
           <div className="actions flex-all">
             <img src="/assets/arrow-point-to-right-white.svg" alt="" className="cursor" />

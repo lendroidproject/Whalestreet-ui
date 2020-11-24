@@ -11,7 +11,8 @@ const addresses = {
   LSTETHPool: '0xe846D7aB0BFfF2F0b9B9A818B845Fb99C94786c2',
 }
 
-const auctions = {
+const auctionAddresses = {
+  $HRIMP: '0xB3Bc8B0849cE6Ccc6f78B9624AC5426A3212F67A',
   AuctionRegistry: '0xB06b995A40f7752581ec92CBf106872a3B96590B',
   WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
 }
@@ -189,9 +190,13 @@ class Account extends Component {
       onEvent: handleEvent,
       addresses,
     })
+    const auctions = Library.Auctions(window.ethereum, {
+      onEvent: handleEvent,
+      addresses: auctionAddresses,
+    })
     dispatch({
       type: 'INIT_CONTRACTS',
-      payload: library,
+      payload: [library, auctions],
     })
   }
 
@@ -206,7 +211,7 @@ class Account extends Component {
   }
 
   getBalance(suggest) {
-    const { metamask, library } = this.props
+    const { metamask, library, auctions } = this.props
     const { address, balance: origin } = metamask
 
     if (library && (suggest || address)) {
@@ -218,8 +223,9 @@ class Account extends Component {
         library.methods.LSTETHPool.getEarned(suggest || address),
         library.methods.$HRIMP.getBalance(suggest || address),
         library.methods.$HRIMP.totalSupply(),
+        auctions.methods.$HRIMP.getAllowance(suggest || address),
       ])
-        .then(([balance1, balance2, allowance2, balance3, earned3, balance4, supply4]) => {
+        .then(([balance1, balance2, allowance2, balance3, earned3, balance4, supply4, allowance4]) => {
           const balance = Number(library.web3.utils.fromWei(balance1))
           const LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
           const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
@@ -227,6 +233,7 @@ class Account extends Component {
           const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
           const $HRIMP = Number(library.web3.utils.fromWei(balance4))
           const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
+          const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
           if (
             origin !== balance ||
             metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
@@ -234,9 +241,19 @@ class Account extends Component {
             metamask.LSTETHPool !== LSTETHPool ||
             metamask.eLSTETHPool !== eLSTETHPool ||
             metamask.$HRIMP !== $HRIMP ||
-            metamask.s$HRIMP !== s$HRIMP
+            metamask.s$HRIMP !== s$HRIMP ||
+            metamask.a$HRIMP !== a$HRIMP
           )
-            this.saveMetamask({ balance, LSTWETHUNIV2, aLSTWETHUNIV2, LSTETHPool, eLSTETHPool, $HRIMP, s$HRIMP })
+            this.saveMetamask({
+              balance,
+              LSTWETHUNIV2,
+              aLSTWETHUNIV2,
+              LSTETHPool,
+              eLSTETHPool,
+              $HRIMP,
+              s$HRIMP,
+              a$HRIMP,
+            })
         })
         .catch(console.log)
     }
