@@ -14,7 +14,7 @@ const Wrapper = styled(PageWrapper)`
   }
 `
 
-export default connect((state) => state)(function Auctions({ metamask: { address, a$HRIMP }, auctions: library }) {
+export default connect((state) => state)(function Auctions({ metamask: { address, a$HRIMP }, auctions: library, dispatch }) {
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
   const getCurrent = () => {
