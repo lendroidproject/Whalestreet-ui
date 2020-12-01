@@ -78,7 +78,7 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
           </div>
           <div className="statics__item">
             <label>$hrimp Price</label>
-            <p>$0.02567</p>
+            <p>-</p>
           </div>
           <div className="statics__item">
             <label>$hrimp Total Supply</label>
@@ -86,7 +86,7 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
           </div>
           <div className="statics__item">
             <label>LST Price</label>
-            <p>$0.00119713</p>
+            <p>-</p>
           </div>
         </Statics>
         <RewardTokens className="flex-wrap justify-center">

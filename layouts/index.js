@@ -215,21 +215,21 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       </Header>
       <Content>{library ? children : <p className="fill flex-all no-wallet">No connected wallet</p>}</Content>
       <Footer className="flex-center justify-center">
-        <a className="uppercase" href="/">
+        <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
           Discord
         </a>
-        <a className="uppercase" href="/">
+        <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
           Github
         </a>
-        <a className="uppercase" href="/">
+        <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
           Twitter
         </a>
-        <a className="uppercase" href="/">
+        {/* <a className="uppercase" href="/">
           Developer Docs
         </a>
         <a className="uppercase" href="/">
           Forum
-        </a>
+        </a> */}
       </Footer>
       <div className="bg flex-all">
         <PriceMarquee />
