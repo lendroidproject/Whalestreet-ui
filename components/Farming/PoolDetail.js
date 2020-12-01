@@ -338,7 +338,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             </div>
             <div className="claim">
               <label>Unclaimed {rewardBase} Tokens</label>
-              <p>{metamask.eLSTETHPool || 0}</p>
+              <p>{(metamask.eLSTETHPool || 0).toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
             </div>
           </div>
           <div className="flex justify-around detail-actions">
