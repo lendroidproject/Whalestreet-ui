@@ -94,7 +94,7 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
             <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />
             <label>Farm $hrimp</label>
           </div>
-          <div className="reward-token cursor flex-all relative" onClick={() => onModule('auctions')}>
+          <div className="reward-token cursor flex-all relative coming-soon" onClick={() => false && onModule('auctions')}>
             <img src="/assets/gaffe-hoard.png" alt="Gaffe Hoard" />
             <label>Gaffe Hoard</label>
           </div>
@@ -102,7 +102,7 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
             <img src="/assets/swapmaster.png" alt="Swap Master" />
             <label>Swap Master</label>
           </div>
-          <div className="reward-token cursor flex-all relative coming-soon">
+          <div className="reward-token cursor flex-all relative coming-soon" onClick={() => false && onModule('whale-swap')}>
             <img src="/assets/whaleswap.png" alt="Whale Swap" />
             <label>Whale Swap</label>
           </div>
