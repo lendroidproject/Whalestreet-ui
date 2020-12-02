@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
 export const Overlay = styled.div`
@@ -45,9 +46,10 @@ export const Content = styled.div`
 
 export default function Modal({ show, onClose, closeOnOutside, ...props }) {
   if (!show) return null
-  return (
+  return ReactDOM.createPortal(
     <Overlay onClick={closeOnOutside && onClose} className="modal flex align-center justify-center">
       <Content onClick={(e) => e.stopPropagation()} {...props} />
-    </Overlay>
+    </Overlay>,
+    document.body
   )
 }

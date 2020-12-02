@@ -224,12 +224,19 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
           Twitter
         </a>
-        {/* <a className="uppercase" href="/">
+        <a className="uppercase" href="/" target="_blank">
           Developer Docs
         </a>
-        <a className="uppercase" href="/">
-          Forum
-        </a> */}
+        <a
+          className="uppercase"
+          href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH"
+          target="_blank"
+        >
+          Add LP
+        </a>
+        <a className="uppercase" href="/" target="_blank">
+          Audit Report
+        </a>
       </Footer>
       <div className="bg flex-all">
         <PriceMarquee />

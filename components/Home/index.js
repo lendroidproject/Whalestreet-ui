@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
 import { PageWrapper as Wrapper, Statics, OurTokens } from 'components/styles'
+import Promo from './Promo'
 
 const RewardTokens = styled.div`
   margin: -12px;
@@ -50,7 +51,12 @@ const RewardTokens = styled.div`
   }
 `
 
-export default connect((state) => state)(function Farming({ metamask, onModule }) {
+const MAINNET = false
+
+export default connect((state) => state)(function Farming({ metamask, library, onModule }) {
+  const tokenLink = (addr) => `${MAINNET ? 'https://etherscan.io' : 'https://kovan.etherscan.io'}/token/${addr}`
+  const [video, setVideo] = useState(false)
+
   return (
     <>
       <div className="bg flex-all">
@@ -66,10 +72,18 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
           vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
           <br />
           <br />
-          <a className="watch-video">
+          <a
+            href="/"
+            className="watch-video"
+            onClick={(e) => {
+              e.preventDefault()
+              setVideo(true)
+            }}
+          >
             <img src="/assets/video.png" alt="Welcome to Whale Street" />
             Watch Video
           </a>
+          <Promo show={video} onHide={() => setVideo(false)} />
         </p>
         <Statics className="flex-center flex-wrap justify-between">
           <div className="statics__item">
@@ -77,16 +91,16 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
             <p>{(metamask.$HRIMP || 0).toFixed(2)}</p>
           </div>
           <div className="statics__item">
-            <label>$hrimp Price</label>
-            <p>-</p>
-          </div>
-          <div className="statics__item">
             <label>$hrimp Total Supply</label>
             <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
           </div>
           <div className="statics__item">
-            <label>LST Price</label>
-            <p>-</p>
+            <label>LST Balance</label>
+            <p>{(metamask.LST || 0).toFixed(2)}</p>
+          </div>
+          <div className="statics__item">
+            <label>ETH Balance</label>
+            <p>{(metamask.balance || 0).toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
           </div>
         </Statics>
         <RewardTokens className="flex-wrap justify-center">
@@ -94,7 +108,10 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
             <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />
             <label>Farm $hrimp</label>
           </div>
-          <div className="reward-token cursor flex-all relative coming-soon" onClick={() => false && onModule('auctions')}>
+          <div
+            className="reward-token cursor flex-all relative coming-soon"
+            onClick={() => false && onModule('auctions')}
+          >
             <img src="/assets/gaffe-hoard.png" alt="Gaffe Hoard" />
             <label>Gaffe Hoard</label>
           </div>
@@ -102,7 +119,10 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
             <img src="/assets/swapmaster.png" alt="Swap Master" />
             <label>Swap Master</label>
           </div>
-          <div className="reward-token cursor flex-all relative coming-soon" onClick={() => false && onModule('whale-swap')}>
+          <div
+            className="reward-token cursor flex-all relative coming-soon"
+            onClick={() => false && onModule('whale-swap')}
+          >
             <img src="/assets/whaleswap.png" alt="Whale Swap" />
             <label>Whale Swap</label>
           </div>
@@ -112,11 +132,15 @@ export default connect((state) => state)(function Farming({ metamask, onModule }
           </div>
         </RewardTokens>
         <OurTokens>
-          <h2>Our Tokens</h2>
+          <h2>Tokens</h2>
           <div className="buttons flex-center justify-center">
-            <button>$hrimp</button>
-            <button>LST</button>
-            <button>NFT</button>
+            <a href={tokenLink(library.addresses.$HRIMP)} target="_blank">
+              <button>$hrimp</button>
+            </a>
+            <a href={tokenLink(library.addresses.LST)} target="_blank">
+              <button>LST</button>
+            </a>
+            <button disabled>NFT</button>
           </div>
         </OurTokens>
       </Wrapper>
