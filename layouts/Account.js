@@ -51,6 +51,9 @@ const Balances = styled.div`
       height: 20px;
       margin-right: 4px;
     }
+    @media all and (max-width: 577px) {
+      display: none;
+    }
   }
 
   *[role='menu'] {
@@ -70,6 +73,12 @@ const Balances = styled.div`
       &:not(:last-child) {
         border-bottom: 1px solid var(--color-white);
       }
+
+      @media all and (min-width: 577px) {
+        &.mobile {
+          display: none;
+        }
+      }
     }
 
     *[role='menuitem'] {
@@ -87,6 +96,7 @@ const Balances = styled.div`
 
       img {
         margin-right: 8px;
+        width: 20px;
       }
 
       span {
@@ -341,12 +351,28 @@ class Account extends Component {
                     {metamask.LSTWETHUNIV2 || 0}
                   </span>
                 </MenuItem>
+                <MenuItem eventKey={2} className="mobile">
+                  <img src={`/assets/$hrimp-token.svg`} alt="$HRIMP" />
+                  <span>
+                    <small>$HRIMP</small>
+                    <br />
+                    {(metamask.$HRIMP || 0).toFixed(2)}
+                  </span>
+                </MenuItem>
                 <MenuItem eventKey={3}>
                   <img src={`/assets/eth.svg`} alt="ETH" />
                   <span>
                     <small>ETH</small>
                     <br />
                     {metamask.balance || 0}
+                  </span>
+                </MenuItem>
+                <MenuItem eventKey={4} className="mobile">
+                  <img src={`/assets/lst-token.svg`} alt="LST" />
+                  <span>
+                    <small>LST</small>
+                    <br />
+                    {(metamask.LST || 0).toFixed(2)}
                   </span>
                 </MenuItem>
               </Dropdown.Menu>

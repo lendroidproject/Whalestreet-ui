@@ -39,7 +39,7 @@ const Wrapper = styled(PoolWrapper)`
     left: 0;
     top: -50px;
     @media all and (max-width: 577px) {
-      left: calc(50% - 33px);
+      left: calc(50% - 38px);
       font-size: 20px;
     }
 
@@ -160,6 +160,8 @@ const Stake = styled.div`
   .input {
     text-align: left;
     max-width: 300px;
+    margin: auto;
+    width: 100%;
 
     label + p {
       margin-top: 12px;
@@ -224,6 +226,13 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   const [mode, setMode] = useState('')
 
   const pendingTx = approveTx || stakeTx || unstakeTx || claimTx
+  const pendingText = stakeTx
+    ? 'Depositing your stake'
+    : unstakeTx
+    ? 'Withdrawing your stake'
+    : claimTx
+    ? 'Claiming your rewards'
+    : ''
 
   useEffect(() => {
     if (stakeTx && transactions[stakeTx]) {
@@ -453,7 +462,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           </button>
         </Claim>
       )}
-      <TxModal show={pendingTx} />
+      <TxModal show={pendingTx} text={pendingText} />
     </Wrapper>
   )
 }

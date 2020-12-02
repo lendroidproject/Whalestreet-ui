@@ -57,6 +57,10 @@ export const Wrapper = styled.div`
   .series {
     text-align: right;
     margin-top: 24px;
+    width: 100%;
+    @media all and (max-width: 577px) {
+      margin-top: 12px;
+    }
 
     td:first-child {
       text-align: left;
@@ -131,19 +135,21 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
   const EPOCH_PERIOD = 28800
   const { currentEpoch } = metamask
   const [[epoch, rate], setRewardRate] = useState([0, 0])
-  const seriesEndEpoch =
+  const currentSeries =
     !epoch || epoch === 0
       ? 0
       : epoch <= 84
-      ? 84
+      ? 1
       : epoch > 84 && epoch <= 336
-      ? 336
+      ? 2
       : epoch > 336 && epoch <= 588
-      ? 588
+      ? 3
       : epoch > 588 && epoch <= 840
-      ? 840
+      ? 4
+      : epoch > 840 && epoch <= 1092
+      ? 5
       : 0
-  const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * seriesEndEpoch
+  const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * (84 + 252 * (currentSeries - 1))
   const [now] = useTicker()
   const duration = getDuration(now, countdown * 1000)
 
@@ -186,25 +192,25 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
             Select
           </button>
         )}
-        {seriesEndEpoch > 0 && (
-          <table className="series">
-            <tbody>
-              <tr>
-                <td>Current series:</td>
-                <td>{seriesEndEpoch}</td>
-              </tr>
-              <tr>
-                <td>Rewards (sec):</td>
-                <td>{rate.toFixed(8)}</td>
-              </tr>
-              <tr>
-                <td>Series ends in:</td>
-                <td>{duration}</td>
-              </tr>
-            </tbody>
-          </table>
-        )}
       </div>
+      {currentSeries > 0 && (
+        <table className="series">
+          <tbody>
+            <tr>
+              <td>Current series:</td>
+              <td>{currentSeries}</td>
+            </tr>
+            <tr>
+              <td>Rewards (sec):</td>
+              <td>{rate.toFixed(8)}</td>
+            </tr>
+            <tr>
+              <td>Series ends in:</td>
+              <td>{duration}</td>
+            </tr>
+          </tbody>
+        </table>
+      )}
     </Wrapper>
   )
 }

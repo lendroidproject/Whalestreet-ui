@@ -163,7 +163,7 @@ const Content = styled.div`
 
       @media all and (max-width: 577px) {
         font-size: 12px;
-        line-height: 12px;
+        line-height: 16px;
       }
     }
   }
@@ -175,7 +175,8 @@ const Content = styled.div`
 
 const Footer = styled.footer`
   background: var(--color-white);
-  padding: 8px;
+  padding: 8px 8px 32px;
+  flex-wrap: wrap;
 
   max-width: unset;
   z-index: 10;
@@ -183,7 +184,7 @@ const Footer = styled.footer`
   left: -30px;
   position: relative;
   @media all and (max-width: 577px) {
-    padding: 12px;
+    padding: 9px 9px 33px;
     width: calc(100% + 40px);
     left: -20px;
   }
@@ -196,7 +197,19 @@ const Footer = styled.footer`
     @media all and (max-width: 577px) {
       font-size: 11px;
       line-height: 16px;
-      margin: 0 10px;
+      margin: 3px 12px;
+    }
+  }
+
+  .copyright {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    font-size: 14px;
+    line-height: 14px;
+    transform: translate(-50%);
+    @media all and (max-width: 577px) {
+      font-size: 11px;
     }
   }
 `
@@ -237,6 +250,13 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <a className="uppercase" href="/" target="_blank">
           Audit Report
         </a>
+        <a className="uppercase" href="/" target="_blank">
+          Privacy
+        </a>
+        <a className="uppercase" href="/" target="_blank">
+          Terms &amp; Conditions
+        </a>
+        <span className="copyright">Copyright &copy; Whalestreet</span>
       </Footer>
       <div className="bg flex-all">
         <PriceMarquee />

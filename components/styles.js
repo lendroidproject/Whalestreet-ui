@@ -41,11 +41,23 @@ export const Statics = styled.div`
 `
 
 export const OurTokens = styled.div`
-  margin-top: 28px;
+  margin: 33px -18px -5px;
 
   h2 {
     color: var(--color-white);
     margin-bottom: 17px;
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+
+    a button {
+      margin: 0;
+    }
+  }
+
+  a {
+    margin: 5px 18px;
   }
 
   button {

@@ -154,7 +154,9 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <a href={tokenLink(library.addresses.LST)} target="_blank">
               <button>LST</button>
             </a>
-            <button disabled>NFT</button>
+            <a href={tokenLink(library.addresses.LST)} target="_blank" onClick={(e) => e.preventDefault()}>
+              <button disabled>NFT</button>
+            </a>
           </div>
         </OurTokens>
       </Wrapper>

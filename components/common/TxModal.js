@@ -51,15 +51,15 @@ const Content = styled.div`
   }
 `
 
-export default function Promo({ show, onHide }) {
+export default function Promo({ text, show, onHide }) {
   return ReactDOM.createPortal(
     <Wrapper className={`flex-all ${show ? 'show' : 'hide'}`} onMouseDown={() => onHide && onHide()}>
       <Content className="center flex-center flex-column justify-center">
         <img src="/assets/loading.gif" alt="WhaleStreet" />
-        <h1>LOADING... PLEASE WAIT</h1>
+        <h1 className="uppercase">{text || 'LOADING'}... PLEASE WAIT</h1>
         <p>
           <a href={txLink(show)} target="_blank">
-            View on Etherscan
+            View Transaction on Etherscan
           </a>
           <br />
           <br />
