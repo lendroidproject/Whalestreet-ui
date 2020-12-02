@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
+import { txLink } from 'utils/etherscan'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -43,6 +44,10 @@ const Content = styled.div`
     line-height: 21px;
     max-width: 470px;
     color: var(--color-white);
+
+    a {
+      color: var(--color-white);
+    }
   }
 `
 
@@ -53,8 +58,9 @@ export default function Promo({ show, onHide }) {
         <img src="/assets/loading.gif" alt="WhaleStreet" />
         <h1>LOADING... PLEASE WAIT</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam,
+          <a href={txLink(show)} target="_blank">
+            View on Etherscan
+          </a>
           <br />
           <br />
         </p>

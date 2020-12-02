@@ -17,7 +17,7 @@ const Wrapper = styled.section`
   }
 `
 
-export default connect((state) => state)(function PoolList({ farm = '$hrimp', metamask }) {
+export default connect((state) => state)(function PoolList({ farm = '$hrimp', metamask, library }) {
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
 
@@ -33,9 +33,9 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
       <Wrapper className="center">
         <h1>Stake, Unstake &amp; Claim </h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
-          vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
+          You can stake and un-stake your your pool tokens here.
+          <br />
+          And after a whale swap, redeem them for $hrimp.
         </p>
         <div className="flex-center justify-center">
           <PoolDetail
@@ -54,14 +54,19 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
       <Wrapper className="center">
         <h1>FARM $HRIMP</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
-          vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
+          Provide liquidity to the{' '}
+          <a href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH" target="_blank">
+            LST-ETH uniswap pool
+          </a>{' '}
+          to get pool tokens.
+          <br />
+          By staking pool tokens, you can mine $hrimp.
         </p>
         <div className="flex-wrap justify-center pools">
           {basePools.map((pool) => (
             <Pool
               metamask={metamask}
+              library={library}
               {...pool}
               key={pool.pair}
               onSelect={() => {

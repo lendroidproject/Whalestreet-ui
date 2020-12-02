@@ -8,7 +8,7 @@ import { Wrapper as PoolWrapper, PoolIcon } from './Pool'
 
 const Wrapper = styled(PoolWrapper)`
   width: 654px;
-  margin-top: 75px;
+  margin-top: 50px;
   position: relative;
   padding-top: 0;
   @media all and (max-width: 577px) {
@@ -453,7 +453,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           </button>
         </Claim>
       )}
-      <TxModal show={!!pendingTx} />
+      <TxModal show={pendingTx} />
     </Wrapper>
   )
 }

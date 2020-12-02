@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { getDuration, useTicker } from 'utils/hooks'
 
 export const Wrapper = styled.div`
   width: 307px;
@@ -50,6 +51,15 @@ export const Wrapper = styled.div`
     @media all and (max-width: 577px) {
       width: 100px;
       margin-left: 15px;
+    }
+  }
+
+  .series {
+    text-align: right;
+    margin-top: 24px;
+
+    td:first-child {
+      text-align: left;
     }
   }
 
@@ -116,7 +126,38 @@ export const PoolIcon = styled.div`
   }
 `
 
-export default function Pool({ base, pair, rewardBase, coming, onSelect, metamask }) {
+export default function Pool({ base, pair, coming, onSelect, metamask, library }) {
+  const HEART_BEAT_START_TIME = 1607040000
+  const EPOCH_PERIOD = 28800
+  const { currentEpoch } = metamask
+  const [[epoch, rate], setRewardRate] = useState([0, 0])
+  const seriesEndEpoch =
+    !epoch || epoch === 0
+      ? 0
+      : epoch <= 84
+      ? 84
+      : epoch > 84 && epoch <= 336
+      ? 336
+      : epoch > 336 && epoch <= 588
+      ? 588
+      : epoch > 588 && epoch <= 840
+      ? 840
+      : 0
+  const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * seriesEndEpoch
+  const [now] = useTicker()
+  const duration = getDuration(now, countdown * 1000)
+
+  const { rewardRate } = library.methods.LSTETHPool
+  useEffect(() => {
+    if (currentEpoch && currentEpoch !== epoch) {
+      rewardRate(currentEpoch)
+        .then((rate) => {
+          setRewardRate([currentEpoch, Number(library.web3.utils.fromWei(rate))])
+        })
+        .catch(console.log)
+    }
+  }, [currentEpoch])
+
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
       <div className="pool-info">
@@ -129,12 +170,12 @@ export default function Pool({ base, pair, rewardBase, coming, onSelect, metamas
             {base}/{pair} POOL
           </h2>
         </div>
-        <p className="apy">Total Staked: {metamask.sLSTETHPool}</p>
+        <p className="apy">Total amount staked: {metamask.sLSTETHPool}</p>
       </div>
       <div className="pool-data">
         <div className="pool-data__detail">
-          <label className="light uppercase">Percentage of {rewardBase} rewards</label>
-          <p className="reward">{((metamask.LSTETHPool / (metamask.sLSTETHPool || 1)) * 100).toFixed(2)}%</p>
+          <label className="light uppercase">Your stake %</label>
+          <p className="reward">{(((metamask.LSTETHPool || 0) / (metamask.sLSTETHPool || 1)) * 100).toFixed(2)}%</p>
         </div>
         {coming ? (
           <button className="uppercase red" disabled>
@@ -144,6 +185,24 @@ export default function Pool({ base, pair, rewardBase, coming, onSelect, metamas
           <button className="uppercase red" onClick={onSelect}>
             Select
           </button>
+        )}
+        {seriesEndEpoch > 0 && (
+          <table className="series">
+            <tbody>
+              <tr>
+                <td>Current series:</td>
+                <td>{seriesEndEpoch}</td>
+              </tr>
+              <tr>
+                <td>Rewards (sec):</td>
+                <td>{rate.toFixed(8)}</td>
+              </tr>
+              <tr>
+                <td>Series ends in:</td>
+                <td>{duration}</td>
+              </tr>
+            </tbody>
+          </table>
         )}
       </div>
     </Wrapper>

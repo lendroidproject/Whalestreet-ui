@@ -231,9 +231,24 @@ class Account extends Component {
             .then(resolve)
             .catch(() => resolve('0'))
         ),
+        library.methods.web3.getBlock(),
+        library.methods.LSTETHPool.currentEpoch(),
       ])
         .then(
-          ([balance1, balance2, allowance2, balance3, supply3, earned3, balance4, supply4, allowance4, balance5]) => {
+          ([
+            balance1,
+            balance2,
+            allowance2,
+            balance3,
+            supply3,
+            earned3,
+            balance4,
+            supply4,
+            allowance4,
+            balance5,
+            latestBlockTimestamp,
+            currentEpoch,
+          ]) => {
             const balance = Number(library.web3.utils.fromWei(balance1))
             const LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
             const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
@@ -254,7 +269,9 @@ class Account extends Component {
               metamask.$HRIMP !== $HRIMP ||
               metamask.s$HRIMP !== s$HRIMP ||
               metamask.a$HRIMP !== a$HRIMP ||
-              metamask.LST !== LST
+              metamask.LST !== LST ||
+              metamask.latestBlockTimestamp !== latestBlockTimestamp ||
+              metamask.currentEpoch !== currentEpoch
             )
               this.saveMetamask({
                 balance,
@@ -267,6 +284,8 @@ class Account extends Component {
                 s$HRIMP,
                 a$HRIMP,
                 LST,
+                latestBlockTimestamp,
+                currentEpoch,
               })
           }
         )

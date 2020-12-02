@@ -23,6 +23,17 @@ const Wrapper = styled.div`
 
 export default function Promo({ show, onHide }) {
   const [width, setWidth] = useState(0)
+  const [video, setVideo] = useState(null)
+
+  useEffect(() => {
+    if (!video) return
+    if (!show) {
+      video.stopVideo()
+    } else {
+      video.playVideo()
+    }
+  }, [show, video])
+
   useEffect(() => {
     setWidth(Math.min(window.innerWidth * 0.9, 640))
     window.onresize = () => {
@@ -39,6 +50,7 @@ export default function Promo({ show, onHide }) {
           opts={{ playerVars: { autoplay: 0 }, width, height: (width * 360) / 640 }}
           className="video"
           onMouseDown={(e) => e.preventDefault()}
+          onReady={(event) => setVideo(event.target)}
         />
       )}
     </Wrapper>,

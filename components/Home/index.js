@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
+import { tokenLink } from 'utils/etherscan'
+import { getDuration, useTicker } from 'utils/hooks'
 import { PageWrapper as Wrapper, Statics, OurTokens } from 'components/styles'
 import Promo from './Promo'
 
@@ -51,11 +53,23 @@ const RewardTokens = styled.div`
   }
 `
 
-const MAINNET = false
-
 export default connect((state) => state)(function Farming({ metamask, library, onModule }) {
-  const tokenLink = (addr) => `${MAINNET ? 'https://etherscan.io' : 'https://kovan.etherscan.io'}/token/${addr}`
   const [video, setVideo] = useState(false)
+  const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
+  const [now] = useTicker()
+  const duration = getDuration(now, epochEndTime * 1000)
+
+  const { latestBlockTimestamp } = metamask
+  const { epochEndTimeFromTimestamp } = library.methods.LSTETHPool
+  useEffect(() => {
+    if (latestBlockTimestamp && latestBlockTimestamp !== blockTimestamp) {
+      epochEndTimeFromTimestamp(latestBlockTimestamp)
+        .then((endTime) => {
+          if (endTime !== epochEndTime) setEpochEndTime([latestBlockTimestamp, endTime])
+        })
+        .catch(console.log)
+    }
+  }, [latestBlockTimestamp])
 
   return (
     <>
@@ -65,11 +79,11 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         </video>
       </div>
       <Wrapper className="center">
-        <h1>Welcome to Whale Street.</h1>
+        <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
-          vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
+          WhaleStreet is a decentralized whale swap protocol. Become a liquidity provider and earn $hrimp. Buy a Gaff
+          NFT with $hrimp, become a Swap Master and earn fees from every Whale Swap. Make massive, antifragile token
+          swaps. Join the WhaleStreet community discord today.
           <br />
           <br />
           <a
@@ -80,7 +94,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
               setVideo(true)
             }}
           >
-            <img src="/assets/video.png" alt="Welcome to Whale Street" />
+            <img src="/assets/video.png" alt="Yield Farming. NFT Collectibles. Massive Token Swaps." />
             Watch Video
           </a>
           <Promo show={video} onHide={() => setVideo(false)} />
@@ -95,12 +109,12 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
           </div>
           <div className="statics__item">
-            <label>LST Balance</label>
-            <p>{(metamask.LST || 0).toFixed(2)}</p>
+            <label>Current Epoch</label>
+            <p>{metamask.currentEpoch || '-'}</p>
           </div>
           <div className="statics__item">
-            <label>ETH Balance</label>
-            <p>{(metamask.balance || 0).toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
+            <label>Next epoch in</label>
+            <p>{duration}</p>
           </div>
         </Statics>
         <RewardTokens className="flex-wrap justify-center">
@@ -112,8 +126,8 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             className="reward-token cursor flex-all relative coming-soon"
             onClick={() => false && onModule('auctions')}
           >
-            <img src="/assets/gaffe-hoard.png" alt="Gaffe Hoard" />
-            <label>Gaffe Hoard</label>
+            <img src="/assets/gaffe-hoard.png" alt="Gaff NFT" />
+            <label>Gaff NFT</label>
           </div>
           <div className="reward-token cursor flex-all relative coming-soon">
             <img src="/assets/swapmaster.png" alt="Swap Master" />

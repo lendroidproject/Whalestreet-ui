@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
+import { getDuration, useTicker } from 'utils/hooks'
 
 const Wrapper = styled.div``
 
@@ -80,28 +81,6 @@ const Price = styled.div`
 `
 
 const Remaining = styled.div``
-
-export function getDuration(start, end) {
-  if (start >= end) return false
-  let remaining = parseInt((end - start) / 1000)
-  const seconds = `00${remaining % 60}`.slice(-2)
-  remaining = (remaining - (remaining % 60)) / 60
-  const mins = `00${remaining % 60}`.slice(-2)
-  const hours = `00${(remaining - (remaining % 60)) / 60}`.slice(-2)
-  return `${hours}:${mins}:${seconds}`
-}
-
-function useTicker() {
-  const [now, setNow] = useState(Date.now())
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now())
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
-
-  return [now]
-}
 
 export default function AuctionList({ current, getCurrent, allowance, onPurchase, pending }) {
   const [now] = useTicker()
