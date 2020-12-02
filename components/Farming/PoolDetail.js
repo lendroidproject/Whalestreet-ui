@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import MaxInput from 'components/common/MaxInput'
+import TxModal from 'components/common/TxModal'
 
 import { Wrapper as PoolWrapper, PoolIcon } from './Pool'
 
@@ -222,14 +223,18 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   const [claimTx, setClaimTx] = useState(null)
   const [mode, setMode] = useState('')
 
+  const pendingTx = approveTx || stakeTx || unstakeTx || claimTx
+
   useEffect(() => {
     if (stakeTx && transactions[stakeTx]) {
       console.log(transactions[stakeTx])
       setStakeTx(null)
+      if (mode === 'stake') setMode('')
     }
     if (unstakeTx && transactions[unstakeTx]) {
       console.log(transactions[unstakeTx])
       setUnstakeTx(null)
+      if (mode === 'unstake') setMode('')
     }
     if (claimTx && transactions[claimTx]) {
       console.log(transactions[claimTx])
@@ -318,7 +323,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
 
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
-      <button className="white uppercase" onClick={onBack}>
+      <button className="white uppercase" onClick={() => (mode ? setMode('') : onBack())}>
         <img src="/assets/back.svg" alt="Go Back" />
         Back
       </button>
@@ -342,32 +347,55 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             </div>
           </div>
           <div className="flex justify-around detail-actions">
-            <div className="stake">
-              <div className="actions flex">
-                <button
-                  className="uppercase red"
-                  onClick={() =>
-                    metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? handleMode('stake') : handleApprove()
-                  }
-                  disabled={!metamask.LSTWETHUNIV2 || approveTx}
-                >
-                  <img src="/assets/stake.svg" alt="Stake" />
-                  {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? 'Stake' : 'Unlock'}
-                </button>
-                <button className="uppercase red" onClick={() => handleMode('unstake')} disabled={!metamask.LSTETHPool}>
-                  <img src="/assets/unstake.svg" alt="Unstake" />
-                  Unstake
-                </button>
+            {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? (
+              <div className="stake">
+                <div className="actions flex">
+                  <button
+                    className="uppercase red"
+                    onClick={() => handleMode('stake')}
+                    disabled={!metamask.LSTWETHUNIV2}
+                  >
+                    <img src="/assets/stake.svg" alt="Stake" />
+                    Stake
+                  </button>
+                  <button
+                    className="uppercase red"
+                    onClick={() => handleMode('unstake')}
+                    disabled={!metamask.LSTETHPool}
+                  >
+                    <img src="/assets/unstake.svg" alt="Unstake" />
+                    Unstake
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="claim">
-              <div className="actions flex">
-                <button className="uppercase red" onClick={() => handleMode('claim')} disabled={!metamask.eLSTETHPool}>
-                  <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
-                  Claim {rewardBase}
-                </button>
+            ) : (
+              <div className="stake">
+                <div className="actions flex justify-center">
+                  <button
+                    className="uppercase red"
+                    onClick={() => handleApprove()}
+                    disabled={!metamask.LSTWETHUNIV2 || approveTx}
+                  >
+                    <img src="/assets/stake.svg" alt="Stake" />
+                    Approve Pool
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+            {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 && (
+              <div className="claim">
+                <div className="actions flex">
+                  <button
+                    className="uppercase red"
+                    onClick={() => handleMode('claim')}
+                    disabled={!metamask.eLSTETHPool}
+                  >
+                    <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
+                    Claim {rewardBase}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </Detail>
       )}
@@ -425,6 +453,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           </button>
         </Claim>
       )}
+      <TxModal show={!!pendingTx} />
     </Wrapper>
   )
 }

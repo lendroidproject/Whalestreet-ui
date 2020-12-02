@@ -28,6 +28,10 @@ export const Wrapper = styled.div`
     @media all and (max-width: 577px) {
       margin-bottom: 0;
     }
+
+    &.apy {
+      font-size: 20px;
+    }
   }
 
   label.light {
@@ -112,7 +116,7 @@ export const PoolIcon = styled.div`
   }
 `
 
-export default function Pool({ base, pair, apy, rewardBase, rewards, coming, onSelect }) {
+export default function Pool({ base, pair, rewardBase, coming, onSelect, metamask }) {
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
       <div className="pool-info">
@@ -125,12 +129,12 @@ export default function Pool({ base, pair, apy, rewardBase, rewards, coming, onS
             {base}/{pair} POOL
           </h2>
         </div>
-        <p className="apy">APY {apy}%</p>
+        <p className="apy">Total Staked: {metamask.sLSTETHPool}</p>
       </div>
       <div className="pool-data">
         <div className="pool-data__detail">
           <label className="light uppercase">Percentage of {rewardBase} rewards</label>
-          <p className="reward">{rewards}%</p>
+          <p className="reward">{((metamask.LSTETHPool / (metamask.sLSTETHPool || 1)) * 100).toFixed(2)}%</p>
         </div>
         {coming ? (
           <button className="uppercase red" disabled>

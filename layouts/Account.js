@@ -9,6 +9,7 @@ const addresses = {
   $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
   LST_WETH_UNI_V2: '0x606B69Cd303B9E718AA57d4e7bcc8D332Fa6D024',
   LSTETHPool: '0x87f80C03d0950E12c5b33E700A2c302a3036E3C8',
+  LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
 }
 
 const auctionAddresses = {
@@ -220,41 +221,55 @@ class Account extends Component {
         library.methods.LSTWETHUNIV2.getBalance(suggest || address),
         library.methods.LSTWETHUNIV2.getAllowance(suggest || address),
         library.methods.LSTETHPool.getBalance(suggest || address),
+        library.methods.LSTETHPool.totalSupply(),
         library.methods.LSTETHPool.getEarned(suggest || address),
         library.methods.$HRIMP.getBalance(suggest || address),
         library.methods.$HRIMP.totalSupply(),
         auctions.methods.$HRIMP.getAllowance(suggest || address),
+        new Promise((resolve) =>
+          library.methods.LST.getBalance(suggest || address)
+            .then(resolve)
+            .catch(() => resolve('0'))
+        ),
       ])
-        .then(([balance1, balance2, allowance2, balance3, earned3, balance4, supply4, allowance4]) => {
-          const balance = Number(library.web3.utils.fromWei(balance1))
-          const LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
-          const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
-          const LSTETHPool = Number(library.web3.utils.fromWei(balance3))
-          const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
-          const $HRIMP = Number(library.web3.utils.fromWei(balance4))
-          const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
-          const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
-          if (
-            origin !== balance ||
-            metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
-            metamask.aLSTWETHUNIV2 !== aLSTWETHUNIV2 ||
-            metamask.LSTETHPool !== LSTETHPool ||
-            metamask.eLSTETHPool !== eLSTETHPool ||
-            metamask.$HRIMP !== $HRIMP ||
-            metamask.s$HRIMP !== s$HRIMP ||
-            metamask.a$HRIMP !== a$HRIMP
-          )
-            this.saveMetamask({
-              balance,
-              LSTWETHUNIV2,
-              aLSTWETHUNIV2,
-              LSTETHPool,
-              eLSTETHPool,
-              $HRIMP,
-              s$HRIMP,
-              a$HRIMP,
-            })
-        })
+        .then(
+          ([balance1, balance2, allowance2, balance3, supply3, earned3, balance4, supply4, allowance4, balance5]) => {
+            const balance = Number(library.web3.utils.fromWei(balance1))
+            const LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
+            const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
+            const LSTETHPool = Number(library.web3.utils.fromWei(balance3))
+            const sLSTETHPool = Number(library.web3.utils.fromWei(supply3))
+            const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
+            const $HRIMP = Number(library.web3.utils.fromWei(balance4))
+            const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
+            const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
+            const LST = Number(library.web3.utils.fromWei(balance5))
+            if (
+              origin !== balance ||
+              metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
+              metamask.aLSTWETHUNIV2 !== aLSTWETHUNIV2 ||
+              metamask.LSTETHPool !== LSTETHPool ||
+              metamask.sLSTETHPool !== sLSTETHPool ||
+              metamask.eLSTETHPool !== eLSTETHPool ||
+              metamask.$HRIMP !== $HRIMP ||
+              metamask.s$HRIMP !== s$HRIMP ||
+              metamask.a$HRIMP !== a$HRIMP ||
+              metamask.LST !== LST
+            )
+              this.saveMetamask({
+                balance,
+                LSTWETHUNIV2,
+                aLSTWETHUNIV2,
+                LSTETHPool,
+                sLSTETHPool,
+                eLSTETHPool,
+                $HRIMP,
+                s$HRIMP,
+                a$HRIMP,
+                LST,
+              })
+          }
+        )
         .catch(console.log)
     }
   }
@@ -268,6 +283,10 @@ class Account extends Component {
             <div className="balance-item flex">
               <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
               {(metamask.$HRIMP || 0).toFixed(2)}
+            </div>
+            <div className="balance-item flex">
+              <img src="/assets/lst-token.svg" alt="LST" />
+              {(metamask.LST || 0).toFixed(2)}
             </div>
             <Dropdown
               onSelect={(eventKey) => {

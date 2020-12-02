@@ -44,6 +44,7 @@ class App extends NextApp {
                 --color-white: #ffffff;
                 --color-red: #eb0f0f;
                 --color-blue: #0600cc;
+                --color-yellow: #fde92a;
                 --color-gold: #fff400;
                 --color-cyan: #3d9fff;
                 --color-light-blue: #413bff;
@@ -51,6 +52,7 @@ class App extends NextApp {
                 --color-dark-grey: #979797;
                 --color-border: #d6d6d6;
                 --color-border2: #5752fc;
+                --color-opacity09: rgba(0,0,0,0.92);
                 --box-shadow: 1px 7px 3px 0 rgba(0,0,0,0.5);
                 --box-shadow-narrow: 0 2px 4px 0 rgba(0,0,0,0.5);
                 --box-shadow-dark: 6px 6px 17px 0 #121120;;

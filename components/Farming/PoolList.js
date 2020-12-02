@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 
 import Spinner from 'components/common/Spinner'
 import Pool from './Pool'
@@ -16,7 +17,7 @@ const Wrapper = styled.section`
   }
 `
 
-export default function PoolList({ farm = '$hrimp' }) {
+export default connect((state) => state)(function PoolList({ farm = '$hrimp', metamask }) {
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
 
@@ -38,6 +39,7 @@ export default function PoolList({ farm = '$hrimp' }) {
         </p>
         <div className="flex-center justify-center">
           <PoolDetail
+            metamask={metamask}
             {...selectedPool}
             detail
             onBack={() => {
@@ -59,6 +61,7 @@ export default function PoolList({ farm = '$hrimp' }) {
         <div className="flex-wrap justify-center pools">
           {basePools.map((pool) => (
             <Pool
+              metamask={metamask}
               {...pool}
               key={pool.pair}
               onSelect={() => {
@@ -72,4 +75,4 @@ export default function PoolList({ farm = '$hrimp' }) {
       <Spinner />
     )
   }
-}
+})
