@@ -114,7 +114,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           </div>
           <div className="statics__item">
             <label>Next epoch in</label>
-            <p>{duration}</p>
+            <p>{duration || '-'}</p>
           </div>
         </Statics>
         <RewardTokens className="flex-wrap justify-center">
