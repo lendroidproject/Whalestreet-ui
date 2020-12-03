@@ -261,7 +261,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             Terms
           </a>
         </div>
-        <div className="flex-center justify-center flex-wrap copyright">Copyright &copy; Whalestreet</div>
+        <div className="flex-center justify-center flex-wrap copyright">Copyright &copy; WH Labs Limited</div>
       </Footer>
       <div className="bg flex-all">
         <PriceMarquee />
