@@ -229,17 +229,14 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       <Content>{library ? children : <p className="fill flex-all no-wallet">No connected wallet</p>}</Content>
       <Footer className="flex-center">
         <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>
+          <a className="uppercase" href="/" target="_blank">
+            Blog
+          </a>
           <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             Discord
           </a>
-          <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
-            Github
-          </a>
           <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
             Twitter
-          </a>
-          <a className="uppercase" href="/" target="_blank">
-            Developer Docs
           </a>
           <a
             className="uppercase"
@@ -249,13 +246,19 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             Add LP
           </a>
           <a className="uppercase" href="/" target="_blank">
+            Docs
+          </a>
+          <a className="uppercase" href="/" target="_blank">
             Audit Report
+          </a>
+          <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
+            Github
           </a>
           <a className="uppercase" href="/" target="_blank">
             Privacy
           </a>
           <a className="uppercase" href="/" target="_blank">
-            Terms &amp; Conditions
+            Terms
           </a>
         </div>
         <div className="flex-center justify-center flex-wrap copyright">Copyright &copy; Whalestreet</div>
