@@ -229,7 +229,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       <Content>{library ? children : <p className="fill flex-all no-wallet">No connected wallet</p>}</Content>
       <Footer className="flex-center">
         <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>
-          <a className="uppercase" href="/" target="_blank">
+          <a className="uppercase" href="https://getshrimp.medium.com" target="_blank">
             Blog
           </a>
           <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
