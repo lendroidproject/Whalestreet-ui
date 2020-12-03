@@ -83,7 +83,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <p className="intro">
           WhaleStreet is a decentralized whale swap protocol. Become a liquidity provider and earn $hrimp. Buy a Gaff
           NFT with $hrimp, become a Swap Master and earn fees from every Whale Swap. Make massive, antifragile token
-          swaps. Join the WhaleStreet community discord today.
+          swaps. Join the WhaleStreet community <a href="https://discord.com/invite/pEbSg4qp3y" target="_blanks">discord</a> today.
           <br />
           <br />
           <a
