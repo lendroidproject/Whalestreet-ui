@@ -30,6 +30,6 @@ export function getDuration(start, end) {
   const seconds = `00${remaining % 60}`.slice(-2)
   remaining = (remaining - (remaining % 60)) / 60
   const mins = `00${remaining % 60}`.slice(-2)
-  const hours = `00${(remaining - (remaining % 60)) / 60}`.slice(-2)
-  return `${hours}:${mins}:${seconds}`
+  const hours = (remaining - (remaining % 60)) / 60
+  return `${hours < 10 ? `00${hours}`.slice(-2) : hours}:${mins}:${seconds}`
 }

@@ -175,8 +175,7 @@ const Content = styled.div`
 
 const Footer = styled.footer`
   background: var(--color-white);
-  padding: 8px 8px 32px;
-  flex-wrap: wrap;
+  padding: 8px;
 
   max-width: unset;
   z-index: 10;
@@ -184,13 +183,14 @@ const Footer = styled.footer`
   left: -30px;
   position: relative;
   @media all and (max-width: 577px) {
-    padding: 9px 9px 33px;
+    padding: 9px;
     width: calc(100% + 40px);
     left: -20px;
+    justify-content: center;
   }
 
   a {
-    margin: 0 24px;
+    margin: 3px 12px;
     white-space: nowrap;
     color: var(--color-black);
     text-decoration: none;
@@ -202,14 +202,14 @@ const Footer = styled.footer`
   }
 
   .copyright {
-    position: absolute;
-    left: 50%;
-    bottom: 10px;
-    font-size: 14px;
-    line-height: 14px;
-    transform: translate(-50%);
-    @media all and (max-width: 577px) {
-      font-size: 11px;
+    white-space: nowrap;
+    font-size: 90%;
+  }
+
+  @media all and (max-width: 767px) {
+    flex-wrap: wrap;
+    .copyright {
+      width: 100%;
     }
   }
 `
@@ -227,36 +227,38 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <Account />
       </Header>
       <Content>{library ? children : <p className="fill flex-all no-wallet">No connected wallet</p>}</Content>
-      <Footer className="flex-center justify-center">
-        <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
-          Discord
-        </a>
-        <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
-          Github
-        </a>
-        <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
-          Twitter
-        </a>
-        <a className="uppercase" href="/" target="_blank">
-          Developer Docs
-        </a>
-        <a
-          className="uppercase"
-          href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH"
-          target="_blank"
-        >
-          Add LP
-        </a>
-        <a className="uppercase" href="/" target="_blank">
-          Audit Report
-        </a>
-        <a className="uppercase" href="/" target="_blank">
-          Privacy
-        </a>
-        <a className="uppercase" href="/" target="_blank">
-          Terms &amp; Conditions
-        </a>
-        <span className="copyright">Copyright &copy; Whalestreet</span>
+      <Footer className="flex-center">
+        <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>
+          <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
+            Discord
+          </a>
+          <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
+            Github
+          </a>
+          <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
+            Twitter
+          </a>
+          <a className="uppercase" href="/" target="_blank">
+            Developer Docs
+          </a>
+          <a
+            className="uppercase"
+            href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH"
+            target="_blank"
+          >
+            Add LP
+          </a>
+          <a className="uppercase" href="/" target="_blank">
+            Audit Report
+          </a>
+          <a className="uppercase" href="/" target="_blank">
+            Privacy
+          </a>
+          <a className="uppercase" href="/" target="_blank">
+            Terms &amp; Conditions
+          </a>
+        </div>
+        <div className="flex-center justify-center flex-wrap copyright">Copyright &copy; Whalestreet</div>
       </Footer>
       <div className="bg flex-all">
         <PriceMarquee />
