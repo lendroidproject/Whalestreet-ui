@@ -245,19 +245,19 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           >
             Add LP
           </a>
-          <a className="uppercase" href="/" target="_blank">
+          <a className="uppercase" href="https://docs.google.com/document/d/1cDNOpdCgI0ZwymjSSOEJIVGFiOYPQ53Y9GFTOaovfLE/edit?usp=sharing" target="_blank">
             Docs
           </a>
-          <a className="uppercase" href="/" target="_blank">
+          <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts/blob/main/audit-farming.pdf" target="_blank">
             Audit Report
           </a>
           <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
             Github
           </a>
-          <a className="uppercase" href="/" target="_blank">
+          <a className="uppercase" href="/assets/WH_Labs_Privacy.pdf" target="_blank">
             Privacy
           </a>
-          <a className="uppercase" href="/" target="_blank">
+          <a className="uppercase" href="/assets/WH_Labs_International_Limited.pdf" target="_blank">
             Terms
           </a>
         </div>

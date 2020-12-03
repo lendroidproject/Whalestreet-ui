@@ -33,7 +33,7 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
       <Wrapper className="center">
         <h1>Stake, Unstake &amp; Claim </h1>
         <p>
-          You can stake and un-stake your your pool tokens here.
+          You can stake and un-stake your pool tokens here.
           <br />
           And after a whale swap, redeem them for $hrimp.
         </p>
