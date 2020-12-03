@@ -201,7 +201,7 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
               <td>{currentSeries}</td>
             </tr>
             <tr>
-              <td>Rewards (sec):</td>
+              <td>Reward rate:</td>
               <td>{rate.toFixed(8)}</td>
             </tr>
             <tr>

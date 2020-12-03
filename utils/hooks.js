@@ -31,5 +31,6 @@ export function getDuration(start, end) {
   remaining = (remaining - (remaining % 60)) / 60
   const mins = `00${remaining % 60}`.slice(-2)
   const hours = (remaining - (remaining % 60)) / 60
+  if (hours > 72) return `${Math.ceil(hours / 24)} days`
   return `${hours < 10 ? `00${hours}`.slice(-2) : hours}:${mins}:${seconds}`
 }
