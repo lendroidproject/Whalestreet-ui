@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { txLink } from 'utils/etherscan'
+import { connect } from 'react-redux'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -51,14 +52,16 @@ const Content = styled.div`
   }
 `
 
-export default function Promo({ text, show, onHide }) {
+export default connect(({ metamask: { network } }) => {
+  network
+})(function Promo({ text, show, onHide, network }) {
   return ReactDOM.createPortal(
     <Wrapper className={`flex-all ${show ? 'show' : 'hide'}`} onMouseDown={() => onHide && onHide()}>
       <Content className="center flex-center flex-column justify-center">
         <img src="/assets/loading.gif" alt="WhaleStreet" />
         <h1 className="uppercase">{text || 'LOADING'}... PLEASE WAIT</h1>
         <p>
-          <a href={txLink(show)} target="_blank">
+          <a href={txLink(show, network)} target="_blank">
             View Transaction on Etherscan
           </a>
           <br />
@@ -68,4 +71,4 @@ export default function Promo({ text, show, onHide }) {
     </Wrapper>,
     document.body
   )
-}
+})

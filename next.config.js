@@ -4,7 +4,7 @@ const withImages = require('next-images')
 
 module.exports = withOffline({
   env: {
-    MAIN_NETWORK: process.env.MAIN_NETWORK === 'true',
+    NETWORKS: process.env.NETWORKS,
   },
   trailingSlash: false,
   poweredByHeader: false,

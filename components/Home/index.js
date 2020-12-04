@@ -148,13 +148,13 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <OurTokens>
           <h2>Tokens</h2>
           <div className="buttons flex-center justify-center">
-            <a href={tokenLink(library.addresses.$HRIMP)} target="_blank">
+            <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
               <button>$hrimp</button>
             </a>
-            <a href={tokenLink(library.addresses.LST)} target="_blank">
+            <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
               <button>LST</button>
             </a>
-            <a href={tokenLink(library.addresses.LST)} target="_blank" onClick={(e) => e.preventDefault()}>
+            <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank" onClick={(e) => e.preventDefault()}>
               <button disabled>NFT</button>
             </a>
           </div>

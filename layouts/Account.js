@@ -4,19 +4,31 @@ import { connect } from 'react-redux'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
+import { isSupportedNetwork, networkLabel } from 'utils/etherscan'
 
 const addresses = {
-  $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
-  LST_WETH_UNI_V2: '0x606B69Cd303B9E718AA57d4e7bcc8D332Fa6D024',
-  LSTETHPool: '0x87f80C03d0950E12c5b33E700A2c302a3036E3C8',
-  LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
+  1: {
+    $HRIMP: '0x83B5fFD4D0063Ec30aeD0D94ADeB81e5439d11ed',
+    LST_WETH_UNI_V2: '0x9D23cb25aD23D73E0a723a47b146139D46Ab5F91',
+    LSTETHPool: '0x2E9b1993C0A4baf72ca07937c726AB5730b56C6c',
+    LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
+  },
+  42: {
+    $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
+    LST_WETH_UNI_V2: '0x606B69Cd303B9E718AA57d4e7bcc8D332Fa6D024',
+    LSTETHPool: '0x87f80C03d0950E12c5b33E700A2c302a3036E3C8',
+    LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
+  },
 }
 
-const auctionAddresses = {
-  $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
-  AuctionRegistry: '0xB06b995A40f7752581ec92CBf106872a3B96590B',
-  WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
-}
+// const auctionAddresses = {
+//   1: {},
+//   42: {
+//     $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
+//     AuctionRegistry: '0xB06b995A40f7752581ec92CBf106872a3B96590B',
+//     WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
+//   },
+// }
 
 const Wrapper = styled.div`
   @media all and (min-width: 578px) {
@@ -133,6 +145,7 @@ const Address = styled.div`
 
 class Account extends Component {
   state = {
+    networkTimer: null,
     addressTimer: null,
     balanceTimer: null,
   }
@@ -155,17 +168,44 @@ class Account extends Component {
   }
 
   clearTimer() {
-    const { addressTimer, balanceTimer } = this.state
+    const { networkTimer, addressTimer, balanceTimer } = this.state
+    if (networkTimer) clearInterval(networkTimer)
     if (addressTimer) clearInterval(addressTimer)
     if (balanceTimer) clearInterval(balanceTimer)
   }
 
   initMetamask() {
     this.clearTimer()
+
+    const networkTimer = setInterval(() => {
+      const { network } = this.props.metamask
+      if (network && network !== window.ethereum.networkVersion) {
+        return this.saveMetamask(
+          {
+            network: window.ethereum.networkVersion,
+          },
+          () => this.initMetamask()
+        )
+      }
+    }, 1 * 1000)
+
+    if (!isSupportedNetwork(window.ethereum.networkVersion)) {
+      return this.setState({ networkTimer }, () =>
+        this.saveMetamask({
+          network: window.ethereum.networkVersion,
+        })
+      )
+    }
+
     const addressTimer = setInterval(() => {
       const { address } = this.props.metamask
       if (address !== window.ethereum.selectedAddress) {
-        return this.saveMetamask({ address: window.ethereum.selectedAddress }, () => this.getBalance())
+        return this.saveMetamask(
+          {
+            address: window.ethereum.selectedAddress,
+          },
+          () => this.getBalance()
+        )
       }
     }, 1 * 1000)
     const balanceTimer = setInterval(() => {
@@ -175,8 +215,14 @@ class Account extends Component {
       }
       this.getBalance()
     }, 5 * 1000)
-    this.saveMetamask({ address: window.ethereum.selectedAddress, state: { balanceTimer, addressTimer } }, () =>
-      this.getBalance(window.ethereum.selectedAddress)
+
+    this.saveMetamask(
+      {
+        address: window.ethereum.selectedAddress,
+        network: window.ethereum.networkVersion,
+        state: { balanceTimer, addressTimer, networkTimer },
+      },
+      () => this.getBalance(window.ethereum.selectedAddress)
     )
 
     const { dispatch } = this.props
@@ -199,23 +245,26 @@ class Account extends Component {
     }
     const library = Library.Farming(window.ethereum, {
       onEvent: handleEvent,
-      addresses,
+      addresses: addresses[window.ethereum.networkVersion],
     })
-    const auctions = Library.Auctions(window.ethereum, {
-      onEvent: handleEvent,
-      addresses: auctionAddresses,
-    })
+    // const auctions = Library.Auctions(window.ethereum, {
+    //   onEvent: handleEvent,
+    //   addresses: auctionAddresses[window.ethereum.networkVersion],
+    // })
     dispatch({
       type: 'INIT_CONTRACTS',
-      payload: [library, auctions],
+      payload: [
+        library,
+        // auctions,
+      ],
     })
   }
 
-  saveMetamask({ state, ...metamask }, callback) {
-    const { dispatch } = this.props
+  saveMetamask({ state, ...updates }, callback) {
+    const { dispatch, metamask } = this.props
     dispatch({
       type: 'METAMASK',
-      payload: metamask,
+      payload: { ...metamask, ...updates },
     })
     if (state) this.setState(state)
     callback && callback()
@@ -235,7 +284,7 @@ class Account extends Component {
         library.methods.LSTETHPool.getEarned(suggest || address),
         library.methods.$HRIMP.getBalance(suggest || address),
         library.methods.$HRIMP.totalSupply(),
-        auctions.methods.$HRIMP.getAllowance(suggest || address),
+        // auctions.methods.$HRIMP.getAllowance(suggest || address),
         new Promise((resolve) =>
           library.methods.LST.getBalance(suggest || address)
             .then(resolve)
@@ -254,7 +303,7 @@ class Account extends Component {
             earned3,
             balance4,
             supply4,
-            allowance4,
+            // allowance4,
             balance5,
             latestBlockTimestamp,
             currentEpoch,
@@ -267,7 +316,7 @@ class Account extends Component {
             const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
             const $HRIMP = Number(library.web3.utils.fromWei(balance4))
             const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
-            const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
+            // const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
             const LST = Number(library.web3.utils.fromWei(balance5))
             if (
               origin !== balance ||
@@ -278,7 +327,7 @@ class Account extends Component {
               metamask.eLSTETHPool !== eLSTETHPool ||
               metamask.$HRIMP !== $HRIMP ||
               metamask.s$HRIMP !== s$HRIMP ||
-              metamask.a$HRIMP !== a$HRIMP ||
+              // metamask.a$HRIMP !== a$HRIMP ||
               metamask.LST !== LST ||
               metamask.latestBlockTimestamp !== latestBlockTimestamp ||
               metamask.currentEpoch !== currentEpoch
@@ -292,7 +341,7 @@ class Account extends Component {
                 eLSTETHPool,
                 $HRIMP,
                 s$HRIMP,
-                a$HRIMP,
+                // a$HRIMP,
                 LST,
                 latestBlockTimestamp,
                 currentEpoch,
@@ -305,83 +354,90 @@ class Account extends Component {
 
   render() {
     const { metamask } = this.props
+    const isSupported = isSupportedNetwork(metamask && metamask.network)
+
     return (
       <Wrapper className="account">
-        {metamask.address ? (
-          <Balances className="flex">
-            <div className="balance-item flex">
-              <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
-              {(metamask.$HRIMP || 0).toFixed(2)}
-            </div>
-            <div className="balance-item flex">
-              <img src="/assets/lst-token.svg" alt="LST" />
-              {(metamask.LST || 0).toFixed(2)}
-            </div>
-            <Dropdown
-              onSelect={(eventKey) => {
-                console.log(eventKey)
-              }}
-            >
-              <Dropdown.Toggle
-                btnStyle="flat"
-                btnSize="sm"
-                noCaret
-                componentClass={({ className, children, ...props }) => {
-                  const expanded = props['aria-expanded']
-                  return (
-                    <Address
-                      className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
-                      {...props}
-                    >
-                      <img src="/assets/metamask.svg" alt="MetaMask" />
-                      {children}
-                      <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
-                    </Address>
-                  )
+        {isSupported ? (
+          metamask.address ? (
+            <Balances className="flex">
+              <div className="balance-item flex">
+                <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
+                {(metamask.$HRIMP || 0).toFixed(2)}
+              </div>
+              <div className="balance-item flex">
+                <img src="/assets/lst-token.svg" alt="LST" />
+                {(metamask.LST || 0).toFixed(2)}
+              </div>
+              <Dropdown
+                onSelect={(eventKey) => {
+                  console.log(eventKey)
                 }}
               >
-                {shorten(metamask.address)}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <MenuItem eventKey={1}>
-                  <img src={`/assets/lst-eth-uni.svg`} alt="LST-ETH-UNI-V2" />
-                  <span>
-                    <small>LST-ETH-UNI-V2</small>
-                    <br />
-                    {metamask.LSTWETHUNIV2 || 0}
-                  </span>
-                </MenuItem>
-                <MenuItem eventKey={2} className="mobile">
-                  <img src={`/assets/$hrimp-token.svg`} alt="$HRIMP" />
-                  <span>
-                    <small>$HRIMP</small>
-                    <br />
-                    {(metamask.$HRIMP || 0).toFixed(2)}
-                  </span>
-                </MenuItem>
-                <MenuItem eventKey={3}>
-                  <img src={`/assets/eth.svg`} alt="ETH" />
-                  <span>
-                    <small>ETH</small>
-                    <br />
-                    {metamask.balance || 0}
-                  </span>
-                </MenuItem>
-                <MenuItem eventKey={4} className="mobile">
-                  <img src={`/assets/lst-token.svg`} alt="LST" />
-                  <span>
-                    <small>LST</small>
-                    <br />
-                    {(metamask.LST || 0).toFixed(2)}
-                  </span>
-                </MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Balances>
+                <Dropdown.Toggle
+                  btnStyle="flat"
+                  btnSize="sm"
+                  noCaret
+                  componentClass={({ className, children, ...props }) => {
+                    const expanded = props['aria-expanded']
+                    return (
+                      <Address
+                        className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
+                        {...props}
+                      >
+                        <img src="/assets/metamask.svg" alt="MetaMask" />
+                        {children}
+                        <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
+                      </Address>
+                    )
+                  }}
+                >
+                  {shorten(metamask.address)}{' '}
+                  {metamask.network && metamask.network !== '1' ? `(${networkLabel(metamask.network)})` : ''}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <MenuItem eventKey={1}>
+                    <img src={`/assets/lst-eth-uni.svg`} alt="LST-ETH-UNI-V2" />
+                    <span>
+                      <small>LST-ETH-UNI-V2</small>
+                      <br />
+                      {metamask.LSTWETHUNIV2 || 0}
+                    </span>
+                  </MenuItem>
+                  <MenuItem eventKey={2} className="mobile">
+                    <img src={`/assets/$hrimp-token.svg`} alt="$HRIMP" />
+                    <span>
+                      <small>$HRIMP</small>
+                      <br />
+                      {(metamask.$HRIMP || 0).toFixed(2)}
+                    </span>
+                  </MenuItem>
+                  <MenuItem eventKey={3}>
+                    <img src={`/assets/eth.svg`} alt="ETH" />
+                    <span>
+                      <small>ETH</small>
+                      <br />
+                      {metamask.balance || 0}
+                    </span>
+                  </MenuItem>
+                  <MenuItem eventKey={4} className="mobile">
+                    <img src={`/assets/lst-token.svg`} alt="LST" />
+                    <span>
+                      <small>LST</small>
+                      <br />
+                      {(metamask.LST || 0).toFixed(2)}
+                    </span>
+                  </MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Balances>
+          ) : (
+            <button className="connect blue" onClick={() => this.initMetamask()}>
+              Connect Wallet
+            </button>
+          )
         ) : (
-          <button className="connect blue" onClick={() => this.initMetamask()}>
-            Connect Wallet
-          </button>
+          <div />
         )}
       </Wrapper>
     )

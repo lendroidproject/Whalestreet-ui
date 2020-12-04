@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import PriceMarquee from 'components/common/PriceMarquee'
 import Account from './Account'
 import '@trendmicro/react-dropdown/dist/react-dropdown.css'
+import { connectNetworks, isSupportedNetwork } from 'utils/etherscan'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -215,6 +216,8 @@ const Footer = styled.footer`
 `
 
 export default connect((state) => state)(function Index({ library, metamask, children }) {
+  const isSupported = isSupportedNetwork(metamask && metamask.network)
+
   return (
     <Wrapper className="flex-column">
       <Header className="flex-center justify-center relative">
@@ -226,7 +229,31 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         </div>
         <Account />
       </Header>
-      <Content>{library ? children : <p className="fill flex-all no-wallet">No connected wallet</p>}</Content>
+      <Content>
+        {isSupported ? (
+          library ? (
+            children
+          ) : (
+            <>
+              <div className="bg flex-all">
+                <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
+                  <source src="/assets/bg.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <p className="fill flex-all no-wallet">No connected wallet</p>
+            </>
+          )
+        ) : (
+          <>
+            <div className="bg flex-all">
+              <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
+                <source src="/assets/bg.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <p className="fill flex-all no-wallet">{connectNetworks()}</p>
+          </>
+        )}
+      </Content>
       <Footer className="flex-center">
         <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>
           <a className="uppercase" href="https://getshrimp.medium.com" target="_blank">
@@ -245,10 +272,18 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           >
             Add LP
           </a>
-          <a className="uppercase" href="https://docs.google.com/document/d/1cDNOpdCgI0ZwymjSSOEJIVGFiOYPQ53Y9GFTOaovfLE/edit?usp=sharing" target="_blank">
+          <a
+            className="uppercase"
+            href="https://docs.google.com/document/d/1cDNOpdCgI0ZwymjSSOEJIVGFiOYPQ53Y9GFTOaovfLE/edit?usp=sharing"
+            target="_blank"
+          >
             Docs
           </a>
-          <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts/blob/main/audit-farming.pdf" target="_blank">
+          <a
+            className="uppercase"
+            href="https://github.com/lendroidproject/Whalestreet-contracts/blob/main/audit-farming.pdf"
+            target="_blank"
+          >
             Audit Report
           </a>
           <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
