@@ -52,9 +52,9 @@ const Content = styled.div`
   }
 `
 
-export default connect(({ metamask: { network } }) => {
-  network
-})(function Promo({ text, show, onHide, network }) {
+export default connect(({ metamask: { network } }) => ({
+  network,
+}))(function Promo({ text, show, onHide, network }) {
   return ReactDOM.createPortal(
     <Wrapper className={`flex-all ${show ? 'show' : 'hide'}`} onMouseDown={() => onHide && onHide()}>
       <Content className="center flex-center flex-column justify-center">

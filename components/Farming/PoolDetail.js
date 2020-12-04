@@ -412,7 +412,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
         <Stake>
           <div className="flex justify-around">
             <div className="input">
-              <label>Balnace</label>
+              <label>Balance</label>
               <p>{metamask.LSTWETHUNIV2 || 0}</p>
             </div>
             <MaxInput
@@ -423,7 +423,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
               onMax={() => setStakeForm({ amount: metamask.LSTWETHUNIV2 })}
             />
           </div>
-          {/* <p className="label">Balnace : {metamask.LSTWETHUNIV2}</p> */}
+          {/* <p className="label">Balance : {metamask.LSTWETHUNIV2}</p> */}
           <button className="uppercase red" disabled={!!stakeTx || stakeForm.amount === 0} onClick={handleStake}>
             Stake Now
           </button>
