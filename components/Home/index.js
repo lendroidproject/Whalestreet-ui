@@ -105,7 +105,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <p>{(metamask.$HRIMP || 0).toFixed(2)}</p>
           </div>
           <div className="statics__item">
-            <label>$hrimp Total Supply</label>
+            <label>$hrimp Current Supply</label>
             <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
           </div>
           <div className="statics__item">
