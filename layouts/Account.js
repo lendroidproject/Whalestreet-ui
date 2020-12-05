@@ -8,9 +8,9 @@ import { isSupportedNetwork, networkLabel } from 'utils/etherscan'
 
 const addresses = {
   1: {
-    $HRIMP: '0x83B5fFD4D0063Ec30aeD0D94ADeB81e5439d11ed',
+    $HRIMP: '0x9077F9e1eFE0eA72867ac89046b2a6264CbcaeF5',
     LST_WETH_UNI_V2: '0x9D23cb25aD23D73E0a723a47b146139D46Ab5F91',
-    LSTETHPool: '0x2E9b1993C0A4baf72ca07937c726AB5730b56C6c',
+    LSTETHPool: '0xF34976159AdAe214E293Cf03D12d20EADE658A8C',
     LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
   },
   42: {
