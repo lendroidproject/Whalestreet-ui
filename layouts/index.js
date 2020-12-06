@@ -223,6 +223,7 @@ const Footer = styled.footer`
 export default connect((state) => state)(function Index({ library, metamask, children }) {
   const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
   const [termsAgreed, setTermsAgreed] = useState(false)
+  const [signning, setSignning] = useState(true)
 
   useEffect(() => {
     const storageAgreedFlag = window.localStorage.getItem('termsAgreed')
@@ -236,6 +237,13 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       else if (termsAgreed) setTermsAgreed(false)
     }
   }, [metamask])
+
+  useEffect(() => {
+    if (library && metamask.network && metamask.address && !termsAgreed && !signning) {
+      setSignning(true)
+      signTerms(metamask)
+    }
+  }, [library, metamask, termsAgreed])
 
   const typedSignTerms = (metamask) => {
     if (!metamask.network && !metamask.address) return
@@ -351,14 +359,14 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         if (result.error) return console.error('ERROR', result)
         console.log('TYPED SIGNED:' + JSON.stringify(result.result))
 
-        // window.localStorage.setItem(
-        //   'termsAgreed',
-        //   JSON.stringify({
-        //     network_id: window.ethereum.networkVersion,
-        //     ethereum_address: from,
-        //     signed_message_hash: result.result,
-        //   })
-        // )
+        window.localStorage.setItem(
+          'termsAgreed',
+          JSON.stringify({
+            network_id: window.ethereum.networkVersion,
+            ethereum_address: from,
+            signed_message_hash: result.result,
+          })
+        )
         setTermsAgreed(true)
       }
     )
