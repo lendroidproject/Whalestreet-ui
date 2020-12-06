@@ -131,8 +131,8 @@ export const PoolIcon = styled.div`
 `
 
 export default function Pool({ base, pair, coming, onSelect, metamask, library }) {
-  const HEART_BEAT_START_TIME = 1607212800
-  const EPOCH_PERIOD = 28800
+  const HEART_BEAT_START_TIME = metamask.heartBeatTime
+  const EPOCH_PERIOD = metamask.epochPeriod
   const { currentEpoch } = metamask
   const [[epoch, rate], setRewardRate] = useState([0, 0])
   const currentSeries =

@@ -41,7 +41,7 @@
     "redux": "^4.0.5",
     "styled-components": "^4.4.1",
     "tinyurl": "^1.1.6",
-    "whalestreet-js": "^1.1.0"
+    "whalestreet-js": "^1.1.4"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.1.0",

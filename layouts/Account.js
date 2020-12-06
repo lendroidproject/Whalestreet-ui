@@ -296,6 +296,16 @@ class Account extends Component {
         ),
         library.methods.web3.getBlock(),
         library.methods.LSTETHPool.currentEpoch(),
+        new Promise((resolve) =>
+          library.methods.LSTETHPool.EPOCH_PERIOD()
+            .then(resolve)
+            .catch(() => resolve('28800'))
+        ),
+        new Promise((resolve) =>
+          library.methods.LSTETHPool.HEART_BEAT_START_TIME()
+            .then(resolve)
+            .catch(() => resolve('1607212800'))
+        ),
       ])
         .then(
           ([
@@ -311,6 +321,8 @@ class Account extends Component {
             balance5,
             latestBlockTimestamp,
             currentEpoch,
+            epochPeriod,
+            heartBeatTime,
           ]) => {
             const balance = Number(library.web3.utils.fromWei(balance1))
             let LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2)) + 1
@@ -350,6 +362,8 @@ class Account extends Component {
                 LST,
                 latestBlockTimestamp,
                 currentEpoch,
+                epochPeriod: Number(epochPeriod),
+                heartBeatTime: Number(heartBeatTime),
               })
           }
         )
