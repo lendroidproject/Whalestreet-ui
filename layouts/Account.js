@@ -151,16 +151,7 @@ class Account extends Component {
   }
 
   async componentDidMount() {
-    if (window.ethereum) {
-      if (window.ethereum._metamask.isEnabled() && (await window.ethereum._metamask.isUnlocked())) {
-        this.initMetamask()
-      } else {
-        window.ethereum
-          .enable()
-          .then(() => this.initMetamask())
-          .catch(console.log)
-      }
-    }
+    this.connectMetamask()
   }
 
   componentWillUnmount() {
@@ -172,6 +163,19 @@ class Account extends Component {
     if (networkTimer) clearInterval(networkTimer)
     if (addressTimer) clearInterval(addressTimer)
     if (balanceTimer) clearInterval(balanceTimer)
+  }
+
+  async connectMetamask() {
+    if (window.ethereum) {
+      if (window.ethereum._metamask.isEnabled() && (await window.ethereum._metamask.isUnlocked())) {
+        this.initMetamask()
+      } else {
+        window.ethereum
+          .enable()
+          .then(() => this.initMetamask())
+          .catch(console.log)
+      }
+    }
   }
 
   initMetamask() {
@@ -354,7 +358,7 @@ class Account extends Component {
 
   render() {
     const { metamask } = this.props
-    const isSupported = isSupportedNetwork(metamask && metamask.network)
+    const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
 
     return (
       <Wrapper className="account">
@@ -432,7 +436,7 @@ class Account extends Component {
               </Dropdown>
             </Balances>
           ) : (
-            <button className="connect blue" onClick={() => this.initMetamask()}>
+            <button className="connect blue" onClick={() => this.connectMetamask()}>
               Connect Wallet
             </button>
           )
