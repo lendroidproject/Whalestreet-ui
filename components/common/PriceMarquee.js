@@ -10,7 +10,7 @@ export default connect(({ metamask }) => ({ metamask }))(function PriceMarquee({
   // }.`
   const text = `
     $HRIMP BALANCE - ${(metamask.$HRIMP || 0).toFixed(2)}
-    $HRIMP TOTAL SUPPLY ${(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}
+    $HRIMP CURRENT SUPPLY ${(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}
     LST BALANCE ${(metamask.LST || 0).toFixed(2)}
     ETH BALANCE ${(metamask.balance || 0).toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}.
   `
