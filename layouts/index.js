@@ -256,9 +256,9 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       </Content>
       <Footer className="flex-center">
         <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>
-          <a className="uppercase" href="https://getshrimp.medium.com" target="_blank">
+          {/* <a className="uppercase" href="https://getshrimp.medium.com" target="_blank">
             Blog
-          </a>
+          </a> */}
           <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             Discord
           </a>
@@ -279,13 +279,13 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           >
             Docs
           </a>
-          <a
+          {/* <a
             className="uppercase"
             href="https://github.com/lendroidproject/Whalestreet-contracts/blob/main/audit-farming.pdf"
             target="_blank"
           >
             Audit Report
-          </a>
+          </a> */}
           <a className="uppercase" href="https://github.com/lendroidproject/Whalestreet-contracts" target="_blank">
             Github
           </a>
