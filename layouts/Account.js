@@ -313,7 +313,8 @@ class Account extends Component {
             currentEpoch,
           ]) => {
             const balance = Number(library.web3.utils.fromWei(balance1))
-            const LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
+            let LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2)) + 1
+            LSTWETHUNIV2 = LSTWETHUNIV2 < 0.1 ** 8 ? 0 : LSTWETHUNIV2.toString().match(/^-?\d+(?:\.\d{0,16})?/)[0]
             const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
             const LSTETHPool = Number(library.web3.utils.fromWei(balance3))
             const sLSTETHPool = Number(library.web3.utils.fromWei(supply3))
