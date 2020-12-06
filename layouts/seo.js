@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet"
 function SEO({ description, lang, meta, title }) {
   const site = {
     siteMetadata: {
-      title: `Whalestreet UI`,
+      title: `WhaleStreet - Get $HRIMP`,
       description: `Kick off your next, great DeFi application with your tokens using Whalestree UI`,
       author: `@lendroid`,
     },
