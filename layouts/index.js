@@ -8,6 +8,7 @@ import PriceMarquee from 'components/common/PriceMarquee'
 import Account from './Account'
 import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 import { connectNetworks, isSupportedNetwork } from 'utils/etherscan'
+import { agreePrivacy, getPrivacy } from 'utils/requests'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -223,114 +224,32 @@ const Footer = styled.footer`
 export default connect((state) => state)(function Index({ library, metamask, children }) {
   const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
   const [termsAgreed, setTermsAgreed] = useState(false)
-  const [signning, setSignning] = useState(true)
+  const [fetched, setFetched] = useState(false)
+  const [signning, setSignning] = useState(-1)
 
   useEffect(() => {
-    const storageAgreedFlag = window.localStorage.getItem('termsAgreed')
-    if (storageAgreedFlag) {
-      const signData = JSON.parse(storageAgreedFlag)
-      if (
-        signData.ethereum_address === window.ethereum.selectedAddress &&
-        signData.network_id === window.ethereum.networkVersion
-      )
-        setTermsAgreed(true)
-      else if (termsAgreed) setTermsAgreed(false)
+    if (!fetched && !termsAgreed && metamask.address) {
+      setFetched(true)
+      getPrivacy(metamask.address)
+        .then((data) => {
+          if (data.result) setTermsAgreed(true)
+        })
+        .catch(console.log)
+        .finally(() => {
+          setSignning(0)
+        })
     }
   }, [metamask])
 
   useEffect(() => {
-    if (library && metamask.network && metamask.address && !termsAgreed && !signning) {
-      setSignning(true)
+    if (library && metamask.network && metamask.address && !termsAgreed && signning === 0) {
       signTerms(metamask)
     }
-  }, [library, metamask, termsAgreed])
-
-  const typedSignTerms = (metamask) => {
-    if (!metamask.network && !metamask.address) return
-    const msgParams = JSON.stringify({
-      domain: {
-        // Defining the chain aka Rinkeby testnet or Ethereum Main Net
-        chainId: metamask.network,
-        // Give a user friendly name to the specific contract you are signing for.
-        name: 'WH Labs Limited',
-        // If name isn't enough add verifying contract to make sure you are establishing contracts with the proper entity
-        verifyingContract: library.addresses.$HRIMP,
-        // Just let's you know the latest version. Definitely make sure the field name is correct.
-        version: '1',
-      },
-      // Defining the message signing data content.
-      message: {
-        /*
-         - Anything you want. Just a JSON Blob that encodes the data you want to send
-         - No required fields
-         - This is DApp Specific
-         - Be as explicit as possible when building out the message schema.
-        */
-        contents: `
-          I hereby confirm that the WhaleStreet\n
-          <a href="https://whalestreet.xyz/assets/WH_Labs_Privacy.pdf" target="_blank">Privacy Policy</a> and
-          <a href="https://whalestreet.xyz/assets/WH_Labs_International_Limited.pdf" target="_blank">Terms and Conditions</a> are acceptable by me.
-        `,
-      },
-      // Refers to the keys of the *types* object below.
-      primaryType: 'Mail',
-      types: {
-        // TODO: Clarify if EIP712Domain refers to the domain the contract is hosted on
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        // Not an EIP712Domain definition
-        Group: [
-          { name: 'name', type: 'string' },
-          { name: 'members', type: 'Person[]' },
-        ],
-        // Refer to PrimaryType
-        Mail: [{ name: 'contents', type: 'string' }],
-        // Not an EIP712Domain definition
-        Person: [
-          { name: 'name', type: 'string' },
-          { name: 'wallets', type: 'address[]' },
-        ],
-      },
-    })
-
-    const from = metamask.address
-
-    const params = [from, msgParams]
-    const method = 'eth_signTypedData_v4'
-
-    window.ethereum.sendAsync(
-      {
-        method,
-        params,
-        from,
-      },
-      function (err, result) {
-        if (err) return console.dir(err)
-        if (result.error) {
-          alert(result.error.message)
-        }
-        if (result.error) return console.error('ERROR', result)
-        console.log('TYPED SIGNED:' + JSON.stringify(result.result))
-
-        // window.localStorage.setItem(
-        //   'termsAgreed',
-        //   JSON.stringify({
-        //     network_id: window.ethereum.networkVersion,
-        //     ethereum_address: from,
-        //     signed_message_hash: result.result,
-        //   })
-        // )
-        setTermsAgreed(true)
-      }
-    )
-  }
+  }, [library, metamask, termsAgreed, signning])
 
   const signTerms = (metamask) => {
     if (!metamask.network && !metamask.address) return
+    setSignning(1)
     const msg = ethUtil.bufferToHex(
       Buffer.from(
         `
@@ -355,19 +274,30 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         from,
       },
       function (err, result) {
+        if (err || result.error) setSignning(-1)
         if (err) return console.error(err)
         if (result.error) return console.error('ERROR', result)
         console.log('TYPED SIGNED:' + JSON.stringify(result.result))
 
-        window.localStorage.setItem(
-          'termsAgreed',
-          JSON.stringify({
-            network_id: window.ethereum.networkVersion,
-            ethereum_address: from,
-            signed_message_hash: result.result,
+        const res = result.result.slice(2)
+        const v = parseInt(res.slice(128, 130), 16) === 27 ? 0 : 1
+        const r = library.web3.utils.toBN(`0x${res.slice(0, 64)}`).toString()
+        const s = library.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
+
+        agreePrivacy(from, {
+          network_id: window.ethereum.networkVersion,
+          ethereum_address: from,
+          signed_message_hash: result.result,
+          v,
+          r,
+          s,
+        })
+          .then((data) => {
+            console.log(data)
+            setTermsAgreed(true)
           })
-        )
-        setTermsAgreed(true)
+          .catch(console.log)
+          .finally(() => setSignning(-1))
       }
     )
   }
@@ -384,20 +314,20 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <Account />
       </Header>
       <Content>
-        {isSupported ? (
-          (termsAgreed || true) && library ? (
-            children
-          ) : (
-            <>
-              <div className="bg flex-all">
-                <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
-                  <source src="/assets/bg.mp4" type="video/mp4" />
-                </video>
-              </div>
-              <div className="fill flex-all no-wallet">
-                {!library ? (
-                  <p>No connected wallet</p>
-                ) : (
+        {isSupported && termsAgreed && library ? (
+          children
+        ) : isSupported ? (
+          <>
+            <div className="bg flex-all">
+              <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
+                <source src="/assets/bg.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div className="fill flex-all no-wallet">
+              {!library ? (
+                <p>No connected wallet</p>
+              ) : (
+                <>
                   <p>
                     Agree{' '}
                     <a href="/assets/WH_Labs_International_Limited.pdf" target="_blank">
@@ -408,11 +338,13 @@ export default connect((state) => state)(function Index({ library, metamask, chi
                       Privacy
                     </a>
                   </p>
-                )}
-                {library && <button onClick={() => signTerms(metamask)}>I Agree</button>}
-              </div>
-            </>
-          )
+                  <button onClick={() => signTerms(metamask)} disabled={signning === 1}>
+                    I Agree
+                  </button>
+                </>
+              )}
+            </div>
+          </>
         ) : (
           <>
             <div className="bg flex-all">
