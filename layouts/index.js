@@ -224,17 +224,24 @@ const Footer = styled.footer`
 
 export default connect((state) => state)(function Index({ library, metamask, children }) {
   const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
-  const [termsAgreed, setTermsAgreed] = useState(false)
+  const [[address, termsAgreed], handleTerms] = useState(['', false])
+  const setTermsAgreed = (flag) => handleTerms([metamask.address, flag])
   const [fetched, setFetched] = useState(false)
   const [signning, setSignning] = useState(1)
 
   useEffect(() => {
-    if (!fetched && !termsAgreed && metamask.address) {
+    if (address && address !== metamask.address) {
+      setFetched(false)
+      setTermsAgreed(false)
+    } else if (!fetched && !termsAgreed && metamask.address) {
       setFetched(true)
       getPrivacy(metamask.address)
         .then((data) => {
           if (data.result) setTermsAgreed(true)
-          else setSignning(-1)
+          else {
+            setTermsAgreed(false)
+            setSignning(-1)
+          }
         })
         .catch(console.log)
     }
