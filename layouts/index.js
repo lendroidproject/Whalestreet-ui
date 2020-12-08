@@ -230,7 +230,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   const [signning, setSignning] = useState(1)
 
   useEffect(() => {
-    if (address && address !== metamask.address) {
+    if (fetched && address && address !== metamask.address) {
       setFetched(false)
       setTermsAgreed(false)
     } else if (!fetched && !termsAgreed && metamask.address) {
@@ -254,7 +254,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   }, [library, metamask, termsAgreed, signning])
 
   const signTerms = (metamask) => {
-    if (!metamask.network && !metamask.address) return
+    if ((!metamask.network && !metamask.address) || termsAgreed) return
     setSignning(1)
     const msg = ethUtil.bufferToHex(
       Buffer.from(
