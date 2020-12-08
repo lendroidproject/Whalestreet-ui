@@ -226,7 +226,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
   const [termsAgreed, setTermsAgreed] = useState(false)
   const [fetched, setFetched] = useState(false)
-  const [signning, setSignning] = useState(-1)
+  const [signning, setSignning] = useState(1)
 
   useEffect(() => {
     if (!fetched && !termsAgreed && metamask.address) {
@@ -234,16 +234,14 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       getPrivacy(metamask.address)
         .then((data) => {
           if (data.result) setTermsAgreed(true)
+          else setSignning(-1)
         })
         .catch(console.log)
-        .finally(() => {
-          setSignning(0)
-        })
     }
   }, [metamask])
 
   useEffect(() => {
-    if (library && metamask.network && metamask.address && !termsAgreed && signning === 0) {
+    if (library && metamask.network && metamask.address && !termsAgreed && signning === -1) {
       signTerms(metamask)
     }
   }, [library, metamask, termsAgreed, signning])
@@ -275,7 +273,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         from,
       },
       function (err, result) {
-        if (err || result.error) setSignning(-1)
+        if (err || result.error) setSignning(0)
         if (err) return console.error(err)
         if (result.error) return console.error('ERROR', result)
         console.log('TYPED SIGNED:' + JSON.stringify(result.result))
@@ -297,7 +295,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             setTermsAgreed(true)
           })
           .catch(console.log)
-          .finally(() => setSignning(-1))
+          .finally(() => setSignning(0))
       }
     )
   }
