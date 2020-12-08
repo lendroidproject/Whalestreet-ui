@@ -254,7 +254,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   }, [library, metamask, termsAgreed, signning])
 
   const signTerms = (metamask) => {
-    if ((!metamask.network && !metamask.address) || termsAgreed) return
+    if ((!metamask.network && !metamask.address) || termsAgreed || signning == 1) return
     setSignning(1)
     const msg = ethUtil.bufferToHex(
       Buffer.from(
