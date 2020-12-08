@@ -1,5 +1,4 @@
 import Axios from 'axios'
-Axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 const axiosResolve = (request) =>
   new Promise((resolve, reject) => request.then(({ data }) => resolve(data)).catch(reject))

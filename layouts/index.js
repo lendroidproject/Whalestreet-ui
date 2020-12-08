@@ -9,6 +9,7 @@ import Account from './Account'
 import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 import { connectNetworks, isSupportedNetwork } from 'utils/etherscan'
 import { agreePrivacy, getPrivacy } from 'utils/requests'
+import Spinner from 'components/common/Spinner'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -285,9 +286,8 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         const s = library.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
 
         agreePrivacy(from, {
-          network_id: window.ethereum.networkVersion,
-          ethereum_address: from,
-          signed_message_hash: result.result,
+          network: window.ethereum.networkVersion,
+          signature: result.result,
           v,
           r,
           s,
@@ -326,6 +326,8 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             <div className="fill flex-all no-wallet">
               {!library ? (
                 <p>No connected wallet</p>
+              ) : signning ? (
+                <Spinner />
               ) : (
                 <>
                   <p>
