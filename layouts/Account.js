@@ -324,17 +324,20 @@ class Account extends Component {
             epochPeriod,
             heartBeatTime,
           ]) => {
-            const balance = Number(library.web3.utils.fromWei(balance1))
-            let LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
-            LSTWETHUNIV2 = LSTWETHUNIV2 < 0.1 ** 8 ? 0 : LSTWETHUNIV2.toString().match(/^-?\d+(?:\.\d{0,16})?/)[0]
-            const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
-            const LSTETHPool = Number(library.web3.utils.fromWei(balance3))
-            const sLSTETHPool = Number(library.web3.utils.fromWei(supply3))
-            const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
-            const $HRIMP = Number(library.web3.utils.fromWei(balance4))
-            const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
-            // const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
-            const LST = Number(library.web3.utils.fromWei(balance5))
+            function toNumber(value, decimal = 12) {
+              const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimal}})?`)
+              return Number(value.toString().match(regex)[0])
+            }
+            const balance = toNumber(library.web3.utils.fromWei(balance1))
+            const LSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(balance2))
+            const aLSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(allowance2))
+            const LSTETHPool = toNumber(library.web3.utils.fromWei(balance3))
+            const sLSTETHPool = toNumber(library.web3.utils.fromWei(supply3))
+            const eLSTETHPool = toNumber(library.web3.utils.fromWei(earned3))
+            const $HRIMP = toNumber(library.web3.utils.fromWei(balance4))
+            const s$HRIMP = toNumber(library.web3.utils.fromWei(supply4))
+            // const a$HRIMP = toNumber(library.web3.utils.fromWei(allowance4))
+            const LST = toNumber(library.web3.utils.fromWei(balance5))
             if (
               origin !== balance ||
               metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
