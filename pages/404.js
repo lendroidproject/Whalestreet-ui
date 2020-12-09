@@ -1,5 +1,6 @@
 import React from 'react'
 import SEO from 'layouts/seo'
+import Link from 'next/link'
 
 export default function HomePage() {
   return (
@@ -12,7 +13,7 @@ export default function HomePage() {
       </div>
       <div className="center flex-all" style={{ height: '100%' }}>
         <h1>Page Not Found</h1>
-        <a href="/">Go Home</a>
+        <Link href="/">Go Home</Link>
       </div>
     </>
   )
