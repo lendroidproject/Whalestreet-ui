@@ -359,9 +359,9 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       </Content>
       <Footer className="flex-center">
         <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>
-          {/* <a className="uppercase" href="https://getshrimp.medium.com" target="_blank">
+          <a className="uppercase" href="https://blog.whalestreet.xyz/" target="_blank">
             Blog
-          </a> */}
+          </a>
           <a className="uppercase" href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             Discord
           </a>
