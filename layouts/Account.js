@@ -243,7 +243,6 @@ class Account extends Component {
           })
           break
         default:
-          console.info(event)
           break
       }
     }
@@ -296,6 +295,7 @@ class Account extends Component {
         ),
         library.methods.web3.getBlock(),
         library.methods.LSTETHPool.currentEpoch(),
+        library.methods.LSTETHPool.lastEpochStaked(suggest || address),
         new Promise((resolve) =>
           library.methods.LSTETHPool.EPOCH_PERIOD()
             .then(resolve)
@@ -321,20 +321,25 @@ class Account extends Component {
             balance5,
             latestBlockTimestamp,
             currentEpoch,
+            lastEpochStaked,
             epochPeriod,
             heartBeatTime,
           ]) => {
-            const balance = Number(library.web3.utils.fromWei(balance1))
-            let LSTWETHUNIV2 = Number(library.web3.utils.fromWei(balance2))
-            LSTWETHUNIV2 = LSTWETHUNIV2 < 0.1 ** 8 ? 0 : LSTWETHUNIV2.toString().match(/^-?\d+(?:\.\d{0,16})?/)[0]
-            const aLSTWETHUNIV2 = Number(library.web3.utils.fromWei(allowance2))
-            const LSTETHPool = Number(library.web3.utils.fromWei(balance3))
-            const sLSTETHPool = Number(library.web3.utils.fromWei(supply3))
-            const eLSTETHPool = Number(library.web3.utils.fromWei(earned3))
-            const $HRIMP = Number(library.web3.utils.fromWei(balance4))
-            const s$HRIMP = Number(library.web3.utils.fromWei(supply4))
-            // const a$HRIMP = Number(library.web3.utils.fromWei(allowance4))
-            const LST = Number(library.web3.utils.fromWei(balance5))
+            function toNumber(value, decimal = 12) {
+              const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimal}})?`)
+              const val = Number(value.toString().match(regex)[0])
+              return val < 0.1 ** Math.max(decimal - 5, 2) ? 0 : val
+            }
+            const balance = toNumber(library.web3.utils.fromWei(balance1))
+            const LSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(balance2))
+            const aLSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(allowance2))
+            const LSTETHPool = toNumber(library.web3.utils.fromWei(balance3))
+            const sLSTETHPool = toNumber(library.web3.utils.fromWei(supply3))
+            const eLSTETHPool = toNumber(library.web3.utils.fromWei(earned3))
+            const $HRIMP = toNumber(library.web3.utils.fromWei(balance4))
+            const s$HRIMP = toNumber(library.web3.utils.fromWei(supply4))
+            // const a$HRIMP = toNumber(library.web3.utils.fromWei(allowance4))
+            const LST = toNumber(library.web3.utils.fromWei(balance5))
             if (
               origin !== balance ||
               metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
@@ -347,7 +352,8 @@ class Account extends Component {
               // metamask.a$HRIMP !== a$HRIMP ||
               metamask.LST !== LST ||
               metamask.latestBlockTimestamp !== latestBlockTimestamp ||
-              metamask.currentEpoch !== currentEpoch
+              metamask.currentEpoch !== currentEpoch ||
+              metamask.lastEpochStaked !== lastEpochStaked
             )
               this.saveMetamask({
                 balance,
@@ -361,7 +367,8 @@ class Account extends Component {
                 // a$HRIMP,
                 LST,
                 latestBlockTimestamp,
-                currentEpoch,
+                currentEpoch: Number(currentEpoch || 0),
+                lastEpochStaked: Number(lastEpochStaked || 0),
                 epochPeriod: Number(epochPeriod),
                 heartBeatTime: Number(heartBeatTime),
               })

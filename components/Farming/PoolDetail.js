@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+
+import { getDuration, useTicker } from 'utils/hooks'
 import MaxInput from 'components/common/MaxInput'
 import TxModal from 'components/common/TxModal'
 
@@ -70,6 +72,14 @@ const Detail = styled.div`
     }
   }
 
+  .note {
+    margin-top: 29px;
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+    margin-bottom: 0;
+  }
+
   .actions {
     margin: 29px -5px -5px;
     @media all and (max-width: 577px) {
@@ -95,6 +105,17 @@ const Detail = styled.div`
           width: 20px;
           height: 20px;
         }
+      }
+
+      .duration {
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        transform: translateX(-50%);
+        font-size: 60%;
+
+        text-transform: none;
+        white-space: nowrap;
       }
     }
   }
@@ -216,7 +237,7 @@ const Claim = styled(Stake)`
 `
 
 function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
-  const { address } = metamask
+  const { address, currentEpoch, lastEpochStaked, latestBlockTimestamp } = metamask
   const [stakeForm, setStakeForm] = useState({ amount: 0 })
   const [approveTx, setApproveTx] = useState(null)
   const [stakeTx, setStakeTx] = useState(null)
@@ -224,6 +245,22 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   const [unstakeTx, setUnstakeTx] = useState(null)
   const [claimTx, setClaimTx] = useState(null)
   const [mode, setMode] = useState('')
+
+  const unstakeDisabled = currentEpoch === lastEpochStaked
+  const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
+  const [now] = useTicker()
+  const duration = getDuration(now, epochEndTime * 1000)
+
+  const { epochEndTimeFromTimestamp } = library.methods.LSTETHPool
+  useEffect(() => {
+    if (latestBlockTimestamp && latestBlockTimestamp !== blockTimestamp) {
+      epochEndTimeFromTimestamp(latestBlockTimestamp)
+        .then((endTime) => {
+          if (endTime !== epochEndTime) setEpochEndTime([latestBlockTimestamp, endTime])
+        })
+        .catch(console.log)
+    }
+  }, [latestBlockTimestamp])
 
   const pendingTx = approveTx || stakeTx || unstakeTx || claimTx
   const pendingText = stakeTx
@@ -357,26 +394,41 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           </div>
           <div className="flex justify-around detail-actions">
             {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? (
-              <div className="stake">
-                <div className="actions flex">
-                  <button
-                    className="uppercase red"
-                    onClick={() => handleMode('stake')}
-                    disabled={!metamask.LSTWETHUNIV2}
-                  >
-                    <img src="/assets/stake.svg" alt="Stake" />
-                    Stake
-                  </button>
-                  <button
-                    className="uppercase red"
-                    onClick={() => handleMode('unstake')}
-                    disabled={!metamask.LSTETHPool}
-                  >
-                    <img src="/assets/unstake.svg" alt="Unstake" />
-                    Unstake
-                  </button>
+              <>
+                <div className="stake">
+                  <div className="actions flex">
+                    <button
+                      className="uppercase red"
+                      onClick={() => handleMode('stake')}
+                      disabled={!metamask.LSTWETHUNIV2}
+                    >
+                      <img src="/assets/stake.svg" alt="Stake" />
+                      Stake
+                    </button>
+                    <button
+                      className="uppercase red relative"
+                      onClick={() => handleMode('unstake')}
+                      disabled={!metamask.LSTETHPool || unstakeDisabled}
+                    >
+                      <img src="/assets/unstake.svg" alt="Unstake" />
+                      Unstake
+                      {duration && unstakeDisabled && <span className="duration">* next epoch in {duration}</span>}
+                    </button>
+                  </div>
                 </div>
-              </div>
+                <div className="claim">
+                  <div className="actions flex">
+                    <button
+                      className="uppercase red"
+                      onClick={() => handleMode('claim')}
+                      disabled={!metamask.eLSTETHPool}
+                    >
+                      <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
+                      Claim {rewardBase}
+                    </button>
+                  </div>
+                </div>
+              </>
             ) : (
               <div className="stake">
                 <div className="actions flex justify-center">
@@ -391,21 +443,14 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
                 </div>
               </div>
             )}
-            {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 && (
-              <div className="claim">
-                <div className="actions flex">
-                  <button
-                    className="uppercase red"
-                    onClick={() => handleMode('claim')}
-                    disabled={!metamask.eLSTETHPool}
-                  >
-                    <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
-                    Claim {rewardBase}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
+          {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 && (
+            <p className="note">
+              {unstakeDisabled
+                ? `* You recently staked in the current epoch. unstake will be enabled next epoch onward.`
+                : `* Your last stake was in epoch ${lastEpochStaked}. Current epoch is ${currentEpoch}`}
+            </p>
+          )}
         </Detail>
       )}
       {mode === 'stake' && (

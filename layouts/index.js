@@ -237,7 +237,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       setFetched(true)
       getPrivacy(metamask.address)
         .then((data) => {
-          if (data.result) setTermsAgreed(true)
+          if (data.result && data.result.signature) setTermsAgreed(true)
           else {
             setTermsAgreed(false)
             setSignning(-1)
@@ -256,17 +256,10 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   const signTerms = (metamask) => {
     if ((!metamask.network && !metamask.address) || termsAgreed || signning == 1) return
     setSignning(1)
-    const msg = ethUtil.bufferToHex(
-      Buffer.from(
-        `
-          I hereby confirm that the WhaleStreet
+    const message = `I acknowledge and accept the Terms and Conditions as specified in the link below
 
-          - [Terms of Use](https://whalestreet.xyz/assets/WH_Labs_Privacy.pdf)
-          - [Privacy](https://whalestreet.xyz/assets/WH_Labs_International_Limited.pdf)
-        `,
-        'utf8'
-      )
-    )
+      https://whalestreet.xyz/assets/WH_Labs_International_Limited.pdf`
+    const msg = ethUtil.bufferToHex(Buffer.from(message, 'utf8'))
 
     const from = metamask.address
 
@@ -292,6 +285,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
 
         agreePrivacy(from, {
           network: window.ethereum.networkVersion,
+          message,
           signature: result.result,
           v,
           r,
@@ -331,7 +325,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             <div className="fill flex-all no-wallet">
               {!library ? (
                 <p>No connected wallet</p>
-              ) : signning ? (
+              ) : (!fetched || signning) ? (
                 <Spinner />
               ) : (
                 <>
