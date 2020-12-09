@@ -295,6 +295,7 @@ class Account extends Component {
         ),
         library.methods.web3.getBlock(),
         library.methods.LSTETHPool.currentEpoch(),
+        library.methods.LSTETHPool.lastEpochStaked(suggest || address),
         new Promise((resolve) =>
           library.methods.LSTETHPool.EPOCH_PERIOD()
             .then(resolve)
@@ -320,12 +321,14 @@ class Account extends Component {
             balance5,
             latestBlockTimestamp,
             currentEpoch,
+            lastEpochStaked,
             epochPeriod,
             heartBeatTime,
           ]) => {
             function toNumber(value, decimal = 12) {
               const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimal}})?`)
-              return Number(value.toString().match(regex)[0])
+              const val = Number(value.toString().match(regex)[0])
+              return val < 0.1 ** Math.max(decimal - 5, 2) ? 0 : val
             }
             const balance = toNumber(library.web3.utils.fromWei(balance1))
             const LSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(balance2))
@@ -349,7 +352,8 @@ class Account extends Component {
               // metamask.a$HRIMP !== a$HRIMP ||
               metamask.LST !== LST ||
               metamask.latestBlockTimestamp !== latestBlockTimestamp ||
-              metamask.currentEpoch !== currentEpoch
+              metamask.currentEpoch !== currentEpoch ||
+              metamask.lastEpochStaked !== lastEpochStaked
             )
               this.saveMetamask({
                 balance,
@@ -363,7 +367,8 @@ class Account extends Component {
                 // a$HRIMP,
                 LST,
                 latestBlockTimestamp,
-                currentEpoch,
+                currentEpoch: Number(currentEpoch || 0),
+                lastEpochStaked: Number(lastEpochStaked || 0),
                 epochPeriod: Number(epochPeriod),
                 heartBeatTime: Number(heartBeatTime),
               })

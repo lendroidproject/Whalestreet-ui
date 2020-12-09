@@ -164,6 +164,8 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
     }
   }, [currentEpoch])
 
+  const stakePercent = ((metamask.LSTETHPool || 0) / (metamask.sLSTETHPool || 1)) * 100
+
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
       <div className="pool-info">
@@ -181,7 +183,7 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
       <div className="pool-data">
         <div className="pool-data__detail">
           <label className="light uppercase">Your stake %</label>
-          <p className="reward">{(((metamask.LSTETHPool || 0) / (metamask.sLSTETHPool || 1)) * 100).toFixed(2)}%</p>
+          <p className="reward">{metamask.LSTETHPool > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%</p>
         </div>
         {coming ? (
           <button className="uppercase red" disabled>
