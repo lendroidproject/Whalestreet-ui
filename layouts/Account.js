@@ -243,7 +243,6 @@ class Account extends Component {
           })
           break
         default:
-          console.info(event)
           break
       }
     }
