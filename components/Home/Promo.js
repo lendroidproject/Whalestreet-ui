@@ -46,7 +46,7 @@ export default function Promo({ show, onHide }) {
     <Wrapper className={`flex-all ${show ? 'show' : 'hide'}`} onMouseDown={onHide}>
       {width > 0 && (
         <YouTube
-          videoId="gke51eP5piY"
+          videoId="Ioy4zfCJTAs"
           opts={{ playerVars: { autoplay: 0 }, width, height: (width * 360) / 640 }}
           className="video"
           onMouseDown={(e) => e.preventDefault()}
