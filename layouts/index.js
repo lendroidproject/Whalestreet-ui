@@ -44,6 +44,12 @@ const Wrapper = styled.div`
     max-width: 1440px;
     margin: auto;
     width: 100%;
+    @media all and (min-width: 2400px) {
+      max-width: 2048px;
+    }
+    @media all and (min-width: 3200px) {
+      max-width: 2880px;
+    }
   }
 
   h1 {
@@ -141,6 +147,20 @@ const Header = styled.header`
       height: 50px;
     }
   }
+
+  @media all and (min-width: 2400px) {
+    padding: 64px 65px 44px;
+    > div {
+      transform: scale(1.5);
+    }
+  }
+
+  @media all and (min-width: 3200px) {
+    padding: 84px 65px 44px;
+    > div {
+      transform: scale(2.5);
+    }
+  }
 `
 
 const Content = styled.div`
@@ -153,6 +173,26 @@ const Content = styled.div`
 
   * {
     transition: all 0.2s;
+  }
+
+  @media all and (min-width: 2400px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    video {
+      height: 100%;
+    }
+
+    section {
+      transform: scale(1.5);
+    }
+  }
+
+  @media all and (min-width: 3200px) {
+    section {
+      transform: scale(2.5);
+    }
   }
 
   section {
@@ -218,6 +258,18 @@ const Footer = styled.footer`
     flex-wrap: wrap;
     .copyright {
       width: 100%;
+    }
+  }
+
+  @media all and (min-width: 2400px) {
+    > div {
+      transform: scale(1.5);
+    }
+  }
+
+  @media all and (min-width: 3200px) {
+    > div {
+      transform: scale(2.5);
     }
   }
 `
