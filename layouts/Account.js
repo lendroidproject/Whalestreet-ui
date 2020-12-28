@@ -2,9 +2,12 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
+import Web3Modal from 'web3modal'
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import Fortmatic from 'fortmatic'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
-import { isSupportedNetwork, networkLabel } from 'utils/etherscan'
+import { fortmatics, infuras, isSupportedNetwork, networkLabel, networks } from 'utils/etherscan'
 
 const addresses = {
   1: {
@@ -143,124 +146,121 @@ const Address = styled.div`
   }
 `
 
+let web3Modal
+
+const providerOptions = (network) => ({
+  walletconnect: {
+    package: WalletConnectProvider,
+    options: {
+      infuraId: infuras[network],
+    },
+  },
+  // fortmatic: {
+  //   package: Fortmatic,
+  //   options: {
+  //     key: fortmatics[network],
+  //     network: network === 1 ? null : networkLabel(network).toLowerCase(),
+  //   },
+  // },
+})
+
 class Account extends Component {
   state = {
-    networkTimer: null,
-    addressTimer: null,
-    balanceTimer: null,
+    network: networks[0],
+    balanceTimer: 0,
   }
 
   async componentDidMount() {
-    this.connectMetamask()
+    let session = {
+      network: networks[0],
+    }
+    this.setState(
+      {
+        session,
+        balanceTimer: setInterval(() => this.getBalance(), 5 * 1000),
+      },
+      () => {
+        this.setWeb3Modal(session.network)
+        this.connectWallet()
+      }
+    )
   }
 
   componentWillUnmount() {
-    this.clearTimer()
+    if (this.state.balanceTimer) clearTimeout(this.state.balanceTimer)
+    if (this.library) this.library.onDisconnect()
   }
 
-  clearTimer() {
-    const { networkTimer, addressTimer, balanceTimer } = this.state
-    if (networkTimer) clearInterval(networkTimer)
-    if (addressTimer) clearInterval(addressTimer)
-    if (balanceTimer) clearInterval(balanceTimer)
-  }
-
-  async connectMetamask() {
-    if (window.ethereum) {
-      if (window.ethereum._metamask.isEnabled() && (await window.ethereum._metamask.isUnlocked())) {
-        this.initMetamask()
-      } else {
-        window.ethereum
-          .enable()
-          .then(() => this.initMetamask())
-          .catch(console.log)
-      }
+  setWeb3Modal(network) {
+    if (web3Modal) {
+      web3Modal.clearCachedProvider()
     }
-  }
-
-  initMetamask() {
-    this.clearTimer()
-
-    const networkTimer = setInterval(() => {
-      const { network } = this.props.metamask
-      if (network && network !== window.ethereum.networkVersion) {
-        return this.saveMetamask(
-          {
-            network: window.ethereum.networkVersion,
-          },
-          () => this.initMetamask()
-        )
-      }
-    }, 1 * 1000)
-
-    if (!isSupportedNetwork(window.ethereum.networkVersion)) {
-      return this.setState({ networkTimer }, () =>
-        this.saveMetamask({
-          network: window.ethereum.networkVersion,
-        })
-      )
-    }
-
-    const addressTimer = setInterval(() => {
-      const { address } = this.props.metamask
-      if (address !== window.ethereum.selectedAddress) {
-        return this.saveMetamask(
-          {
-            address: window.ethereum.selectedAddress,
-          },
-          () => this.getBalance()
-        )
-      }
-    }, 1 * 1000)
-    const balanceTimer = setInterval(() => {
-      const { address } = this.props.metamask
-      if (address !== window.ethereum.selectedAddress) {
-        return this.saveMetamask({ address: window.ethereum.selectedAddress }, () => this.getBalance())
-      }
-      this.getBalance()
-    }, 5 * 1000)
-
-    this.saveMetamask(
-      {
-        address: window.ethereum.selectedAddress,
-        network: window.ethereum.networkVersion,
-        state: { balanceTimer, addressTimer, networkTimer },
-      },
-      () => this.getBalance(window.ethereum.selectedAddress)
-    )
-
-    const { dispatch } = this.props
-    const handleEvent = (event) => {
-      switch (event.event) {
-        case 'Staked':
-        case 'Unstaked':
-        case 'RewardClaimed':
-          dispatch({
-            type: event.event.toUpperCase(),
-            payload: {
-              [event.transactionHash]: event.returnValues,
-            },
-          })
-          break
-        default:
-          break
-      }
-    }
-    const library = Library.Farming(window.ethereum, {
-      onEvent: handleEvent,
-      addresses: addresses[window.ethereum.networkVersion],
+    web3Modal = new Web3Modal({
+      cacheProvider: false,
+      providerOptions: providerOptions(network),
+      disableInjectedProvider: false,
     })
-    // const auctions = Library.Auctions(window.ethereum, {
-    //   onEvent: handleEvent,
-    //   addresses: auctionAddresses[window.ethereum.networkVersion],
-    // })
-    dispatch({
-      type: 'INIT_CONTRACTS',
-      payload: [
-        library,
-        // auctions,
-      ],
-    })
+  }
+
+  connectWallet() {
+    web3Modal
+      .connect()
+      .then((provider) => {
+        this.initLibrary(provider)
+      })
+      .catch(console.log)
+  }
+
+  initLibrary(provider) {
+    if (this.props.library) {
+      this.props.library.setProvider(provider, addresses[this.state.network])
+    } else {
+      const { dispatch } = this.props
+      const handleEvent = (event) => {
+        switch (event.event) {
+          case 'Staked':
+          case 'Unstaked':
+          case 'RewardClaimed':
+            dispatch({
+              type: event.event.toUpperCase(),
+              payload: {
+                [event.transactionHash]: event.returnValues,
+              },
+            })
+            break
+          case 'WALLET':
+            console.log(event)
+            if (event.status === 3) {
+              dispatch({
+                type: 'DISCONNECT',
+              })
+            } else {
+              if (event.status !== 0) {
+                this.props.library.setProvider(provider, addresses[event.data.network])
+              }
+              dispatch({
+                type: 'METAMASK',
+                payload: event.data,
+              })
+            }
+            break
+          default:
+            break
+        }
+      }
+      const library = new Library.Farming(provider, {
+        onEvent: handleEvent,
+        addresses: addresses[this.state.network],
+      })
+
+      dispatch({
+        type: 'INIT_CONTRACTS',
+        payload: [
+          library,
+          // auctions,
+        ],
+      })
+    }
   }
 
   saveMetamask({ state, ...updates }, callback) {
@@ -273,38 +273,46 @@ class Account extends Component {
     callback && callback()
   }
 
-  getBalance(suggest) {
-    const { metamask, library, auctions } = this.props
-    const { address, balance: origin } = metamask
+  getBalance() {
+    const {
+      metamask,
+      library,
+      // auctions,
+    } = this.props
+    const { address, balance: origin, connected } = metamask
 
-    if (library && (suggest || address)) {
+    if (connected) {
       Promise.all([
-        library.web3.eth.getBalance(suggest || address),
-        library.methods.LSTWETHUNIV2.getBalance(suggest || address),
-        library.methods.LSTWETHUNIV2.getAllowance(suggest || address),
-        library.methods.LSTETHPool.getBalance(suggest || address),
+        library.web3.eth.getBalance(address),
+        library.methods.LSTWETHUNIV2.getBalance(address),
+        library.methods.LSTWETHUNIV2.getAllowance(address),
+        library.methods.LSTETHPool.getBalance(address),
         library.methods.LSTETHPool.totalSupply(),
-        library.methods.LSTETHPool.getEarned(suggest || address),
-        library.methods.$HRIMP.getBalance(suggest || address),
+        library.methods.LSTETHPool.getEarned(address),
+        library.methods.$HRIMP.getBalance(address),
         library.methods.$HRIMP.totalSupply(),
-        // auctions.methods.$HRIMP.getAllowance(suggest || address),
+        // auctions.methods.$HRIMP.getAllowance(address),
         new Promise((resolve) =>
-          library.methods.LST.getBalance(suggest || address)
+          library.methods.LST.getBalance(address)
             .then(resolve)
             .catch(() => resolve('0'))
         ),
         library.methods.web3.getBlock(),
         library.methods.LSTETHPool.currentEpoch(),
-        library.methods.LSTETHPool.lastEpochStaked(suggest || address),
+        library.methods.LSTETHPool.lastEpochStaked(address),
         new Promise((resolve) =>
-          library.methods.LSTETHPool.EPOCH_PERIOD()
-            .then(resolve)
-            .catch(() => resolve('28800'))
+          metamask.network === 1
+            ? library.methods.LSTETHPool.EPOCH_PERIOD()
+                .then(resolve)
+                .catch(() => resolve('28800'))
+            : resolve('28800')
         ),
         new Promise((resolve) =>
-          library.methods.LSTETHPool.HEART_BEAT_START_TIME()
-            .then(resolve)
-            .catch(() => resolve('1607212800'))
+          metamask.network === 1
+            ? library.methods.LSTETHPool.HEART_BEAT_START_TIME()
+                .then(resolve)
+                .catch(() => resolve('1607212800'))
+            : resolve('1607212800')
         ),
       ])
         .then(
@@ -419,7 +427,7 @@ class Account extends Component {
                   }}
                 >
                   {shorten(metamask.address)}{' '}
-                  {metamask.network && metamask.network !== '1' ? `(${networkLabel(metamask.network)})` : ''}
+                  {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem eventKey={1}>
@@ -458,7 +466,7 @@ class Account extends Component {
               </Dropdown>
             </Balances>
           ) : (
-            <button className="connect blue" onClick={() => this.connectMetamask()}>
+            <button className="connect blue" onClick={() => this.connectWallet()}>
               Connect Wallet
             </button>
           )

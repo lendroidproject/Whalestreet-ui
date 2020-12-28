@@ -1,4 +1,12 @@
-const networks = process.env.NETWORKS.split(',')
+export const networks = process.env.NETWORKS.split(',').map(Number)
+const definedInfuras = process.env.INFURA_ID.split(',')
+const definedFortmatics = process.env.FORTMATIC.split(',')
+export const infuras = {}
+export const fortmatics = {}
+networks.forEach((network, idx) => {
+  infuras[network] = definedInfuras[idx]
+  fortmatics[network] = definedFortmatics[idx]
+})
 
 export const MAINNET = false
 export const isSupportedNetwork = (network) => network && networks.includes(network)

@@ -264,27 +264,28 @@ export default connect((state) => state)(function Index({ library, metamask, chi
     const from = metamask.address
 
     const params = [msg, from]
-    const method = 'personal_sign'
+    // const method = 'personal_sign'
 
-    window.ethereum.sendAsync(
-      {
-        method,
-        params,
-        from,
-      },
+    library.web3.eth.personal.sign(
+      ...params,
+      // {
+      //   method,
+      //   params,
+      //   from,
+      // },
       function (err, result) {
         if (err || result.error) setSignning(0)
         if (err) return console.error(err)
         if (result.error) return console.error('ERROR', result)
-        console.log('TYPED SIGNED:' + JSON.stringify(result.result))
+        console.log('TYPED SIGNED:' + JSON.stringify(result.result || result))
 
-        const res = result.result.slice(2)
+        const res = (result.result || result).slice(2)
         const v = parseInt(res.slice(128, 130), 16) === 27 ? 0 : 1
         const r = library.web3.utils.toBN(`0x${res.slice(0, 64)}`).toString()
         const s = library.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
 
         agreePrivacy(from, {
-          network: window.ethereum.networkVersion,
+          network: metamask.network,
           message,
           signature: result.result,
           v,
@@ -313,9 +314,9 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <Account />
       </Header>
       <Content>
-        {isSupported && termsAgreed && library ? (
+        {isSupported && termsAgreed && metamask && metamask.connected ? (
           children
-        ) : isSupported ? (
+        ) : metamask && metamask.connected && isSupported ? (
           <>
             <div className="bg flex-all">
               <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
@@ -325,7 +326,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             <div className="fill flex-all no-wallet">
               {!library ? (
                 <p>No connected wallet</p>
-              ) : (!fetched || signning) ? (
+              ) : !fetched || signning ? (
                 <Spinner />
               ) : (
                 <>

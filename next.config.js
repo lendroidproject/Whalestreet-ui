@@ -5,6 +5,8 @@ const withImages = require('next-images')
 module.exports = withOffline({
   env: {
     NETWORKS: process.env.NETWORKS,
+    INFURA_ID: process.env.INFURA_ID,
+    FORTMATIC: process.env.FORTMATIC,
   },
   trailingSlash: false,
   poweredByHeader: false,
