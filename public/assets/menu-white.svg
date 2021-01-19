@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 21</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 0 36 0 36 36 33.9978516 36 0 36"></polygon>
+        <filter x="-19.4%" y="-13.9%" width="138.9%" height="138.9%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Admin-Detail" transform="translate(-56.000000, -70.000000)">
+            <g id="Group-21" transform="translate(60.000000, 72.000000)">
+                <g id="Group-16">
+                    <g id="Group-2">
+                        <g id="main">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <path stroke="#000000" stroke-width="2" d="M1,1 L1,35 L35,35 L35,1 L1,1 Z" stroke-linejoin="square" fill="#DFDEDE" fill-rule="evenodd"></path>
+                        </g>
+                    </g>
+                    <g id="Group-7" transform="translate(7.000000, 12.000000)" stroke="#000000" stroke-linecap="square" stroke-width="3">
+                        <path d="M0.5,0.5 L21.5,0.5" id="Line"></path>
+                        <path d="M0.5,6.5 L21.5,6.5" id="Line"></path>
+                        <path d="M0.5,12.5 L21.5,12.5" id="Line"></path>
+                    </g>
+                </g>
+                <g id="660376" transform="translate(9.000000, 10.000000)"></g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -146,6 +146,20 @@ const Address = styled.div`
   }
 `
 
+const AdminAddress = styled.div`
+  padding: 6px;
+  background: #DFDEDE;
+  color: var(--color-black);
+  font-size: 12px;
+  line-height: 15px;
+  border: 2px solid var(--color-black);
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
+
+  img {
+    margin: 0 6px;
+  }
+`
+
 let web3Modal
 
 const providerOptions = (network) => ({
@@ -387,22 +401,26 @@ class Account extends Component {
   }
 
   render() {
-    const { metamask } = this.props
+    const { metamask, isAdmin } = this.props
     const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
 
     return (
       <Wrapper className="account">
         {isSupported ? (
           metamask.address ? (
-            <Balances className="flex">
-              <div className="balance-item flex">
-                <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
-                {(metamask.$HRIMP || 0).toFixed(2)}
-              </div>
-              <div className="balance-item flex">
-                <img src="/assets/lst-token.svg" alt="LST" />
-                {(metamask.LST || 0).toFixed(2)}
-              </div>
+            <Balances className={`flex${isAdmin ? ' admin' : ''}`}>
+              {!isAdmin && (
+                <>
+                  <div className="balance-item flex">
+                    <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
+                    {(metamask.$HRIMP || 0).toFixed(2)}
+                  </div>
+                  <div className="balance-item flex">
+                    <img src="/assets/lst-token.svg" alt="LST" />
+                    {(metamask.LST || 0).toFixed(2)}
+                  </div>
+                </>
+              )}
               <Dropdown
                 onSelect={(eventKey) => {
                   console.log(eventKey)
@@ -414,7 +432,16 @@ class Account extends Component {
                   noCaret
                   componentClass={({ className, children, ...props }) => {
                     const expanded = props['aria-expanded']
-                    return (
+                    return isAdmin ? (
+                      <AdminAddress
+                        className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
+                        {...props}
+                      >
+                        <img src="/assets/metamask.svg" alt="MetaMask" />
+                        {children}
+                        <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
+                      </AdminAddress>
+                    ) : (
                       <Address
                         className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
                         {...props}
