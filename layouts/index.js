@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
@@ -133,6 +134,12 @@ const Header = styled.header`
 
   .menu a {
     display: flex;
+  }
+
+  .hamburger {
+    position: absolute;
+    left: 65px;
+    top: 58px;
   }
 
   @media all and (max-width: 577px) {
@@ -281,6 +288,9 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   const [fetched, setFetched] = useState(false)
   const [signning, setSignning] = useState(1)
 
+  const router = useRouter()
+  const isAdmin = router.pathname === '/market-admin'
+
   useEffect(() => {
     if (fetched && address && address !== metamask.address) {
       setFetched(false)
@@ -339,7 +349,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         agreePrivacy(from, {
           network: metamask.network,
           message,
-          signature: result.result,
+          signature: result.result || result,
           v,
           r,
           s,
@@ -358,12 +368,16 @@ export default connect((state) => state)(function Index({ library, metamask, chi
     <Wrapper className="flex-column">
       <Header className="flex-center justify-center relative">
         <div className="menu flex">
-          <div className="hamburger"></div>
+          {isAdmin && (
+            <div className="hamburger">
+              <img src="/assets/menu-white.svg" alt="Menu" />
+            </div>
+          )}
           <Link href="/">
             <img className="logo cursor" src="/assets/logo.svg" alt="WHALE STREET" />
           </Link>
         </div>
-        <Account />
+        <Account isAdmin={isAdmin} />
       </Header>
       <Content>
         {isSupported && termsAgreed && metamask && metamask.connected ? (

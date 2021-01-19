@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import qs from 'qs'
 
 import { tokenLink } from 'utils/etherscan'
 import { getDuration, useTicker } from 'utils/hooks'
 import { PageWrapper as Wrapper, Statics, OurTokens } from 'components/styles'
 import Promo from './Promo'
+
+import adminAssets from 'components/Admin/admin-assets'
+import { getAssets } from 'utils/api'
+
 
 const RewardTokens = styled.div`
   margin: -12px;
@@ -57,6 +62,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
   const [video, setVideo] = useState(false)
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
   const [now] = useTicker()
+  const [assets, setAssets] = useState([])
   const duration = getDuration(now, epochEndTime * 1000)
 
   const { latestBlockTimestamp } = metamask
@@ -70,6 +76,42 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         .catch(console.log)
     }
   }, [latestBlockTimestamp])
+
+  useEffect(() => {
+    const tokenAssets = metamask.network === 1 ? adminAssets[metamask.network] : adminAssets[4]
+    if (tokenAssets && tokenAssets.length) {
+      const queryAssets = async function () {
+        try {
+          const result = await getAssets(
+            {
+              token_ids: tokenAssets.map(({ tokenId }) => tokenId),
+              asset_contract_addresses: tokenAssets.map(({ tokenAddress }) => tokenAddress),
+              limit: 50,
+              offset: 0
+            },
+            {
+              paramsSerializer: params => {
+                return qs.stringify(params, { arrayFormat: "repeat" })
+              }
+            }
+          )
+          if (result?.data?.assets) {
+            const assets = result.data.assets.map(asset => {
+              const matching = tokenAssets.find((e) => (e.tokenId === asset.token_id && e.tokenAddress === asset?.asset_contract_addresses?.address))
+              asset.archived = matching ? matching.archived : false
+              return asset
+            })
+            setAssets(assets)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      queryAssets()
+    }
+  }, [metamask.network])
+
+  const isAdminOwner = assets?.[0]?.owner?.address === metamask.address
 
   return (
     <>
@@ -129,9 +171,12 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <img src="/assets/gaffe-hoard.png" alt="Gaff NFT" />
             <label>Gaff NFT</label>
           </div>
-          <div className="reward-token cursor flex-all relative coming-soon">
-            <img src="/assets/swapmaster.png" alt="Swap Master" />
-            <label>Swap Master</label>
+          <div
+            className={`reward-token cursor flex-all relative ${isAdminOwner ? '' : 'coming-soon'}`}
+            onClick={() => isAdminOwner && onModule('market-admin')}
+          >
+            <img src="/assets/swapmaster.png" alt="Market Admin" />
+            <label>Market Admin</label>
           </div>
           <div
             className="reward-token cursor flex-all relative coming-soon"
