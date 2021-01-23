@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import qs from 'qs'
 
+import Countdown from 'react-countdown'
+
 import { tokenLink } from 'utils/etherscan'
 import { getDuration, useTicker } from 'utils/hooks'
 import { PageWrapper as Wrapper, Statics, OurTokens } from 'components/styles'
@@ -10,6 +12,9 @@ import Promo from './Promo'
 
 import adminAssets from 'components/Admin/admin-assets'
 import { getAssets } from 'utils/api'
+
+const B20_START = new Date('2021-01-24 00:00:00+000').getTime()
+const leadZero = (val) => `00${val}`.substr(-2)
 
 const RewardTokens = styled.div`
   margin: -12px;
@@ -146,24 +151,42 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           </a>
           <Promo show={video} onHide={() => setVideo(false)} />
         </p>
-        <Statics className="flex-center flex-wrap justify-between">
-          <div className="statics__item">
-            <label>$hrimp Balance</label>
-            <p>{(metamask.$HRIMP || 0).toFixed(2)}</p>
-          </div>
-          <div className="statics__item">
-            <label>$hrimp Current Supply</label>
-            <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
-          </div>
-          <div className="statics__item">
-            <label>Current Epoch</label>
-            <p>{metamask.currentEpoch || '-'}</p>
-          </div>
-          <div className="statics__item">
-            <label>Next epoch in</label>
-            <p>{duration || '-'}</p>
-          </div>
-        </Statics>
+        {now < B20_START ? (
+          <Statics className="b20-sale center">
+            <span className="small">B20 Sale starts in</span>
+            <Countdown
+              date={B20_START}
+              renderer={({ hours, minutes, seconds, completed }) =>
+                !completed ? (
+                  <>
+                    <span>{leadZero(hours)}</span>:<span>{leadZero(minutes)}</span>:<span>{leadZero(seconds)}</span>
+                  </>
+                ) : (
+                  <span>Loading...</span>
+                )
+              }
+            />
+          </Statics>
+        ) : (
+          <Statics className="flex-center flex-wrap justify-between">
+            <div className="statics__item">
+              <label>$hrimp Balance</label>
+              <p>{(metamask.$HRIMP || 0).toFixed(2)}</p>
+            </div>
+            <div className="statics__item">
+              <label>$hrimp Current Supply</label>
+              <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
+            </div>
+            <div className="statics__item">
+              <label>Current Epoch</label>
+              <p>{metamask.currentEpoch || '-'}</p>
+            </div>
+            <div className="statics__item">
+              <label>Next epoch in</label>
+              <p>{duration || '-'}</p>
+            </div>
+          </Statics>
+        )}
         <RewardTokens className="flex-wrap justify-center">
           <div className="reward-token cursor flex-all relative" onClick={() => onModule('farming')}>
             <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />

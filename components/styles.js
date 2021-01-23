@@ -38,6 +38,21 @@ export const Statics = styled.div`
       width: calc(50% - 20px);
     }
   }
+
+  &.b20-sale {
+    text-align: center;
+    font-size: 24px;
+    padding: 20px 40px;
+    display: inline-flex;
+
+    span {
+      margin: 0 5px;
+    }
+
+    .small {
+      font-size: 16px;
+    }
+  }
 `
 
 export const OurTokens = styled.div`
