@@ -131,7 +131,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <p className="intro">
           What the Beep! A $2.7 mn bundle - with Beeple's iconic 1/1 pieces, sprawling museums on prime lands across the
           metaverse, and an original soundscape by 3LAU - now tokenised as B20 tokens. Now available for purchase
-          exclusively on WhaleStreet. Join the WhaleStreet community discord{' '}
+          exclusively on WhaleStreet. Join the WhaleStreet community {' '}
           <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             discord
           </a>{' '}
