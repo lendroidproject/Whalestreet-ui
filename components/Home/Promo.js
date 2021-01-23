@@ -42,11 +42,12 @@ export default function Promo({ show, onHide }) {
     return () => delete window.onresize
   }, [])
 
+  // https://youtu.be/ikTx2Nfk-w8
   return ReactDOM.createPortal(
     <Wrapper className={`flex-all ${show ? 'show' : 'hide'}`} onMouseDown={onHide}>
       {width > 0 && (
         <YouTube
-          videoId="Ioy4zfCJTAs"
+          videoId="ikTx2Nfk-w8"
           opts={{ playerVars: { autoplay: 0 }, width, height: (width * 360) / 640 }}
           className="video"
           onMouseDown={(e) => e.preventDefault()}
