@@ -130,8 +130,11 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
           What the Beep! A $2.7 mn bundle - with Beeple's iconic 1/1 pieces, sprawling museums on prime lands across the
-          metaverse, and an original soundscape by 3LAU - now tokenised as B20 tokens. Now available for purchase
-          exclusively on WhaleStreet. Join the WhaleStreet community {' '}
+          metaverse, and an original soundscape by 3LAU - now tokenised as B20 tokens.
+          <b>*<a href="https://metapurser.substack.com/p/b20-tokenomics" target="_blank">
+            Check out B20's tokenomics here
+          </a>*</b>.
+          You can purchase the tokens exclusively on WhaleStreet. Join the WhaleStreet community {' '}
           <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             discord
           </a>{' '}
