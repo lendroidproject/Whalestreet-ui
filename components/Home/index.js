@@ -129,9 +129,9 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       <Wrapper className="center">
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
-          WhaleStreet is a decentralized whale swap protocol. Become a liquidity provider and earn $hrimp. Buy a Gaff
-          NFT with $hrimp, become a Swap Master and earn fees from every Whale Swap. Make massive, antifragile token
-          swaps. Join the WhaleStreet community{' '}
+          What the Beep! A $2.7 mn bundle - with Beeple's iconic 1/1 pieces, sprawling museums on prime lands across the
+          metaverse, and an original soundscape by 3LAU - now tokenised as B20 tokens. Now available for purchase
+          exclusively on WhaleStreet. Join the WhaleStreet community discord{' '}
           <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             discord
           </a>{' '}
