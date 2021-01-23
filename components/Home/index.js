@@ -11,7 +11,6 @@ import Promo from './Promo'
 import adminAssets from 'components/Admin/admin-assets'
 import { getAssets } from 'utils/api'
 
-
 const RewardTokens = styled.div`
   margin: -12px;
   @media all and (max-width: 577px) {
@@ -87,17 +86,19 @@ export default connect((state) => state)(function Farming({ metamask, library, o
               token_ids: tokenAssets.map(({ tokenId }) => tokenId),
               asset_contract_addresses: tokenAssets.map(({ tokenAddress }) => tokenAddress),
               limit: 50,
-              offset: 0
+              offset: 0,
             },
             {
-              paramsSerializer: params => {
-                return qs.stringify(params, { arrayFormat: "repeat" })
-              }
+              paramsSerializer: (params) => {
+                return qs.stringify(params, { arrayFormat: 'repeat' })
+              },
             }
           )
           if (result?.data?.assets) {
-            const assets = result.data.assets.map(asset => {
-              const matching = tokenAssets.find((e) => (e.tokenId === asset.token_id && e.tokenAddress === asset?.asset_contract_addresses?.address))
+            const assets = result.data.assets.map((asset) => {
+              const matching = tokenAssets.find(
+                (e) => e.tokenId === asset.token_id && e.tokenAddress === asset?.asset_contract_addresses?.address
+              )
               asset.archived = matching ? matching.archived : false
               return asset
             })
@@ -125,7 +126,11 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <p className="intro">
           WhaleStreet is a decentralized whale swap protocol. Become a liquidity provider and earn $hrimp. Buy a Gaff
           NFT with $hrimp, become a Swap Master and earn fees from every Whale Swap. Make massive, antifragile token
-          swaps. Join the WhaleStreet community <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">discord</a> today.
+          swaps. Join the WhaleStreet community{' '}
+          <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
+            discord
+          </a>{' '}
+          today.
           <br />
           <br />
           <a
@@ -164,6 +169,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />
             <label>Farm $hrimp</label>
           </div>
+          <a className="reward-token cursor flex-all relative coming-soon" href="#" target="_blank">
+            <img src="/assets/get-b20.png" alt="Get B20" />
+            <label>Get B20</label>
+          </a>
           <div
             className="reward-token cursor flex-all relative coming-soon"
             onClick={() => false && onModule('auctions')}
@@ -185,10 +194,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <img src="/assets/whaleswap.png" alt="Whale Swap" />
             <label>Whale Swap</label>
           </div>
-          <div className="reward-token cursor flex-all relative coming-soon">
+          {/* <div className="reward-token cursor flex-all relative coming-soon">
             <img src="/assets/noon-report.png" alt="Noon Report" />
             <label>Noon Report</label>
-          </div>
+          </div> */}
         </RewardTokens>
         <OurTokens>
           <h2>Tokens</h2>
@@ -199,7 +208,11 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
               <button>LST</button>
             </a>
-            <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank" onClick={(e) => e.preventDefault()}>
+            <a
+              href={tokenLink(library.addresses.LST, metamask.network)}
+              target="_blank"
+              onClick={(e) => e.preventDefault()}
+            >
               <button disabled>NFT</button>
             </a>
           </div>
