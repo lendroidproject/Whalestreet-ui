@@ -111,7 +111,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
     }
   }, [metamask.network])
 
-  const isAdminOwner = assets?.[0]?.owner?.address === metamask.address
+  const isAdminOwner = false && assets?.[0]?.owner?.address === metamask.address
 
   return (
     <>
