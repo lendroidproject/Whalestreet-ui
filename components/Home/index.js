@@ -169,7 +169,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />
             <label>Farm $hrimp</label>
           </div>
-          <a className="reward-token cursor flex-all relative coming-soon" href="#" target="_blank">
+          <a className="reward-token cursor flex-all relative" href={process.env.B20_LINK} target="_blank">
             <img src="/assets/get-b20.png" alt="Get B20" />
             <label>Get B20</label>
           </a>
