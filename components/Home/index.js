@@ -205,10 +205,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
               <label>Farm B20</label>
             </div>
           ) : (
-            <a className="reward-token cursor flex-all relative" href="/farm-b20">
+            <div className="reward-token cursor flex-all relative" onClick={() => onModule('farm-b20')}>
               <img src="/assets/get-b20.png" alt="Farm B20" />
               <label>Farm B20</label>
-            </a>
+            </div>
           )}
           <div
             className="reward-token cursor flex-all relative coming-soon"
