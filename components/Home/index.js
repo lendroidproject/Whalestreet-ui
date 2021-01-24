@@ -13,7 +13,7 @@ import Promo from './Promo'
 import adminAssets from 'components/Admin/admin-assets'
 import { getAssets } from 'utils/api'
 
-const B20_START = new Date('2021-01-24 00:30:00+000').getTime()
+const B20_START = new Date('2021-01-24 01:45:00+000').getTime()
 const leadZero = (val) => `00${val}`.substr(-2)
 
 const RewardTokens = styled.div`
@@ -153,7 +153,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         </p>
         {now < B20_START ? (
           <Statics className="b20-sale center">
-            <span className="small">B20 Sale starts in</span>
+            <span className="small">B20 Capped Sale starts in</span>
             <Countdown
               date={B20_START}
               renderer={({ hours, minutes, seconds, completed }) =>
