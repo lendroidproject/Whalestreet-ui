@@ -148,12 +148,12 @@ const Address = styled.div`
 
 const AdminAddress = styled.div`
   padding: 6px;
-  background: #DFDEDE;
+  background: #dfdede;
   color: var(--color-black);
   font-size: 12px;
   line-height: 15px;
   border: 2px solid var(--color-black);
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 
   img {
     margin: 0 6px;
@@ -202,7 +202,7 @@ class Account extends Component {
 
   componentWillUnmount() {
     if (this.state.balanceTimer) clearTimeout(this.state.balanceTimer)
-    if (this.library) this.library.onDisconnect()
+    if (this.props.library) this.props.library.onDisconnect()
   }
 
   setWeb3Modal(network) {
