@@ -295,7 +295,7 @@ class Account extends Component {
     } = this.props
     const { address, balance: origin, connected } = metamask
 
-    if (connected) {
+    if (address && connected) {
       Promise.all([
         library.web3.eth.getBalance(address),
         library.methods.LSTWETHUNIV2.getBalance(address),
