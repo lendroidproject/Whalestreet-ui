@@ -243,7 +243,6 @@ class Account extends Component {
             })
             break
           case 'WALLET':
-            console.log(event)
             if (event.status === 3) {
               dispatch({
                 type: 'DISCONNECT',
