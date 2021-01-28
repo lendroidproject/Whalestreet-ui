@@ -20,9 +20,15 @@ const RewardTokens = styled.div`
   max-width: 966px;
   width: 90%;
   margin: -8px auto;
+  @media all and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 
   .row {
-    width: 100%;
+    width: 50%;
+    @media all and (max-width: 577px) {
+      width: 100%;
+    }
   }
 
   .reward-token {
