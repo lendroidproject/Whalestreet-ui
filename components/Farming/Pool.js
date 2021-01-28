@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { getDuration, useTicker } from 'utils/hooks'
 import { pools } from 'layouts/constants'
+import { uniswapLiquidity } from 'utils/etherscan'
 
 export const Wrapper = styled.div`
   width: 307px;
@@ -66,6 +67,17 @@ export const Wrapper = styled.div`
     td:first-child {
       text-align: left;
     }
+  }
+
+  .add-liquidity {
+    font-size: 14px;
+    line-height: 18px;
+
+    margin-bottom: 0;
+    padding-top: 12px;
+    border-top: 1px solid white;
+    width: 100%;
+    margin-top: 12px;
   }
 
   @media all and (max-width: 577px) {
@@ -287,22 +299,32 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
         )}
       </div>
       {currentSeries > 0 && (
-        <table className="series">
-          <tbody>
-            <tr>
-              <td>Current series:</td>
-              <td>{currentSeries}</td>
-            </tr>
-            <tr>
-              <td>Reward rate:</td>
-              <td>{rate.toFixed(8)}</td>
-            </tr>
-            <tr>
-              <td>Series ends in:</td>
-              <td>{duration}</td>
-            </tr>
-          </tbody>
-        </table>
+        <>
+          <table className="series">
+            <tbody>
+              <tr>
+                <td>Current series:</td>
+                <td>{currentSeries}</td>
+              </tr>
+              <tr>
+                <td>Reward rate:</td>
+                <td>{rate.toFixed(8)}</td>
+              </tr>
+              <tr>
+                <td>Series ends in:</td>
+                <td>{duration}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="add-liquidity">
+            Add liquidity to
+            <br />
+            {base}-{pair} Uniswap Pool{' '}
+            <a href={uniswapLiquidity(library.addresses[base])} target="_blank">
+              <img src="/assets/link-icon.svg" />
+            </a>
+          </p>
+        </>
       )}
     </Wrapper>
   )

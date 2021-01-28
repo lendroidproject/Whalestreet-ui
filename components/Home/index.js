@@ -134,20 +134,12 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       <Wrapper className="center">
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
-          What the Beep! A $2.7 mn bundle - with Beeple's iconic 1/1 pieces, sprawling museums on prime lands across the metaverse, and an
-          original soundscape by 3LAU - now tokenised as B20 tokens.
-          <b>
-            *
-            <a href="https://metapurser.substack.com/p/b20-tokenomics" target="_blank">
-              Check out B20's tokenomics here
-            </a>
-            *
-          </b>
-          . You can purchase the tokens exclusively on WhaleStreet. Join the WhaleStreet community{' '}
-          <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
-            discord
-          </a>{' '}
-          today.
+          Welcome. WhaleStreet has engineered the bundling and fractionalizing of the $2.7 mn B.20 bundle. You can now farm B20 tokens for
+          exciting rewards. Join the B20 discord <a href="https://discord.com/invite/pEbSg4qp3y">here</a>. Learn more about the B.20 project{' '}
+          <a href="https://b20.metapurse.fund" target="_blank">
+            here
+          </a>
+          .
           <br />
           <br />
           <a
@@ -183,7 +175,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           <Statics className="flex-center flex-wrap justify-between">
             <div className="statics__item">
               <label>TVL</label>
-              <p>4,600,000</p>
+              <p>$4,600,000</p>
             </div>
             <div className="statics__item">
               <label>Treasury</label>

@@ -54,21 +54,7 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
       <Wrapper className="center">
         <h1>Farm B.20</h1>
         <p>
-          Provide liquidity to the
-          <br />
-          <a href="https://app.uniswap.org/#/add/0xc4De189Abf94c57f396bD4c52ab13b954FebEfD8/ETH" target="_blank">
-            B20-ETH uniswap pool
-          </a>
-          ,{' '}
-          <a href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH" target="_blank">
-            LST-ETH uniswap pool
-          </a>
-          ,{' '}
-          <a href="https://app.uniswap.org/#/add/0x9077F9e1eFE0eA72867ac89046b2a6264CbcaeF5/ETH" target="_blank">
-            $HRIMP-ETH uniswap pool
-          </a>
-          <br />
-          to get pool tokens.
+          Provide liquidity to the uniswap pool to get pool tokens.
           <br />
           By staking pool tokens, you can mine B20.
         </p>
