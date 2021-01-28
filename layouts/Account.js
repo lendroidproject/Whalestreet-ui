@@ -65,6 +65,10 @@ const Balances = styled.div`
       height: 20px;
       margin-right: 4px;
     }
+
+    &.mobile {
+      display: none;
+    }
     @media all and (max-width: 577px) {
       display: none;
     }
@@ -326,15 +330,15 @@ class Account extends Component {
               return val < 0.1 ** Math.max(decimal - 5, 2) ? 0 : val
             }
             const balance = toNumber(library.web3.utils.fromWei(_balance))
-            const tokenBalances = _tokenBalances.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
-            const uniV2Balances = _uniV2Balances.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
+            const tokenBalances = _tokenBalances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
+            const uniV2Balances = _uniV2Balances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const uniV2Allowances = _uniV2Allowances
               .reduce((a, c) => [...a, ...c], [])
               .map((val) => library.web3.utils.fromWei(val))
-              .map(val => toNumber(val))
-            const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
-            const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
-            const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
+              .map((val) => toNumber(val))
+            const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
+            const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
+            const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const poolEpochs = _poolEpochs.map(Number)
             const poolLastEpochs = _poolLastEpochs.map(Number)
             const poolEpochPeriods = metamask.poolEpochPeriods || _poolEpochPeriods.map(Number)
@@ -419,6 +423,16 @@ class Account extends Component {
                   {shorten(address)} {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
+                  {tokens.map((token, index) => (
+                    <MenuItem eventKey={index + 1} key={token} className="mobile">
+                      <img src={`/assets/${token.toLowerCase()}-token.svg`} alt={token} />
+                      <span>
+                        <small>{token}</small>
+                        <br />
+                        {tokenBalances[index] || 0}
+                      </span>
+                    </MenuItem>
+                  ))}
                   <MenuItem eventKey={10}>
                     <img src={`/assets/eth.svg`} alt="ETH" />
                     <span>
