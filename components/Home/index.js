@@ -141,7 +141,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
           Welcome. WhaleStreet has engineered the bundling and fractionalizing of the $2.7 mn B.20 bundle. You can now farm B20 tokens for
-          exciting rewards. Join the B20 discord <a href="https://discord.com/invite/pEbSg4qp3y">here</a>. Learn more about the B.20 project{' '}
+          exciting rewards. Join the B20 discord <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">here</a>. Learn more about the B.20 project{' '}
           <a href="https://b20.metapurse.fund" target="_blank">
             here
           </a>
