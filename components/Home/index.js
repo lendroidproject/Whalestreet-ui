@@ -228,10 +228,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
           </div>
           <div className="row flex-column">
-            <a href="https://b20.whalestreet.xyz" target="_blank" className="reward-token cursor flex-center relative image">
+            {/* <a href="https://b20.whalestreet.xyz" target="_blank" className="reward-token cursor flex-center relative image">
               <img src="/assets/get-b20.svg" alt="Get B20" />
               <p>Get B20</p>
-            </a>
+            </a> */}
             <div className="reward-token cursor flex-center relative coming-soon" onClick={() => false && onModule('whale-swap')}>
               <img src="/assets/whaleswap.png" alt="Whale Swap" />
               <p>Whale Swap</p>
