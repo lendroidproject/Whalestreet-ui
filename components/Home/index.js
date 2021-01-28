@@ -32,6 +32,7 @@ const RewardTokens = styled.div`
     border: 1px solid #000000;
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.3);
+    text-decoration: none;
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.6);
@@ -133,8 +134,8 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       <Wrapper className="center">
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
-          What the Beep! A $2.7 mn bundle - with Beeple's iconic 1/1 pieces, sprawling museums on prime lands across the
-          metaverse, and an original soundscape by 3LAU - now tokenised as B20 tokens.
+          What the Beep! A $2.7 mn bundle - with Beeple's iconic 1/1 pieces, sprawling museums on prime lands across the metaverse, and an
+          original soundscape by 3LAU - now tokenised as B20 tokens.
           <b>
             *
             <a href="https://metapurser.substack.com/p/b20-tokenomics" target="_blank">
@@ -190,7 +191,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
             <div className="statics__item">
               <label>Current Epoch</label>
-              <p>{metamask.poolEpochs && metamask.poolEpochs[0] || '-'}</p>
+              <p>{(metamask.poolEpochs && metamask.poolEpochs[0]) || '-'}</p>
             </div>
             <div className="statics__item">
               <label>Next epoch in</label>
@@ -200,24 +201,21 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         )}
         <RewardTokens className="flex">
           <div className="row flex-column">
-            <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farming')}>
-              <img src="/assets/$hrimp-token.svg" alt="Farm $hrimp" />
-              <p>Farm $hrimp</p>
-            </div>
             <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farm-b20')}>
               <img src="/assets/b20-token.svg" alt="Farm B20" />
               <p>Farm B20</p>
             </div>
-            <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farm-lst')}>
+            <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farming')}>
+              <img src="/assets/$hrimp-token.svg" alt="Farm $hrimp" />
+              <p>Farm $hrimp</p>
+            </div>
+            {/* <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farm-lst')}>
               <img src="/assets/lst-token.svg" alt="Farm LST" />
               <p>Farm LST</p>
-            </div>
+            </div> */}
           </div>
           <div className="row flex-column">
-            <div
-              className="reward-token cursor flex-center relative coming-soon"
-              onClick={() => false && onModule('auctions')}
-            >
+            <div className="reward-token cursor flex-center relative coming-soon" onClick={() => false && onModule('auctions')}>
               <img src="/assets/gaffe-hoard.png" alt="Gaff NFT" />
               <p>Gaff NFT</p>
             </div>
@@ -232,14 +230,11 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
           </div>
           <div className="row flex-column">
-            <div className="reward-token cursor flex-center relative image coming-soon" onClick={() => false}>
+            <a href="https://b20.whalestreet.xyz" target="_blank" className="reward-token cursor flex-center relative image">
               <img src="/assets/get-b20.svg" alt="Get B20" />
               <p>Get B20</p>
-            </div>
-            <div
-              className="reward-token cursor flex-center relative coming-soon"
-              onClick={() => false && onModule('whale-swap')}
-            >
+            </a>
+            <div className="reward-token cursor flex-center relative coming-soon" onClick={() => false && onModule('whale-swap')}>
               <img src="/assets/whaleswap.png" alt="Whale Swap" />
               <p>Whale Swap</p>
             </div>
@@ -258,11 +253,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
                 LST <img src="/assets/link-icon.svg" />
               </button>
             </a>
-            <a
-              href={tokenLink(library.addresses.LST, metamask.network)}
-              target="_blank"
-              onClick={(e) => e.preventDefault()}
-            >
+            <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank" onClick={(e) => e.preventDefault()}>
               <button disabled>
                 NFT <img src="/assets/link-icon.svg" />
               </button>

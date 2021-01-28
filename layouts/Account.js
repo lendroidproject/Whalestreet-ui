@@ -183,7 +183,7 @@ class Account extends Component {
     this.setState(
       {
         session,
-        balanceTimer: setInterval(() => this.getBalance(), 15 * 1000),
+        balanceTimer: setInterval(() => this.getBalance(), 10 * 1000),
       },
       () => {
         this.setWeb3Modal(session.network)
@@ -220,6 +220,7 @@ class Account extends Component {
   initLibrary(provider) {
     if (this.props.library) {
       this.props.library.setProvider(provider, addresses[this.state.network])
+      setTimeout(() => this.getBalance(), 2.5 * 1000)
     } else {
       const { dispatch } = this.props
       const handleEvent = (event) => {
@@ -257,12 +258,7 @@ class Account extends Component {
         onEvent: handleEvent,
         addresses: addresses[this.state.network],
       })
-
-      dispatch({
-        type: 'INIT_CONTRACTS',
-        payload: [library],
-      })
-
+      dispatch({ type: 'INIT_CONTRACTS', payload: [library] })
       setTimeout(() => this.getBalance(), 2.5 * 1000)
     }
   }
@@ -330,15 +326,15 @@ class Account extends Component {
               return val < 0.1 ** Math.max(decimal - 5, 2) ? 0 : val
             }
             const balance = toNumber(library.web3.utils.fromWei(_balance))
-            const tokenBalances = _tokenBalances.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
-            const uniV2Balances = _uniV2Balances.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+            const tokenBalances = _tokenBalances.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
+            const uniV2Balances = _uniV2Balances.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
             const uniV2Allowances = _uniV2Allowances
               .reduce((a, c) => [...a, ...c], [])
               .map((val) => library.web3.utils.fromWei(val))
-              .map(toNumber)
-            const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
-            const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
-            const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+              .map(val => toNumber(val))
+            const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
+            const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
+            const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map(val => toNumber(val))
             const poolEpochs = _poolEpochs.map(Number)
             const poolLastEpochs = _poolLastEpochs.map(Number)
             const poolEpochPeriods = metamask.poolEpochPeriods || _poolEpochPeriods.map(Number)
@@ -355,7 +351,6 @@ class Account extends Component {
               findSome(poolBalances, 'poolBalances') ||
               findSome(poolEarnings, 'poolEarnings') ||
               findSome(poolSupplies, 'poolSupplies') ||
-              findSome(tokenBalances, 'tokenBalances') ||
               findSome(poolEpochs, 'poolEpochs') ||
               findSome(poolLastEpochs, 'poolLastEpochs')
             )
@@ -382,33 +377,24 @@ class Account extends Component {
   render() {
     const { metamask, isAdmin } = this.props
     const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
+    const { address, balance, tokenBalances = [], uniV2Balances = [] } = metamask
 
     return (
       <Wrapper className="account">
         {isSupported ? (
-          metamask.address ? (
+          address ? (
             <Balances className={`flex${isAdmin ? ' admin' : ''}`}>
               {!isAdmin && (
                 <>
-                  <div className="balance-item flex">
-                    <img src="/assets/b20-token.svg" alt="B20" />
-                    {(metamask.$HRIMP || 0).toFixed(2)}
-                  </div>
-                  <div className="balance-item flex">
-                    <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
-                    {(metamask.$HRIMP || 0).toFixed(2)}
-                  </div>
-                  <div className="balance-item flex">
-                    <img src="/assets/lst-token.svg" alt="LST" />
-                    {(metamask.LST || 0).toFixed(2)}
-                  </div>
+                  {tokens.map((token, index) => (
+                    <div className="balance-item flex" key={token}>
+                      <img src={`/assets/${token.toLowerCase()}-token.svg`} alt={token} />
+                      {(tokenBalances[index] || 0).toFixed(2)}
+                    </div>
+                  ))}
                 </>
               )}
-              <Dropdown
-                onSelect={(eventKey) => {
-                  console.log(eventKey)
-                }}
-              >
+              <Dropdown>
                 <Dropdown.Toggle
                   btnStyle="flat"
                   btnSize="sm"
@@ -430,41 +416,27 @@ class Account extends Component {
                     )
                   }}
                 >
-                  {shorten(metamask.address)} {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
+                  {shorten(address)} {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <MenuItem eventKey={1}>
-                    <img src={`/assets/lst-eth-uni.svg`} alt="LST-ETH-UNI-V2" />
-                    <span>
-                      <small>LST-ETH-UNI-V2</small>
-                      <br />
-                      {metamask.LSTWETHUNIV2 || 0}
-                    </span>
-                  </MenuItem>
-                  <MenuItem eventKey={2} className="mobile">
-                    <img src={`/assets/$hrimp-token.svg`} alt="$HRIMP" />
-                    <span>
-                      <small>$HRIMP</small>
-                      <br />
-                      {(metamask.$HRIMP || 0).toFixed(2)}
-                    </span>
-                  </MenuItem>
-                  <MenuItem eventKey={3}>
+                  <MenuItem eventKey={10}>
                     <img src={`/assets/eth.svg`} alt="ETH" />
                     <span>
                       <small>ETH</small>
                       <br />
-                      {metamask.balance || 0}
+                      {balance || 0}
                     </span>
                   </MenuItem>
-                  <MenuItem eventKey={4} className="mobile">
-                    <img src={`/assets/lst-token.svg`} alt="LST" />
-                    <span>
-                      <small>LST</small>
-                      <br />
-                      {(metamask.LST || 0).toFixed(2)}
-                    </span>
-                  </MenuItem>
+                  {uniV2s.map((token, index) => (
+                    <MenuItem eventKey={index + 1} key={token}>
+                      <img src={`/assets/lst-eth-uni.svg`} alt={token} />
+                      <span>
+                        <small>{token}</small>
+                        <br />
+                        {uniV2Balances[index] || 0}
+                      </span>
+                    </MenuItem>
+                  ))}
                 </Dropdown.Menu>
               </Dropdown>
             </Balances>
