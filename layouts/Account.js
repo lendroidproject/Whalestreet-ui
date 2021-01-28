@@ -73,7 +73,7 @@ const Balances = styled.div`
   *[role='menu'] {
     border-radius: 0 0 4px 4px;
     background-color: var(--color-blue);
-    border: 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     box-shadow: none;
     width: 100%;
     padding: 0;
@@ -85,7 +85,7 @@ const Balances = styled.div`
 
     *[role='presentation'] {
       &:not(:last-child) {
-        border-bottom: 1px solid var(--color-white);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
       }
 
       @media all and (min-width: 577px) {

@@ -289,17 +289,14 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
 
   useEffect(() => {
     if (stakeTx && transactions[stakeTx]) {
-      console.log(transactions[stakeTx])
       setStakeTx(null)
       if (mode === 'stake') setMode('')
     }
     if (unstakeTx && transactions[unstakeTx]) {
-      console.log(transactions[unstakeTx])
       setUnstakeTx(null)
       if (mode === 'unstake') setMode('')
     }
     if (claimTx && transactions[claimTx]) {
-      console.log(transactions[claimTx])
       setClaimTx(null)
       if (mode === 'claim') setMode('')
     }
@@ -330,7 +327,6 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
         setApproveTx(null)
       })
       .on('error', (err) => {
-        console.log(err)
         setApproveTx(null)
       })
   }
@@ -347,7 +343,6 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
         // setStakeTx(null)
       })
       .on('error', (err) => {
-        console.log(err)
         setStakeTx(null)
       })
   }
@@ -364,7 +359,6 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
         // setUnstakeTx(null)
       })
       .on('error', (err) => {
-        console.log(err)
         setUnstakeTx(null)
       })
   }
@@ -380,7 +374,6 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
         // setClaimTx(null)
       })
       .on('error', (err) => {
-        console.log(err)
         setClaimTx(null)
       })
   }

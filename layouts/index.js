@@ -345,7 +345,6 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         if (err || result.error) setSignning(0)
         if (err) return console.error(err)
         if (result.error) return console.error('ERROR', result)
-        console.log('TYPED SIGNED:' + JSON.stringify(result.result || result))
 
         const res = (result.result || result).slice(2)
         const v = parseInt(res.slice(128, 130), 16) === 27 ? 0 : 1
@@ -361,7 +360,6 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           s,
         })
           .then((data) => {
-            console.log(data)
             setTermsAgreed(true)
           })
           .catch(console.log)

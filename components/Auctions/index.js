@@ -56,7 +56,6 @@ export default connect((state) => state)(function Auctions({
         setApproveTx(null)
       })
       .on('error', (err) => {
-        console.log(err)
         setApproveTx(null)
       })
   }
@@ -79,7 +78,6 @@ export default connect((state) => state)(function Auctions({
           getTotalPurchase()
         })
         .on('error', (err) => {
-          console.log(err)
           setPurchaseTx(null)
         })
     } else {
