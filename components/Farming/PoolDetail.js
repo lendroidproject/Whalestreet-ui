@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
+import { uniV2s, pools, uniV2PoolList } from 'layouts/constants'
 import { getDuration, useTicker } from 'utils/hooks'
 import MaxInput from 'components/common/MaxInput'
 import TxModal from 'components/common/TxModal'
@@ -238,8 +239,27 @@ const Claim = styled(Stake)`
   }
 `
 
-function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
-  const { address, currentEpoch, lastEpochStaked, latestBlockTimestamp } = metamask
+function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
+  const uniIndex = uniV2s.findIndex(item => item === uniV2)
+  const poolIndex = pools.findIndex((item) => item === pool)
+  const listIndex = uniV2PoolList.findIndex((item) => item === pool)
+  const {
+    address,
+    latestBlockTimestamp,
+    uniV2Balances = [],
+    uniV2Allowances = [],
+    poolBalances = [],
+    poolEarnings = [],
+    poolEpochs = [],
+    poolLastEpochs = [],
+  } = metamask
+  const currentEpoch = poolEpochs[poolIndex] || 0
+  const lastEpochStaked = poolLastEpochs[poolIndex] || 0
+  const uniV2Balance = uniV2Balances[uniIndex] || 0
+  const uniV2Allowance = uniV2Allowances[listIndex] || 0
+  const poolBalance = poolBalances[poolIndex] || 0
+  const poolEarning = poolEarnings[poolIndex] || 0
+
   const [stakeForm, setStakeForm] = useState({ amount: 0 })
   const [approveTx, setApproveTx] = useState(null)
   const [stakeTx, setStakeTx] = useState(null)
@@ -253,7 +273,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   const [now] = useTicker()
   const duration = getDuration(now, epochEndTime * 1000)
 
-  const { epochEndTimeFromTimestamp } = library.methods.LSTETHPool
+  const { epochEndTimeFromTimestamp } = library.methods[pool]
   useEffect(() => {
     if (latestBlockTimestamp && latestBlockTimestamp !== blockTimestamp) {
       epochEndTimeFromTimestamp(latestBlockTimestamp)
@@ -265,13 +285,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   }, [latestBlockTimestamp])
 
   const pendingTx = approveTx || stakeTx || unstakeTx || claimTx
-  const pendingText = stakeTx
-    ? 'Depositing your stake'
-    : unstakeTx
-    ? 'Withdrawing your stake'
-    : claimTx
-    ? 'Claiming your rewards'
-    : ''
+  const pendingText = stakeTx ? 'Depositing your stake' : unstakeTx ? 'Withdrawing your stake' : claimTx ? 'Claiming your rewards' : ''
 
   useEffect(() => {
     if (stakeTx && transactions[stakeTx]) {
@@ -298,8 +312,8 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   }
 
   const handleApprove = () => {
-    const { approve } = library.methods.LSTWETHUNIV2
-    approve(library.addresses.LSTETHPool, library.web3.utils.toWei((10 ** 8).toString()), { from: address })
+    const { approve } = library.methods[uniV2]
+    approve(library.addresses[pool], library.web3.utils.toWei((10 ** 8).toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
         setApproveTx(hash)
@@ -308,7 +322,9 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
         dispatch({
           type: 'METAMASK',
           payload: {
-            aLSTWETHUNIV2: Number(library.web3.utils.fromWei(receipt.events.Approval.returnValues.value)),
+            uniV2Allowances: uniV2Allowances.map((item, index) =>
+              listIndex === index ? Number(library.web3.utils.fromWei(receipt.events.Approval.returnValues.value)) : item
+            ),
           },
         })
         setApproveTx(null)
@@ -321,7 +337,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
 
   const handleStake = () => {
     const { amount } = stakeForm
-    const { stake } = library.methods.LSTETHPool
+    const { stake } = library.methods[pool]
     stake(library.web3.utils.toWei(amount.toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
@@ -338,7 +354,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
 
   const handleUnstake = () => {
     const { amount } = unstakeForm
-    const { unstake } = library.methods.LSTETHPool
+    const { unstake } = library.methods[pool]
     unstake(library.web3.utils.toWei(amount.toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
@@ -354,7 +370,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
   }
 
   const handleClaim = () => {
-    const { claim } = library.methods.LSTETHPool
+    const { claim } = library.methods[pool]
     claim({ from: address })
       .send()
       .on('transactionHash', function (hash) {
@@ -387,30 +403,26 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           <div className="flex justify-around">
             <div className="stake">
               <label>{stake} Staked</label>
-              <p>{metamask.LSTETHPool || 0}</p>
+              <p>{poolBalance}</p>
             </div>
             <div className="claim">
               <label>Unclaimed {rewardBase} Tokens</label>
-              <p>{(metamask.eLSTETHPool || 0).toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
+              <p>{poolEarning.toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
             </div>
           </div>
           <div className="flex justify-around detail-actions">
-            {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 ? (
+            {uniV2Allowance > uniV2Balance ? (
               <>
                 <div className="stake">
                   <div className="actions flex">
-                    <button
-                      className="uppercase red"
-                      onClick={() => handleMode('stake')}
-                      disabled={!metamask.LSTWETHUNIV2}
-                    >
+                    <button className="uppercase red" onClick={() => handleMode('stake')} disabled={!uniV2Balance}>
                       <img src="/assets/stake.svg" alt="Stake" />
                       Stake
                     </button>
                     <button
                       className="uppercase red relative"
                       onClick={() => handleMode('unstake')}
-                      disabled={!metamask.LSTETHPool || unstakeDisabled}
+                      disabled={!poolBalance || unstakeDisabled}
                     >
                       <img src="/assets/unstake.svg" alt="Unstake" />
                       Unstake
@@ -420,11 +432,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
                 </div>
                 <div className="claim">
                   <div className="actions flex">
-                    <button
-                      className="uppercase red"
-                      onClick={() => handleMode('claim')}
-                      disabled={!metamask.eLSTETHPool}
-                    >
+                    <button className="uppercase red" onClick={() => handleMode('claim')} disabled={!poolEarning}>
                       <img src={`/assets/claim-${rewardBase.toLowerCase()}.svg`} alt="Claim" />
                       Claim {rewardBase}
                     </button>
@@ -434,11 +442,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
             ) : (
               <div className="stake">
                 <div className="actions flex justify-center">
-                  <button
-                    className="uppercase red"
-                    onClick={() => handleApprove()}
-                    disabled={!metamask.LSTWETHUNIV2 || approveTx}
-                  >
+                  <button className="uppercase red" onClick={() => handleApprove()} disabled={!uniV2Balance || approveTx}>
                     <img src="/assets/stake.svg" alt="Stake" />
                     Approve Pool
                   </button>
@@ -446,7 +450,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
               </div>
             )}
           </div>
-          {metamask.aLSTWETHUNIV2 > metamask.LSTWETHUNIV2 && (
+          {uniV2Allowance > uniV2Balance && (
             <p className="note">
               {unstakeDisabled
                 ? `* You recently staked in the current epoch. unstake will be enabled next epoch onward.`
@@ -460,17 +464,16 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           <div className="flex justify-around">
             <div className="input">
               <label>Balance</label>
-              <p>{metamask.LSTWETHUNIV2 || 0}</p>
+              <p>{uniV2Balance}</p>
             </div>
             <MaxInput
               label="Amount to Stake"
               value={stakeForm.amount}
               min={0}
-              onChange={(e) => setStakeForm({ amount: Math.min(e.target.value, metamask.LSTWETHUNIV2) })}
-              onMax={() => setStakeForm({ amount: metamask.LSTWETHUNIV2 })}
+              onChange={(e) => setStakeForm({ amount: Math.min(e.target.value, uniV2Balance) })}
+              onMax={() => setStakeForm({ amount: uniV2Balance })}
             />
           </div>
-          {/* <p className="label">Balance : {metamask.LSTWETHUNIV2}</p> */}
           <button className="uppercase red" disabled={!!stakeTx || stakeForm.amount === 0} onClick={handleStake}>
             Stake Now
           </button>
@@ -481,14 +484,14 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           <div className="flex justify-around">
             <div className="input">
               <label>{stake} Staked</label>
-              <p>{metamask.LSTETHPool || 0}</p>
+              <p>{poolBalance}</p>
             </div>
             <MaxInput
               label="Amount Losable"
               value={unstakeForm.amount}
               min={0}
-              onChange={(e) => setUnstakeForm({ amount: Math.min(e.target.value, metamask.LSTETHPool) })}
-              onMax={() => setUnstakeForm({ amount: metamask.LSTETHPool })}
+              onChange={(e) => setUnstakeForm({ amount: Math.min(e.target.value, poolBalance) })}
+              onMax={() => setUnstakeForm({ amount: poolBalance })}
             />
           </div>
           <button className="uppercase red" disabled={!!unstakeTx || unstakeForm.amount === 0} onClick={handleUnstake}>
@@ -501,10 +504,10 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
           <div className="flex justify-around">
             <div className="input">
               <label>Unclaimed {rewardBase} Tokens</label>
-              <p>{metamask.eLSTETHPool || 0}</p>
+              <p>{poolEarning}</p>
             </div>
           </div>
-          <button className="uppercase red" disabled={!!claimTx || metamask.eLSTETHPool === 0} onClick={handleClaim}>
+          <button className="uppercase red" disabled={!!claimTx || poolEarning === 0} onClick={handleClaim}>
             Claim Now
           </button>
         </Claim>

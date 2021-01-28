@@ -6,8 +6,6 @@ module.exports = withOffline({
   env: {
     NETWORKS: process.env.NETWORKS,
     INFURA_ID: process.env.INFURA_ID,
-    FORTMATIC: process.env.FORTMATIC,
-    B20_LINK: process.env.B20_LINK,
   },
   trailingSlash: false,
   poweredByHeader: false,

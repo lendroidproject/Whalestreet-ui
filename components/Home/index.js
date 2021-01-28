@@ -74,7 +74,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
   const duration = getDuration(now, epochEndTime * 1000)
 
   const { latestBlockTimestamp } = metamask
-  const { epochEndTimeFromTimestamp } = library.methods.LSTETHPool
+  const { epochEndTimeFromTimestamp } = library.methods.LST_WETH_UNIV2_$HRIMP_Pool
   useEffect(() => {
     if (latestBlockTimestamp && latestBlockTimestamp !== blockTimestamp) {
       epochEndTimeFromTimestamp(latestBlockTimestamp)
@@ -190,7 +190,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
             <div className="statics__item">
               <label>Current Epoch</label>
-              <p>{metamask.currentEpoch || '-'}</p>
+              <p>{metamask.poolEpochs && metamask.poolEpochs[0] || '-'}</p>
             </div>
             <div className="statics__item">
               <label>Next epoch in</label>

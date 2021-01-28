@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { getDuration, useTicker } from 'utils/hooks'
+import { pools } from 'layouts/constants'
 
 export const Wrapper = styled.div`
   width: 307px;
@@ -130,30 +131,120 @@ export const PoolIcon = styled.div`
   }
 `
 
-export default function Pool({ base, pair, coming, onSelect, metamask, library }) {
-  const HEART_BEAT_START_TIME = metamask.heartBeatTime
-  const EPOCH_PERIOD = metamask.epochPeriod
-  const { currentEpoch } = metamask
+const getSeries = (type, epoch) => {
+  switch (type) {
+    case 1:
+      return !epoch || epoch === 0
+        ? 0
+        : epoch <= 161
+        ? 0
+        : epoch > 161 && epoch <= 254
+        ? 1
+        : epoch > 254 && epoch <= 347
+        ? 2
+        : epoch > 347 && epoch <= 437
+        ? 3
+        : epoch > 437 && epoch <= 530
+        ? 4
+        : epoch > 530 && epoch <= 620
+        ? 5
+        : epoch > 620 && epoch <= 713
+        ? 6
+        : 0
+    case 2:
+    case 3:
+      return !epoch || epoch === 0
+        ? 0
+        : epoch <= 161
+        ? 0
+        : epoch > 161 && epoch <= 254
+        ? 1
+        : epoch > 254 && epoch <= 347
+        ? 2
+        : epoch > 347 && epoch <= 437
+        ? 3
+        : 0
+    default:
+      return !epoch || epoch === 0
+        ? 0
+        : epoch <= 84
+        ? 1
+        : epoch > 84 && epoch <= 336
+        ? 2
+        : epoch > 336 && epoch <= 588
+        ? 3
+        : epoch > 588 && epoch <= 840
+        ? 4
+        : epoch > 840 && epoch <= 1092
+        ? 5
+        : 0
+  }
+}
+
+const getSeriesEnd = (type, epoch) => {
+  switch (type) {
+    case 1:
+      return !epoch || epoch === 0
+        ? 0
+        : epoch <= 161
+        ? 161
+        : epoch > 161 && epoch <= 254
+        ? 254
+        : epoch > 254 && epoch <= 347
+        ? 347
+        : epoch > 347 && epoch <= 437
+        ? 437
+        : epoch > 437 && epoch <= 530
+        ? 530
+        : epoch > 530 && epoch <= 620
+        ? 620
+        : epoch > 620 && epoch <= 713
+        ? 713
+        : 0
+    case 2:
+    case 3:
+      return !epoch || epoch === 0
+        ? 0
+        : epoch <= 161
+        ? 161
+        : epoch > 161 && epoch <= 254
+        ? 254
+        : epoch > 254 && epoch <= 347
+        ? 347
+        : epoch > 347 && epoch <= 437
+        ? 437
+        : 0
+    default:
+      return !epoch || epoch === 0
+        ? 0
+        : epoch <= 84
+        ? 84
+        : epoch > 84 && epoch <= 336
+        ? 336
+        : epoch > 336 && epoch <= 588
+        ? 556
+        : epoch > 588 && epoch <= 840
+        ? 840
+        : epoch > 840 && epoch <= 1092
+        ? 1092
+        : 0
+  }
+}
+
+export default function Pool({ base, pair, pool, seriesType, coming, onSelect, metamask, library }) {
+  const poolIndex = pools.findIndex((item) => item === pool)
+  const { poolEpochs = [], poolEpochPeriods = [], poolHearBeatTimes = [], poolBalances = [], poolSupplies = [] } = metamask
+  const currentEpoch = poolEpochs[poolIndex] || 0
+  const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
+  const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
+
   const [[epoch, rate], setRewardRate] = useState([0, 0])
-  const currentSeries =
-    !epoch || epoch === 0
-      ? 0
-      : epoch <= 84
-      ? 1
-      : epoch > 84 && epoch <= 336
-      ? 2
-      : epoch > 336 && epoch <= 588
-      ? 3
-      : epoch > 588 && epoch <= 840
-      ? 4
-      : epoch > 840 && epoch <= 1092
-      ? 5
-      : 0
-  const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * (84 + 252 * (currentSeries - 1))
+  const currentSeries = getSeries(seriesType, epoch)
+  const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, epoch)
   const [now] = useTicker()
   const duration = getDuration(now, countdown * 1000)
 
-  const { rewardRate } = library.methods.LSTETHPool
+  const { rewardRate } = library.methods[pool]
   useEffect(() => {
     if (currentEpoch && currentEpoch !== epoch) {
       rewardRate(currentEpoch)
@@ -164,7 +255,7 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
     }
   }, [currentEpoch])
 
-  const stakePercent = ((metamask.LSTETHPool || 0) / (metamask.sLSTETHPool || 1)) * 100
+  const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
   return (
     <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
@@ -178,12 +269,12 @@ export default function Pool({ base, pair, coming, onSelect, metamask, library }
             {base}/{pair} POOL
           </h2>
         </div>
-        <p className="apy">Total amount staked: {metamask.sLSTETHPool}</p>
+        <p className="apy">Total amount staked: {poolSupplies[poolIndex] || 0}</p>
       </div>
       <div className="pool-data">
         <div className="pool-data__detail">
           <label className="light uppercase">Your stake %</label>
-          <p className="reward">{metamask.LSTETHPool > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%</p>
+          <p className="reward">{poolBalances[poolIndex] > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%</p>
         </div>
         {coming ? (
           <button className="uppercase red" disabled>

@@ -4,34 +4,39 @@ import { connect } from 'react-redux'
 import Dropdown, { MenuItem } from '@trendmicro/react-dropdown'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import Fortmatic from 'fortmatic'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
-import { fortmatics, infuras, isSupportedNetwork, networkLabel, networks } from 'utils/etherscan'
+import { infuras, isSupportedNetwork, networkLabel, networks } from 'utils/etherscan'
+import { tokens, uniV2s, pools, uniV2Pools } from './constants'
 
 const addresses = {
   1: {
     $HRIMP: '0x9077F9e1eFE0eA72867ac89046b2a6264CbcaeF5',
-    LST_WETH_UNI_V2: '0x9D23cb25aD23D73E0a723a47b146139D46Ab5F91',
-    LSTETHPool: '0xF34976159AdAe214E293Cf03D12d20EADE658A8C',
+    $HRIMP_WETH_UNIV2: '0x0000000000000000000000000000000000000000',
+    $HRIMP_WETH_UNIV2_B20_Pool: '0x0000000000000000000000000000000000000000',
+    B20: '0x0000000000000000000000000000000000000000',
+    B20_WETH_UNIV2: '0x0000000000000000000000000000000000000000',
+    B20_WETH_UNIV2_B20_Pool: '0x0000000000000000000000000000000000000000',
+    B20_WETH_UNIV2_LST_Pool: '0x0000000000000000000000000000000000000000',
     LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
+    LST_WETH_UNIV2: '0x9D23cb25aD23D73E0a723a47b146139D46Ab5F91',
+    LST_WETH_UNIV2_$HRIMP_Pool: '0xF34976159AdAe214E293Cf03D12d20EADE658A8C',
+    LST_WETH_UNIV2_B20_Pool: '0x0000000000000000000000000000000000000000',
   },
-  42: {
-    $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
-    LST_WETH_UNI_V2: '0x606B69Cd303B9E718AA57d4e7bcc8D332Fa6D024',
-    LSTETHPool: '0x87f80C03d0950E12c5b33E700A2c302a3036E3C8',
-    LST: '0x4de2573e27E648607B50e1Cfff921A33E4A34405',
+  4: {
+    $HRIMP: '0x868EC8684351fA7d9697da4e961e857219a5Eda5',
+    $HRIMP_WETH_UNIV2: '0x990E0c700687c3734Ea371a2145bC65043113f10',
+    $HRIMP_WETH_UNIV2_B20_Pool: '0xeeC972752645b639f8c618429758eBFA28199088',
+    B20: '0x189407540b2D43f51904221293B2ab896370F17b',
+    B20_WETH_UNIV2: '0xc795cb7912110F124a5d8328978Bc0546A46928A',
+    B20_WETH_UNIV2_B20_Pool: '0x05c0a2d446Af8692620ec464084aFEE9d1470914',
+    B20_WETH_UNIV2_LST_Pool: '0x6295224c5fC3F2f6E4B1f2E530c9ab8099841bc1',
+    LST: '0xfe366786CB07068237FDB6232aF60903C209A14b',
+    LST_WETH_UNIV2: '0xf676Cde05e81c2169E476BaaD72498cE74123706',
+    LST_WETH_UNIV2_$HRIMP_Pool: '0x7c9A0937d3145B7B8E0AD83115D72977e87d90F5',
+    LST_WETH_UNIV2_B20_Pool: '0x95004D48437E7D55f81D4fD0a4e24904890838b8',
   },
 }
-
-// const auctionAddresses = {
-//   1: {},
-//   42: {
-//     $HRIMP: '0xaDb74ae0A618c0b7474B9f2e7B7CcecCF72f9676',
-//     AuctionRegistry: '0xB06b995A40f7752581ec92CBf106872a3B96590B',
-//     WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
-//   },
-// }
 
 const Wrapper = styled.div`
   .connect {
@@ -163,13 +168,6 @@ const providerOptions = (network) => ({
       infuraId: infuras[network],
     },
   },
-  // fortmatic: {
-  //   package: Fortmatic,
-  //   options: {
-  //     key: fortmatics[network],
-  //     network: network === 1 ? null : networkLabel(network).toLowerCase(),
-  //   },
-  // },
 })
 
 class Account extends Component {
@@ -185,7 +183,7 @@ class Account extends Component {
     this.setState(
       {
         session,
-        balanceTimer: setInterval(() => this.getBalance(), 5 * 1000),
+        balanceTimer: setInterval(() => this.getBalance(), 15 * 1000),
       },
       () => {
         this.setWeb3Modal(session.network)
@@ -262,11 +260,10 @@ class Account extends Component {
 
       dispatch({
         type: 'INIT_CONTRACTS',
-        payload: [
-          library,
-          // auctions,
-        ],
+        payload: [library],
       })
+
+      setTimeout(() => this.getBalance(), 2.5 * 1000)
     }
   }
 
@@ -281,111 +278,100 @@ class Account extends Component {
   }
 
   getBalance() {
-    const {
-      metamask,
-      library,
-      // auctions,
-    } = this.props
-    const { address, balance: origin, connected } = metamask
+    const { metamask, library } = this.props
+    const { address, network, balance: origin, connected } = metamask
+    const isSupported = !network || isSupportedNetwork(network)
 
+    if (!isSupported) return
     if (address && connected) {
+      const resolvePromise = (promise, value = '0') => new Promise((resolve) => promise.then(resolve).catch(() => resolve(value)))
       Promise.all([
         library.web3.eth.getBalance(address),
-        library.methods.LSTWETHUNIV2.getBalance(address),
-        library.methods.LSTWETHUNIV2.getAllowance(address),
-        library.methods.LSTETHPool.getBalance(address),
-        library.methods.LSTETHPool.totalSupply(),
-        library.methods.LSTETHPool.getEarned(address),
-        library.methods.$HRIMP.getBalance(address),
-        library.methods.$HRIMP.totalSupply(),
-        // auctions.methods.$HRIMP.getAllowance(address),
-        new Promise((resolve) =>
-          library.methods.LST.getBalance(address)
-            .then(resolve)
-            .catch(() => resolve('0'))
-        ),
         library.methods.web3.getBlock(),
-        library.methods.LSTETHPool.currentEpoch(),
-        library.methods.LSTETHPool.lastEpochStaked(address),
-        new Promise((resolve) =>
-          metamask.network === 1
-            ? library.methods.LSTETHPool.EPOCH_PERIOD()
-                .then(resolve)
-                .catch(() => resolve('28800'))
-            : resolve('28800')
+        Promise.all(tokens.map((token) => resolvePromise(library.methods[token].getBalance(address)))),
+        Promise.all(uniV2s.map((token) => resolvePromise(library.methods[token].getBalance(address)))),
+        Promise.all(
+          uniV2s.map((token) =>
+            Promise.all(
+              uniV2Pools[token].map((pool) => resolvePromise(library.methods[token].getAllowance(address, library.addresses[pool])))
+            )
+          )
         ),
-        new Promise((resolve) =>
-          metamask.network === 1
-            ? library.methods.LSTETHPool.HEART_BEAT_START_TIME()
-                .then(resolve)
-                .catch(() => resolve('1607212800'))
-            : resolve('1607212800')
-        ),
+        Promise.all(pools.map((token) => resolvePromise(library.methods[token].getBalance(address)))),
+        Promise.all(pools.map((token) => resolvePromise(library.methods[token].getEarned(address)))),
+        Promise.all(pools.map((token) => resolvePromise(library.methods[token].totalSupply()))),
+        Promise.all(pools.map((token) => resolvePromise(library.methods[token].currentEpoch()))),
+        Promise.all(pools.map((token) => resolvePromise(library.methods[token].lastEpochStaked(address)))),
+        metamask.poolEpochPeriods
+          ? Promise.resolve()
+          : Promise.all(pools.map((token) => resolvePromise(library.methods[token].EPOCH_PERIOD(), '28800'))),
+        metamask.poolHearBeatTimes
+          ? Promise.resolve()
+          : Promise.all(pools.map((token) => resolvePromise(library.methods[token].HEART_BEAT_START_TIME(), '1607212800'))),
       ])
         .then(
           ([
-            balance1,
-            balance2,
-            allowance2,
-            balance3,
-            supply3,
-            earned3,
-            balance4,
-            supply4,
-            // allowance4,
-            balance5,
+            _balance,
             latestBlockTimestamp,
-            currentEpoch,
-            lastEpochStaked,
-            epochPeriod,
-            heartBeatTime,
+            _tokenBalances,
+            _uniV2Balances,
+            _uniV2Allowances,
+            _poolBalances,
+            _poolEarnings,
+            _poolSupplies,
+            _poolEpochs,
+            _poolLastEpochs,
+            _poolEpochPeriods,
+            _poolHearBeatTimes,
           ]) => {
             function toNumber(value, decimal = 12) {
               const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimal}})?`)
               const val = Number(value.toString().match(regex)[0])
               return val < 0.1 ** Math.max(decimal - 5, 2) ? 0 : val
             }
-            const balance = toNumber(library.web3.utils.fromWei(balance1))
-            const LSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(balance2))
-            const aLSTWETHUNIV2 = toNumber(library.web3.utils.fromWei(allowance2))
-            const LSTETHPool = toNumber(library.web3.utils.fromWei(balance3))
-            const sLSTETHPool = toNumber(library.web3.utils.fromWei(supply3))
-            const eLSTETHPool = toNumber(library.web3.utils.fromWei(earned3))
-            const $HRIMP = toNumber(library.web3.utils.fromWei(balance4))
-            const s$HRIMP = toNumber(library.web3.utils.fromWei(supply4))
-            // const a$HRIMP = toNumber(library.web3.utils.fromWei(allowance4))
-            const LST = toNumber(library.web3.utils.fromWei(balance5))
+            const balance = toNumber(library.web3.utils.fromWei(_balance))
+            const tokenBalances = _tokenBalances.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+            const uniV2Balances = _uniV2Balances.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+            const uniV2Allowances = _uniV2Allowances
+              .reduce((a, c) => [...a, ...c], [])
+              .map((val) => library.web3.utils.fromWei(val))
+              .map(toNumber)
+            const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+            const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+            const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map(toNumber)
+            const poolEpochs = _poolEpochs.map(Number)
+            const poolLastEpochs = _poolLastEpochs.map(Number)
+            const poolEpochPeriods = metamask.poolEpochPeriods || _poolEpochPeriods.map(Number)
+            const poolHearBeatTimes = metamask.poolHearBeatTimes || _poolHearBeatTimes.map(Number)
+
+            const findSome = (val, key) => val.some((item) => item !== metamask[key])
+
             if (
               origin !== balance ||
-              metamask.LSTWETHUNIV2 !== LSTWETHUNIV2 ||
-              metamask.aLSTWETHUNIV2 !== aLSTWETHUNIV2 ||
-              metamask.LSTETHPool !== LSTETHPool ||
-              metamask.sLSTETHPool !== sLSTETHPool ||
-              metamask.eLSTETHPool !== eLSTETHPool ||
-              metamask.$HRIMP !== $HRIMP ||
-              metamask.s$HRIMP !== s$HRIMP ||
-              // metamask.a$HRIMP !== a$HRIMP ||
-              metamask.LST !== LST ||
               metamask.latestBlockTimestamp !== latestBlockTimestamp ||
-              metamask.currentEpoch !== currentEpoch ||
-              metamask.lastEpochStaked !== lastEpochStaked
+              findSome(tokenBalances, 'tokenBalances') ||
+              findSome(uniV2Balances, 'uniV2Balances') ||
+              findSome(uniV2Allowances, 'uniV2Allowances') ||
+              findSome(poolBalances, 'poolBalances') ||
+              findSome(poolEarnings, 'poolEarnings') ||
+              findSome(poolSupplies, 'poolSupplies') ||
+              findSome(tokenBalances, 'tokenBalances') ||
+              findSome(poolEpochs, 'poolEpochs') ||
+              findSome(poolLastEpochs, 'poolLastEpochs')
             )
               this.saveMetamask({
                 balance,
-                LSTWETHUNIV2,
-                aLSTWETHUNIV2,
-                LSTETHPool,
-                sLSTETHPool,
-                eLSTETHPool,
-                $HRIMP,
-                s$HRIMP,
-                // a$HRIMP,
-                LST,
                 latestBlockTimestamp,
-                currentEpoch: Number(currentEpoch || 0),
-                lastEpochStaked: Number(lastEpochStaked || 0),
-                epochPeriod: Number(epochPeriod),
-                heartBeatTime: Number(heartBeatTime),
+                tokenBalances,
+                uniV2Balances,
+                uniV2Allowances,
+                poolBalances,
+                poolEarnings,
+                poolSupplies,
+                poolEpochs,
+                poolLastEpochs,
+                poolEpochPeriods,
+                poolHearBeatTimes,
               })
           }
         )
@@ -430,19 +416,13 @@ class Account extends Component {
                   componentClass={({ className, children, ...props }) => {
                     const expanded = props['aria-expanded']
                     return isAdmin ? (
-                      <AdminAddress
-                        className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
-                        {...props}
-                      >
+                      <AdminAddress className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`} {...props}>
                         <img src="/assets/metamask.svg" alt="MetaMask" />
                         {children}
                         <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
                       </AdminAddress>
                     ) : (
-                      <Address
-                        className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
-                        {...props}
-                      >
+                      <Address className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`} {...props}>
                         <img src="/assets/metamask.svg" alt="MetaMask" />
                         {children}
                         <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
@@ -450,8 +430,7 @@ class Account extends Component {
                     )
                   }}
                 >
-                  {shorten(metamask.address)}{' '}
-                  {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
+                  {shorten(metamask.address)} {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem eventKey={1}>

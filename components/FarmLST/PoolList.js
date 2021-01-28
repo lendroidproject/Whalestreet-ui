@@ -60,7 +60,7 @@ export default connect((state) => state)(function PoolList({ farm = 'LST', metam
           </a>{' '}
           to get pool tokens.
           <br />
-          By staking pool tokens, you can mine B20.
+          By staking pool tokens, you can mine LST.
         </p>
         <div className="flex-wrap justify-center pools">
           {basePools.map((pool) => (
