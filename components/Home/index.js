@@ -183,10 +183,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
               <label>TVL</label>
               <p>$4,600,000</p>
             </div>
-            <div className="statics__item">
+            {/* <div className="statics__item">
               <label>Treasury</label>
               <p>---</p>
-            </div>
+            </div> */}
             <div className="statics__item">
               <label>Current Epoch</label>
               <p>{(metamask.poolEpochs && metamask.poolEpochs[0]) || '-'}</p>
