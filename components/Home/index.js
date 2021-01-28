@@ -17,42 +17,46 @@ const B20_START = new Date('2021-01-24 01:45:00+000').getTime()
 const leadZero = (val) => `00${val}`.substr(-2)
 
 const RewardTokens = styled.div`
-  margin: -12px;
-  @media all and (max-width: 577px) {
-    margin: -12px -20px;
+  max-width: 966px;
+  width: 90%;
+  margin: -8px auto;
+
+  .row {
+    width: 100%;
   }
 
   .reward-token {
-    height: 181px;
-    width: 181px;
-    background-color: var(--color-red);
-    border-radius: 50%;
-    margin: 12px 12px 30px;
-    box-shadow: var(--box-shadow);
+    margin: 8px;
+    padding: 14px;
 
-    @media all and (max-width: 577px) {
-      height: 101px;
-      width: 101px;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.6);
     }
 
-    label {
+    p {
       font-style: italic;
+      font-size: 18px;
       color: var(--color-white);
-      position: absolute;
-      bottom: -30px;
-
+      margin-left: 12px;
       @media all and (max-width: 577px) {
-        bottom: -27px;
-        font-size: 14px;
-        line-height: 21px;
       }
     }
 
     img {
-      max-height: 100%;
+      width: 49px;
+      height: 49px;
+      background-color: var(--color-red);
+      border-radius: 50%;
       @media all and (max-width: 577px) {
-        max-height: 65px;
       }
+    }
+
+    &.image img {
+      background: transparent;
     }
   }
 
@@ -177,12 +181,12 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         ) : (
           <Statics className="flex-center flex-wrap justify-between">
             <div className="statics__item">
-              <label>$hrimp Balance</label>
-              <p>{(metamask.$HRIMP || 0).toFixed(2)}</p>
+              <label>TVL</label>
+              <p>4,600,000</p>
             </div>
             <div className="statics__item">
-              <label>$hrimp Current Supply</label>
-              <p>{(metamask.s$HRIMP || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}</p>
+              <label>Treasury</label>
+              <p>---</p>
             </div>
             <div className="statics__item">
               <label>Current Epoch</label>
@@ -194,63 +198,74 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
           </Statics>
         )}
-        <RewardTokens className="flex-wrap justify-center">
-          <div className="reward-token cursor flex-all relative" onClick={() => onModule('farming')}>
-            <img src="/assets/shrimp-farm.png" alt="Farm $hrimp" />
-            <label>Farm $hrimp</label>
-          </div>
-          {now < B20_START ? (
-            <div className="reward-token cursor flex-all relative coming-soon" onClick={() => false}>
-              <img src="/assets/get-b20.png" alt="Farm B20" />
-              <label>Farm B20</label>
+        <RewardTokens className="flex">
+          <div className="row flex-column">
+            <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farming')}>
+              <img src="/assets/$hrimp-token.svg" alt="Farm $hrimp" />
+              <p>Farm $hrimp</p>
             </div>
-          ) : (
-            <div className="reward-token cursor flex-all relative" onClick={() => onModule('farm-b20')}>
-              <img src="/assets/get-b20.png" alt="Farm B20" />
-              <label>Farm B20</label>
+            <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farm-b20')}>
+              <img src="/assets/b20-token.svg" alt="Farm B20" />
+              <p>Farm B20</p>
             </div>
-          )}
-          <div
-            className="reward-token cursor flex-all relative coming-soon"
-            onClick={() => false && onModule('auctions')}
-          >
-            <img src="/assets/gaffe-hoard.png" alt="Gaff NFT" />
-            <label>Gaff NFT</label>
+            <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farm-lst')}>
+              <img src="/assets/lst-token.svg" alt="Farm LST" />
+              <p>Farm LST</p>
+            </div>
           </div>
-          <div
-            className={`reward-token cursor flex-all relative ${isAdminOwner ? '' : 'coming-soon'}`}
-            onClick={() => isAdminOwner && onModule('market-admin')}
-          >
-            <img src="/assets/swapmaster.png" alt="Market Admin" />
-            <label>Market Admin</label>
+          <div className="row flex-column">
+            <div
+              className="reward-token cursor flex-center relative coming-soon"
+              onClick={() => false && onModule('auctions')}
+            >
+              <img src="/assets/gaffe-hoard.png" alt="Gaff NFT" />
+              <p>Gaff NFT</p>
+            </div>
           </div>
-          <div
-            className="reward-token cursor flex-all relative coming-soon"
-            onClick={() => false && onModule('whale-swap')}
-          >
-            <img src="/assets/whaleswap.png" alt="Whale Swap" />
-            <label>Whale Swap</label>
+          <div className="row flex-column">
+            <div
+              className={`reward-token cursor flex-center relative ${isAdminOwner ? '' : 'coming-soon'}`}
+              onClick={() => isAdminOwner && onModule('market-admin')}
+            >
+              <img src="/assets/swapmaster.png" alt="Market Admin" />
+              <p>Market Admin</p>
+            </div>
           </div>
-          {/* <div className="reward-token cursor flex-all relative coming-soon">
-            <img src="/assets/noon-report.png" alt="Noon Report" />
-            <label>Noon Report</label>
-          </div> */}
+          <div className="row flex-column">
+            <div className="reward-token cursor flex-center relative image coming-soon" onClick={() => false}>
+              <img src="/assets/get-b20.svg" alt="Get B20" />
+              <p>Get B20</p>
+            </div>
+            <div
+              className="reward-token cursor flex-center relative coming-soon"
+              onClick={() => false && onModule('whale-swap')}
+            >
+              <img src="/assets/whaleswap.png" alt="Whale Swap" />
+              <p>Whale Swap</p>
+            </div>
+          </div>
         </RewardTokens>
         <OurTokens>
           <h2>Tokens</h2>
           <div className="buttons flex-center justify-center">
             <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
-              <button>$hrimp</button>
+              <button>
+                $hrimp <img src="/assets/link-icon.svg" />
+              </button>
             </a>
             <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
-              <button>LST</button>
+              <button>
+                LST <img src="/assets/link-icon.svg" />
+              </button>
             </a>
             <a
               href={tokenLink(library.addresses.LST, metamask.network)}
               target="_blank"
               onClick={(e) => e.preventDefault()}
             >
-              <button disabled>NFT</button>
+              <button disabled>
+                NFT <img src="/assets/link-icon.svg" />
+              </button>
             </a>
           </div>
         </OurTokens>

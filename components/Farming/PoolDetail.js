@@ -101,6 +101,8 @@ const Detail = styled.div`
 
       img {
         margin-right: 8px;
+        width: 30px;
+        height: 30px;
         @media all and (max-width: 577px) {
           width: 20px;
           height: 20px;
@@ -423,7 +425,7 @@ function PoolDetail({ base, pair, rewardBase, stake, metamask, library, transact
                       onClick={() => handleMode('claim')}
                       disabled={!metamask.eLSTETHPool}
                     >
-                      <img src={`/assets/claim-${rewardBase}.svg`} alt="Claim" />
+                      <img src={`/assets/claim-${rewardBase.toLowerCase()}.svg`} alt="Claim" />
                       Claim {rewardBase}
                     </button>
                   </div>

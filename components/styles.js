@@ -21,8 +21,8 @@ export const Statics = styled.div`
   border-radius: 12px;
   background-color: var(--color-black);
   color: var(--color-white);
-  max-width: 943px;
-  margin: 0 auto 53px;
+  max-width: 952px;
+  margin: 0 auto 29px;
   padding: 11px 20px 7px;
   text-align: left;
   @media all and (max-width: 577px) {
@@ -76,11 +76,12 @@ export const OurTokens = styled.div`
   }
 
   button {
-    width: 130px;
+    min-width: 100px;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
+    background-color: #0600cc;
+    box-shadow: 1px 7px 3px 0 rgba(0, 0, 0, 0.5);
 
-    font-size: 24px;
     line-height: 1;
     font-weight: bold;
 

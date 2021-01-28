@@ -34,12 +34,6 @@ const addresses = {
 // }
 
 const Wrapper = styled.div`
-  @media all and (min-width: 578px) {
-    position: absolute;
-    right: 65px;
-    top: 58px;
-  }
-
   .connect {
     font-size: 14px;
     line-height: 15px;
@@ -410,6 +404,10 @@ class Account extends Component {
             <Balances className={`flex${isAdmin ? ' admin' : ''}`}>
               {!isAdmin && (
                 <>
+                  <div className="balance-item flex">
+                    <img src="/assets/b20-token.svg" alt="B20" />
+                    {(metamask.$HRIMP || 0).toFixed(2)}
+                  </div>
                   <div className="balance-item flex">
                     <img src="/assets/$hrimp-token.svg" alt="$HRIMP" />
                     {(metamask.$HRIMP || 0).toFixed(2)}

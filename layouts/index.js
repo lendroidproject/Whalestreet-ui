@@ -130,7 +130,9 @@ const Wrapper = styled.div`
 `
 
 const Header = styled.header`
-  padding: 44px 65px 24px;
+  padding: 44px 0 24px;
+  max-width: 952px;
+  margin: auto;
 
   .menu a {
     display: flex;
@@ -140,6 +142,10 @@ const Header = styled.header`
     position: absolute;
     left: 65px;
     top: 58px;
+  }
+
+  .logo {
+    height: 60px;
   }
 
   @media all and (max-width: 577px) {
@@ -209,7 +215,7 @@ const Content = styled.div`
       font-size: 16px;
       line-height: 20px;
 
-      max-width: 943px;
+      max-width: 952px;
       margin: 0 auto 24px;
 
       @media all and (max-width: 577px) {
@@ -366,7 +372,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
 
   return (
     <Wrapper className="flex-column">
-      <Header className="flex-center justify-center relative">
+      <Header className="flex-center justify-between relative">
         <div className="menu flex">
           {isAdmin && (
             <div className="hamburger">

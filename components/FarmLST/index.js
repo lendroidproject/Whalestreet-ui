@@ -1,7 +1,7 @@
 import React from 'react'
 import PoolList from './PoolList'
 
-export default function FarmB20() {
+export default function FarmLST() {
   return (
     <>
       <div className="bg flex-all">
