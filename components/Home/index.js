@@ -253,7 +253,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
                 LST <img src="/assets/link-icon.svg" />
               </button>
             </a>
-            <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank" onClick={(e) => e.preventDefault()}>
+            <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
               <button disabled>
                 NFT <img src="/assets/link-icon.svg" />
               </button>
