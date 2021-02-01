@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import qs from 'qs'
+import BigNumber from 'bignumber.js'
 
 import Countdown from 'react-countdown'
 
 import { tokenLink } from 'utils/etherscan'
 import { getDuration, useTicker } from 'utils/hooks'
+import { getUSDPrice } from 'utils/uniswap'
+import { format } from 'utils/number'
+import { addresses } from 'layouts/constants'
 import { PageWrapper as Wrapper, Statics, OurTokens } from 'components/styles'
 import Promo from './Promo'
 
@@ -78,10 +82,14 @@ export default connect((state) => state)(function Farming({ metamask, library, o
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
   const [now] = useTicker()
   const [assets, setAssets] = useState([])
+  const [data, setData] = useState(null);
   const duration = getDuration(now, epochEndTime * 1000)
 
   const { latestBlockTimestamp } = metamask
   const { epochEndTimeFromTimestamp } = library.methods.LST_WETH_UNIV2_$HRIMP_Pool
+  const { totalSupply } = library.methods.B20;
+  const toNumber = library.web3.utils.fromWei
+
   useEffect(() => {
     if (latestBlockTimestamp && latestBlockTimestamp !== blockTimestamp) {
       epochEndTimeFromTimestamp(latestBlockTimestamp)
@@ -126,6 +134,30 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       }
       queryAssets()
     }
+  }, [metamask.network])
+
+  const loadData = () => {
+    Promise.all([
+      getUSDPrice(addresses[1].B20),
+      totalSupply()
+    ])
+      .then(
+        ([
+          b20USDPrice,
+          b20TotalSupply
+        ]) => {
+          setData({
+            b20USDPrice,
+            b20TotalSupply: toNumber(b20TotalSupply),
+            b20USDTotal: (new BigNumber(b20USDPrice)).multipliedBy(toNumber(b20TotalSupply)).toString()
+          })
+        }
+      )
+      .catch(console.log) 
+  }
+
+  useEffect(() => {
+    loadData()
   }, [metamask.network])
 
   const isAdminOwner = false && assets?.[0]?.owner?.address === metamask.address
@@ -181,7 +213,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           <Statics className="flex-center flex-wrap justify-between">
             <div className="statics__item">
               <label>TVL</label>
-              <p>$4,600,000</p>
+              <p><span style={{ fontSize: 30, lineHeight: 1, verticalAlign: 'bottom' }}>$</span>{format(data?.b20USDTotal, 0)}</p>
             </div>
             {/* <div className="statics__item">
               <label>Treasury</label>
