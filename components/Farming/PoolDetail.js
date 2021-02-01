@@ -164,6 +164,10 @@ const Detail = styled.div`
 
       .stake .actions {
         margin-top: 0;
+
+        &:not(.justify-center) {
+          justify-content: space-between;
+        }
       }
 
       .claim button {
