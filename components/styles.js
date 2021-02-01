@@ -56,7 +56,7 @@ export const Statics = styled.div`
 `
 
 export const OurTokens = styled.div`
-  margin: 33px -18px -5px;
+  margin: 30px;
 
   h2 {
     color: var(--color-white);
@@ -77,13 +77,15 @@ export const OurTokens = styled.div`
 
   button {
     min-width: 100px;
-    border-radius: 10px;
+    border-radius: 16px;
     box-shadow: var(--box-shadow);
     background-color: #0600cc;
     box-shadow: 1px 7px 3px 0 rgba(0, 0, 0, 0.5);
 
+    font-size: 16px;
     line-height: 1;
-    font-weight: bold;
+    text-transform: uppercase;
+    padding: 8px 10px;
 
     &:hover {
       background: var(--color-red);

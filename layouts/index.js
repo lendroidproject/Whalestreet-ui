@@ -5,12 +5,14 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import * as ethUtil from 'ethereumjs-util'
 
-import PriceMarquee from 'components/common/PriceMarquee'
-import Account from './Account'
-import '@trendmicro/react-dropdown/dist/react-dropdown.css'
-import { connectNetworks, isSupportedNetwork } from 'utils/etherscan'
+import { connectNetworks, isSupportedNetwork, tokenLink } from 'utils/etherscan'
 import { agreePrivacy, getPrivacy } from 'utils/requests'
+import PriceMarquee from 'components/common/PriceMarquee'
 import Spinner from 'components/common/Spinner'
+import Account from './Account'
+
+import { OurTokens } from 'components/styles'
+import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -66,8 +68,8 @@ const Wrapper = styled.div`
   }
 
   h2 {
-    font-size: 24px;
-    line-height: 30px;
+    font-size: 20px;
+    line-height: 28px;
     @media all and (max-width: 577px) {
       font-size: 20px;
       line-height: 24px;
@@ -385,7 +387,29 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       </Header>
       <Content>
         {isSupported && termsAgreed && metamask && metamask.connected ? (
-          children
+          <>
+            {children}
+            <OurTokens className="center">
+              <h2>Tokens</h2>
+              <div className="buttons flex-center justify-center">
+                <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
+                  <button>
+                    $hrimp <img src="/assets/link-icon.svg" />
+                  </button>
+                </a>
+                <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
+                  <button>
+                    LST <img src="/assets/link-icon.svg" />
+                  </button>
+                </a>
+                <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
+                  <button disabled>
+                    NFT <img src="/assets/link-icon.svg" />
+                  </button>
+                </a>
+              </div>
+            </OurTokens>
+          </>
         ) : metamask && metamask.connected && isSupported ? (
           <>
             <div className="bg flex-all">
@@ -439,11 +463,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
             Twitter
           </a>
-          <a
-            className="uppercase"
-            href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH"
-            target="_blank"
-          >
+          <a className="uppercase" href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH" target="_blank">
             Add LP
           </a>
           <a

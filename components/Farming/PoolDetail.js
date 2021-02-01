@@ -23,12 +23,17 @@ const Wrapper = styled(PoolWrapper)`
     width: 100%;
     margin: 0;
     border-bottom: 1px solid var(--color-light-blue);
-    margin-bottom: 37px;
     @media all and (max-width: 577px) {
       padding: 0 0 10px;
       font-size: 16px;
       line-height: 24px;
-      margin-bottom: 21px;
+    }
+
+    + div {
+      padding: 16px 16px 24px;
+      @media all and (max-width: 577px) {
+        padding: 16px 0 0;
+      }
     }
   }
 
@@ -152,7 +157,6 @@ const Detail = styled.div`
       }
 
       .actions {
-        justify-content: space-between;
         max-width: 247px;
         margin-left: auto;
         margin-right: auto;
@@ -240,7 +244,7 @@ const Claim = styled(Stake)`
 `
 
 function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
-  const uniIndex = uniV2s.findIndex(item => item === uniV2)
+  const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
   const listIndex = uniV2PoolList.findIndex((item) => item === pool)
   const {
@@ -424,7 +428,7 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
                   </div>
                 </div>
                 <div className="claim">
-                  <div className="actions flex">
+                  <div className="actions flex justify-center">
                     <button className="uppercase red" onClick={() => handleMode('claim')} disabled={!poolEarning}>
                       <img src={`/assets/claim-${rewardBase.toLowerCase()}.svg`} alt="Claim" />
                       Claim {rewardBase}

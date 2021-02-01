@@ -145,6 +145,8 @@ class App extends NextApp {
               @media all and (max-width: 577px) {
                 body { font-size: 12px; line-height: 17px; }
               }
+              .full { width: 100%; }
+              .underline { text-decoration: underline; }
 
               *::-webkit-scrollbar { width: 5px; }
               *::-webkit-scrollbar-track { background: transparent; }

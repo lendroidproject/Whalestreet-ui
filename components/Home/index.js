@@ -5,9 +5,8 @@ import qs from 'qs'
 
 import Countdown from 'react-countdown'
 
-import { tokenLink } from 'utils/etherscan'
 import { getDuration, useTicker } from 'utils/hooks'
-import { PageWrapper as Wrapper, Statics, OurTokens } from 'components/styles'
+import { PageWrapper as Wrapper, Statics } from 'components/styles'
 import Promo from './Promo'
 
 import adminAssets from 'components/Admin/admin-assets'
@@ -141,7 +140,11 @@ export default connect((state) => state)(function Farming({ metamask, library, o
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
           Welcome. WhaleStreet has engineered the bundling and fractionalizing of the $2.7 mn B.20 bundle. You can now farm B20 tokens for
-          exciting rewards. Join the B20 discord <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">here</a>. Learn more about the B.20 project{' '}
+          exciting rewards. Join the B20 discord{' '}
+          <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
+            here
+          </a>
+          . Learn more about the B.20 project{' '}
           <a href="https://b20.metapurse.fund" target="_blank">
             here
           </a>
@@ -238,26 +241,6 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
           </div>
         </RewardTokens>
-        <OurTokens>
-          <h2>Tokens</h2>
-          <div className="buttons flex-center justify-center">
-            <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
-              <button>
-                $hrimp <img src="/assets/link-icon.svg" />
-              </button>
-            </a>
-            <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
-              <button>
-                LST <img src="/assets/link-icon.svg" />
-              </button>
-            </a>
-            <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
-              <button disabled>
-                NFT <img src="/assets/link-icon.svg" />
-              </button>
-            </a>
-          </div>
-        </OurTokens>
       </Wrapper>
     </>
   )

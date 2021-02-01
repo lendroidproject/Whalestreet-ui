@@ -1,5 +1,6 @@
 export const tokens = ['B20', '$HRIMP', 'LST']
 export const uniV2s = ['B20_WETH_UNIV2', '$HRIMP_WETH_UNIV2', 'LST_WETH_UNIV2']
+export const uniV2Labels = ['B20-ETH Uniswap LP Token', '$HRIMP-ETH Uniswap LP Token', 'LST-ETH Uniswap LP Token']
 export const pools = [
   'B20_WETH_UNIV2_B20_Pool',
   'B20_WETH_UNIV2_LST_Pool',

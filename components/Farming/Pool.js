@@ -5,11 +5,10 @@ import { pools } from 'layouts/constants'
 import { uniswapLiquidity } from 'utils/etherscan'
 
 export const Wrapper = styled.div`
-  width: 307px;
+  width: 288px;
   max-width: 100%;
   border-radius: 12px;
   background-color: var(--color-blue);
-  padding: 23px 23px 26px;
   text-align: center;
   margin: 20px;
   color: var(--color-white);
@@ -21,7 +20,6 @@ export const Wrapper = styled.div`
   }
 
   h2 {
-    margin-top: 10px;
     margin-bottom: 10px;
   }
 
@@ -33,7 +31,16 @@ export const Wrapper = styled.div`
     }
 
     &.apy {
-      font-size: 20px;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: normal;
+      min-width: 114px;
+      border-radius: 5px;
+      background-color: #000000;
+      padding: 7px 10px;
+
+      display: inline-flex;
+      justify-content: center;
     }
   }
 
@@ -47,22 +54,53 @@ export const Wrapper = styled.div`
     margin-top: 2px;
   }
 
+  .pool-data {
+    width: 100%;
+    padding: 0 15px;
+
+    &__detail p {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 100%;
+    }
+    &__detail {
+      @media all and (max-width: 577px) {
+        align-items: flex-start;
+      }
+    }
+
+    &.top {
+      @media all and (max-width: 577px) {
+        flex-direction: row-reverse;
+
+        .apy {
+          min-width: 100px;
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+
   .pool-data button {
-    width: 223px;
+    width: 151px;
     border-radius: 7px;
+    margin-bottom: 24px;
     @media all and (max-width: 577px) {
       width: 100px;
       margin-left: 15px;
+      margin-bottom: 12px;
     }
   }
 
   .series {
     text-align: right;
-    margin-top: 24px;
     width: 100%;
-    @media all and (max-width: 577px) {
-      margin-top: 12px;
-    }
+
+    font-size: 14px;
+    line-height: 18px;
+    padding: 8px 14px;
+    background: #08049f;
+    font-weight: 100;
 
     td:first-child {
       text-align: left;
@@ -74,10 +112,12 @@ export const Wrapper = styled.div`
     line-height: 18px;
 
     margin-bottom: 0;
-    padding-top: 12px;
-    border-top: 1px solid white;
     width: 100%;
-    margin-top: 12px;
+    margin: 12px;
+
+    img {
+      margin-left: 6px;
+    }
   }
 
   @media all and (max-width: 577px) {
@@ -104,6 +144,10 @@ export const Wrapper = styled.div`
     .pool-info {
       padding-bottom: 10px;
       border-bottom: 1px solid var(--color-border2);
+
+      @media all and (max-width: 577px) {
+        flex-direction: column;
+      }
     }
 
     .pool-data {
@@ -124,9 +168,7 @@ export const Wrapper = styled.div`
 `
 
 export const PoolIcon = styled.div`
-  padding: 14px 20px 6px;
-  border-radius: 30.5px;
-  color: var(--color-white);
+  padding: 20px 0 10px;
   @media all and (max-width: 577px) {
     padding: 0;
     margin-right: 6px;
@@ -281,11 +323,17 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
             {base}/{pair} POOL
           </h2>
         </div>
-        <p className="apy">Total amount staked: {poolSupplies[poolIndex] || 0}</p>
+      </div>
+      <div className="pool-data top">
+        {/* <p className="apy center">APY {27}%</p> */}
+        <div className="pool-data__detail flex-center flex-column full">
+          <label className="light">Total amount staked:</label>
+          <p>{poolSupplies[poolIndex] || 0}</p>
+        </div>
       </div>
       <div className="pool-data">
-        <div className="pool-data__detail">
-          <label className="light uppercase">Your stake %</label>
+        <div className="pool-data__detail flex-center flex-column">
+          <label className="light uppercase">Your stake</label>
           <p className="reward">{poolBalances[poolIndex] > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%</p>
         </div>
         {coming ? (
@@ -316,10 +364,8 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
               </tr>
             </tbody>
           </table>
-          <p className="add-liquidity">
-            Add liquidity to
-            <br />
-            {base}-{pair} Uniswap Pool{' '}
+          <p className="add-liquidity underline flex-center justify-center">
+            {base}-{pair} Uniswap Pool
             <a href={uniswapLiquidity(library.addresses[base])} target="_blank">
               <img src="/assets/link-icon.svg" />
             </a>
