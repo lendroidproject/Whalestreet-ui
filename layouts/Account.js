@@ -7,7 +7,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
 import { infuras, isSupportedNetwork, networkLabel, networks } from 'utils/etherscan'
-import { tokens, uniV2s, pools, uniV2Pools, addresses } from './constants'
+import { tokens, uniV2s, uniV2Labels, pools, uniV2Pools, addresses } from './constants'
 
 const Wrapper = styled.div`
   .connect {
@@ -416,7 +416,7 @@ class Account extends Component {
                     <MenuItem eventKey={index + 1} key={token}>
                       <img src={`/assets/lst-eth-uni.svg`} alt={token} />
                       <span>
-                        <small>{token}</small>
+                        <small>{uniV2Labels[index]}</small>
                         <br />
                         {uniV2Balances[index] || 0}
                       </span>

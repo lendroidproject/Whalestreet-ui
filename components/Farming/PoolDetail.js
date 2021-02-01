@@ -23,12 +23,17 @@ const Wrapper = styled(PoolWrapper)`
     width: 100%;
     margin: 0;
     border-bottom: 1px solid var(--color-light-blue);
-    margin-bottom: 37px;
     @media all and (max-width: 577px) {
       padding: 0 0 10px;
       font-size: 16px;
       line-height: 24px;
-      margin-bottom: 21px;
+    }
+
+    + div {
+      padding: 16px 16px 24px;
+      @media all and (max-width: 577px) {
+        padding: 16px 0 0;
+      }
     }
   }
 
@@ -152,7 +157,6 @@ const Detail = styled.div`
       }
 
       .actions {
-        justify-content: space-between;
         max-width: 247px;
         margin-left: auto;
         margin-right: auto;
@@ -160,6 +164,10 @@ const Detail = styled.div`
 
       .stake .actions {
         margin-top: 0;
+
+        &:not(.justify-center) {
+          justify-content: space-between;
+        }
       }
 
       .claim button {
@@ -240,7 +248,7 @@ const Claim = styled(Stake)`
 `
 
 function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
-  const uniIndex = uniV2s.findIndex(item => item === uniV2)
+  const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
   const listIndex = uniV2PoolList.findIndex((item) => item === pool)
   const {
@@ -394,10 +402,17 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
       {!mode && (
         <Detail>
           <div className="flex justify-around">
-            <div className="stake">
-              <label>{stake} Staked</label>
-              <p>{poolBalance}</p>
-            </div>
+            {uniV2Allowance > uniV2Balance ? (
+              <div className="stake">
+                <label>{stake} Staked</label>
+                <p>{poolBalance}</p>
+              </div>
+            ) : (
+              <div className="stake">
+                <label>{stake} Balance</label>
+                <p>{uniV2Balance}</p>
+              </div>
+            )}
             <div className="claim">
               <label>Unclaimed {rewardBase} Tokens</label>
               <p>{poolEarning.toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
@@ -424,7 +439,7 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
                   </div>
                 </div>
                 <div className="claim">
-                  <div className="actions flex">
+                  <div className="actions flex justify-center">
                     <button className="uppercase red" onClick={() => handleMode('claim')} disabled={!poolEarning}>
                       <img src={`/assets/claim-${rewardBase.toLowerCase()}.svg`} alt="Claim" />
                       Claim {rewardBase}
