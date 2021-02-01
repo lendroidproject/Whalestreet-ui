@@ -398,10 +398,17 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
       {!mode && (
         <Detail>
           <div className="flex justify-around">
-            <div className="stake">
-              <label>{stake} Staked</label>
-              <p>{poolBalance}</p>
-            </div>
+            {uniV2Allowance > uniV2Balance ? (
+              <div className="stake">
+                <label>{stake} Staked</label>
+                <p>{poolBalance}</p>
+              </div>
+            ) : (
+              <div className="stake">
+                <label>{stake} Balance</label>
+                <p>{uniV2Balance}</p>
+              </div>
+            )}
             <div className="claim">
               <label>Unclaimed {rewardBase} Tokens</label>
               <p>{poolEarning.toString().match(/^-?\d+(?:\.\d{0,8})?/)[0]}</p>
