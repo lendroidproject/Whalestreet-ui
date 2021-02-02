@@ -337,7 +337,7 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
     loadUniData()
   }, [base])
 
-  console.log(uniData)
+  // console.log(uniData)
 
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
