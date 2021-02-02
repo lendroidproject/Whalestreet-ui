@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { getDuration, useTicker } from 'utils/hooks'
-import { pools } from 'layouts/constants'
+import { addresses, pools } from 'layouts/constants'
 import { uniswapLiquidity } from 'utils/etherscan'
+import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
 
 export const Wrapper = styled.div`
   width: 288px;
@@ -293,6 +294,7 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
   const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
 
   const [[epoch, rate], setRewardRate] = useState([0, 0])
+  const [uniData, setUniData] = useState(null)
   const currentSeries = getSeries(seriesType, epoch)
   const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, epoch)
   const [now] = useTicker()
@@ -308,6 +310,34 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
         .catch(console.log)
     }
   }, [currentEpoch])
+
+  const loadUniData = () => {
+    const poolAddress = addresses[1][`${base}_WETH_UNIV2`]
+    const tokenAddress = addresses[1][base]
+
+    Promise.all([
+      getTokenPriceUSD(tokenAddress),
+      getPoolLiquidityUSD(poolAddress),
+    ])
+      .then(
+        ([
+          tokenPriceUSD,
+          liquidityUSD,
+        ]) => {
+          setUniData({
+            tokenPriceUSD,
+            liquidityUSD,
+          })
+        }
+      )
+      .catch(console.log)
+  }
+
+  useEffect(() => {
+    loadUniData()
+  }, [base])
+
+  console.log(uniData)
 
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
