@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import Countdown from 'react-countdown'
 
 import { getDuration, useTicker } from 'utils/hooks'
-import { getUSDPrice } from 'utils/uniswap'
+import { getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
 import { addresses } from 'layouts/constants'
 import { PageWrapper as Wrapper, Statics } from 'components/styles'
@@ -137,7 +137,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
 
   const loadData = () => {
     Promise.all([
-      getUSDPrice(addresses[1].B20),
+      getTokenPriceUSD(addresses[1].B20),
       totalSupply()
     ])
       .then(
