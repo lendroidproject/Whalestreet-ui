@@ -10,37 +10,49 @@ export const graphClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-export async function getUSDPrice(tokenAddress) {
-  console.log(tokenAddress)
+export async function getTokenPriceUSD(tokenAddress) {
   try {
-    const { data: tokenData } = await graphClient.query({
+    const { data } = await graphClient.query({
       query: gql`
       {
         token(id: "${tokenAddress.toLowerCase()}"){
-          name
-          symbol
-          decimals
           derivedETH
-          tradeVolumeUSD
-          totalLiquidity
         }
-      }`
-    });
-    const derivedETH = tokenData?.token?.derivedETH;
-  
-    const { data: bundleData } = await await graphClient.query({
-      query: gql`
-      {
         bundle(id: "1") {
           ethPrice
         }
       }`
-    });
-    const ethPrice = bundleData?.bundle?.ethPrice
-
+    })
+    const derivedETH = data?.token?.derivedETH
+    const ethPrice = data?.bundle?.ethPrice
+  
     return new BigNumber(derivedETH || 0).multipliedBy(ethPrice || 0).toString()
   } catch (err) {
     console.log(err)
   }
   return 0
+}
+
+export async function getPoolLiquidityUSD(poolAddress) {
+  try {
+    const { data } = await graphClient.query({
+      query: gql`
+      {
+        pair(id: "${poolAddress.toLowerCase()}") {
+          trackedReserveETH
+        }
+        bundle(id: "1") {
+          ethPrice
+        }
+      }
+      `
+    });
+    const trackedReserveETH = data?.pair?.trackedReserveETH
+    const ethPrice = data?.bundle?.ethPrice
+
+    return new BigNumber(trackedReserveETH || 0).multipliedBy(ethPrice || 0).toString()
+  } catch (err) {
+    console.log(err)
+  }
+  return null;
 }
