@@ -9,6 +9,37 @@ import configureStore from 'store'
 
 import Layout from 'layouts'
 
+import MagicCss from '@frontend-ninjas/magic-css'
+
+const magic = new MagicCss({
+  fontFamily: 'Space Mono, monospace',
+  colors: [
+    ['red', '#eb0f0f'],
+    ['red1', '#ff0006'],
+    ['blue', '#0600cc'],
+    ['yellow', '#fde92a'],
+    ['gold', '#fff400'],
+    ['cyan', '#3d9fff'],
+    ['light-blue', '#413bff'],
+    ['grey', '#f2f2f2'],
+    ['dark-grey', '#979797'],
+    ['border', '#d6d6d6'],
+    ['border2', '#5752fc'],
+  ],
+  variables: [
+    ['border', ['input', '1px solid #d6d6d6']],
+    ['background', ['grad-1', 'linear-gradient(224.6deg, #464975 0%, #8A92B2 38.25%, #E653B8 75.11%, #C43C9A 100%)']],
+    ['background', ['grad-2', 'linear-gradient(224.37deg, #464975 0%, #8A92B2 38.25%, #55DCE5 75.11%, #56DD9C 100%)']],
+    ['background', ['grad-3', 'linear-gradient(224.74deg, #464975 0%, #8A92B2 38.25%, #F55256 74.25%, #FF0006 100%)']],
+    ['background', ['opacity-05', 'rgba(0, 0, 0, 0.5)']],
+    ['background', ['opacity-09', 'rgba(0, 0, 0, 0.92)']],
+    ['box-shadow', '1px 7px 3px 0 rgba(0, 0, 0, 0.5)'],
+    ['box-shadow', ['narrow', '0 2px 4px 0 rgba(0, 0, 0, 0.5)']],
+    ['box-shadow', ['dark', '6px 6px 17px 0 #121120']],
+  ],
+  classes: [['light', [['font-wight', 'normal']]]],
+})
+
 const theme = {
   primary: 'default',
 }
@@ -38,26 +69,8 @@ class App extends NextApp {
           <style
             dangerouslySetInnerHTML={{
               __html: `
+                ${magic.getStyle()}
               :root {
-                --font-family: 'Space Mono', monospace;
-                --color-black: #000000;
-                --color-white: #ffffff;
-                --color-red: #eb0f0f;
-                --color-blue: #0600cc;
-                --color-yellow: #fde92a;
-                --color-gold: #fff400;
-                --color-cyan: #3d9fff;
-                --color-light-blue: #413bff;
-                --color-grey: #f2f2f2;
-                --color-dark-grey: #979797;
-                --color-border: #d6d6d6;
-                --color-border2: #5752fc;
-                --color-opacity09: rgba(0,0,0,0.92);
-                --box-shadow: 1px 7px 3px 0 rgba(0,0,0,0.5);
-                --box-shadow-narrow: 0 2px 4px 0 rgba(0,0,0,0.5);
-                --box-shadow-dark: 6px 6px 17px 0 #121120;;
-
-                --color-red1: #ff0006;
                 /* Color */
                 --surface: #c0c0c0;
                 --button-highlight: #ffffff;
@@ -122,25 +135,8 @@ class App extends NextApp {
                   inset 1px 1px var(--button-shadow), inset -2px -2px var(--button-face),
                   inset 2px 2px var(--window-frame);
               }
-              body { font-family: var(--font-family); font-weight: bold; font-size: 16px; line-height: 24px; color: var(--color-black); }
-              body * { box-sizing: border-box; }
-              a, button, .cursor { cursor: pointer; user-select: none; }
+              body { font-weight: bold; font-size: 16px; line-height: 24px; color: var(--color-black); }
               button, input { font-weight: bold; }
-              .center { text-align: center; }
-              .flex { display: flex; }
-              .flex-all { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-              .flex-wrap { display: flex; flex-wrap: wrap; }
-              .flex-center { display: flex; align-items: center; }
-              .flex-column { display: flex; flex-direction: column; }
-              .flex-end { display: flex; align-items: flex-end; }
-              .justify-center { justify-content: center; }
-              .justify-between { justify-content: space-between; }
-              .justify-around { justify-content: space-around; }
-              .relative { position: relative }
-              .fill { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
-              button { border: none; }
-              h1, h2, h3, h4, h5, p { margin-top: 0; }
-              .uppercase { text-transform: uppercase; }
               .light { font-weight: normal; }
               @media all and (max-width: 577px) {
                 body { font-size: 12px; line-height: 17px; }

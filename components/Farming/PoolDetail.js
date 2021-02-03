@@ -22,7 +22,7 @@ const Wrapper = styled(PoolWrapper)`
     padding: 15px;
     width: 100%;
     margin: 0;
-    border-bottom: 1px solid var(--color-light-blue);
+    // border-bottom: 1px solid var(--color-light-blue);
     @media all and (max-width: 577px) {
       padding: 0 0 10px;
       font-size: 16px;
@@ -247,7 +247,7 @@ const Claim = styled(Stake)`
   }
 `
 
-function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, library, transactions, dispatch, onBack }) {
+function PoolDetail({ base, pair, pool, uniV2, rewardBase, background, stake, metamask, library, transactions, dispatch, onBack }) {
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
   const listIndex = uniV2PoolList.findIndex((item) => item === pool)
@@ -387,7 +387,7 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, stake, metamask, libr
   }
 
   return (
-    <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
+    <Wrapper className={`flex-center flex-column ${background ? `background-${background}` : ''}`} key={`${base}${pair}`} detail>
       <button className="white uppercase" onClick={() => (mode ? setMode('') : onBack())}>
         <img src="/assets/back.svg" alt="Go Back" />
         Back

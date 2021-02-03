@@ -8,6 +8,7 @@ export const pools = [
     seriesType: 1,
     rewardBase: 'B20',
     stake: 'B20-ETH-UNI-V2',
+    background: 'grad-1',
   },
   {
     farm: 'B20',
@@ -18,6 +19,7 @@ export const pools = [
     seriesType: 2,
     rewardBase: 'B20',
     stake: 'LST-ETH-UNI-V2',
+    background: 'grad-2',
   },
   {
     farm: 'B20',
@@ -28,5 +30,6 @@ export const pools = [
     seriesType: 3,
     rewardBase: 'B20',
     stake: '$HRIMP-ETH-UNI-V2',
+    background: 'grad-3',
   },
 ]

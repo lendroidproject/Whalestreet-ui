@@ -97,10 +97,13 @@ export const Wrapper = styled.div`
     width: 100%;
 
     font-size: 14px;
-    line-height: 18px;
-    padding: 8px 14px;
-    background: #08049f;
+    line-height: 16px;
     font-weight: 100;
+
+    border-radius: 4px;
+    margin: 0 6px;
+    width: calc(100% - 12px);
+    padding: 8px;
 
     td:first-child {
       text-align: left;
@@ -285,7 +288,7 @@ const getSeriesEnd = (type, epoch) => {
   }
 }
 
-export default function Pool({ base, pair, pool, seriesType, coming, onSelect, metamask, library }) {
+export default function Pool({ base, pair, pool, seriesType, coming, background, onSelect, metamask, library }) {
   const poolIndex = pools.findIndex((item) => item === pool)
   const { poolEpochs = [], poolEpochPeriods = [], poolHearBeatTimes = [], poolBalances = [], poolSupplies = [] } = metamask
   const currentEpoch = poolEpochs[poolIndex] || 0
@@ -312,7 +315,7 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
   return (
-    <Wrapper className="flex-center flex-column" key={`${base}${pair}`} detail>
+    <Wrapper className={`flex-center flex-column ${background ? `background-${background}` : ''}`} key={`${base}${pair}`} detail>
       <div className="pool-info">
         <div className="pool-info__detail">
           <PoolIcon className="flex-center justify-center pool-info__icons">
@@ -348,7 +351,7 @@ export default function Pool({ base, pair, pool, seriesType, coming, onSelect, m
       </div>
       {currentSeries > 0 && (
         <>
-          <table className="series">
+          <table className="series background-opacity-05">
             <tbody>
               <tr>
                 <td>Current series:</td>
