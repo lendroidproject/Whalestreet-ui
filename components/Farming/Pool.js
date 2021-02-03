@@ -235,6 +235,8 @@ const getSeries = (type, epoch) => {
         ? 4
         : epoch > 840 && epoch <= 1092
         ? 5
+        : epoch > 1092 && epoch <= 3360
+        ? 6
         : 0
   }
 }
@@ -309,7 +311,7 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
     const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
-    return ((seriesRewardUSD / (epochCount / 3) * 365 * 100) / liquidityUSD).toFixed(0)
+    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / liquidityUSD).toFixed(0)
   }
 
   const { rewardRate } = library.methods[pool]
