@@ -289,19 +289,28 @@ const getSeriesEnd = (type, epoch) => {
   }
 }
 
-export default function Pool({ base, pair, pool, seriesType, coming, background, onSelect, metamask, library }) {
+export default function Pool({ farm, base, pair, pool, seriesType, coming, background, rewardBySeries, onSelect, metamask, library }) {
   const poolIndex = pools.findIndex((item) => item === pool)
   const { poolEpochs = [], poolEpochPeriods = [], poolHearBeatTimes = [], poolBalances = [], poolSupplies = [] } = metamask
   const currentEpoch = poolEpochs[poolIndex] || 0
   const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
   const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
 
+  const [now] = useTicker(60)
   const [[epoch, rate], setRewardRate] = useState([0, 0])
   const [uniData, setUniData] = useState(null)
+
   const currentSeries = getSeries(seriesType, epoch)
   const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, epoch)
-  const [now] = useTicker()
   const duration = getDuration(now, countdown * 1000)
+
+  const getAPY = () => {
+    if (!uniData || !currentSeries || !rewardBySeries) return '-'
+    const [seriesReward, epochCount] = rewardBySeries[currentSeries]
+    const { tokenPriceUSD, liquidityUSD } = uniData
+    const seriesRewardUSD = tokenPriceUSD * seriesReward
+    return ((seriesRewardUSD / (epochCount / 3) * 365 * 100) / liquidityUSD).toFixed(0)
+  }
 
   const { rewardRate } = library.methods[pool]
   useEffect(() => {
@@ -316,31 +325,21 @@ export default function Pool({ base, pair, pool, seriesType, coming, background,
 
   const loadUniData = () => {
     const poolAddress = addresses[1][`${base}_WETH_UNIV2`]
-    const tokenAddress = addresses[1][base]
+    const tokenAddress = addresses[1][farm]
 
-    Promise.all([
-      getTokenPriceUSD(tokenAddress),
-      getPoolLiquidityUSD(poolAddress),
-    ])
-      .then(
-        ([
+    Promise.all([getTokenPriceUSD(tokenAddress), getPoolLiquidityUSD(poolAddress)])
+      .then(([tokenPriceUSD, liquidityUSD]) => {
+        setUniData({
           tokenPriceUSD,
           liquidityUSD,
-        ]) => {
-          setUniData({
-            tokenPriceUSD,
-            liquidityUSD,
-          })
-        }
-      )
+        })
+      })
       .catch(console.log)
   }
 
   useEffect(() => {
     loadUniData()
-  }, [base])
-
-  // console.log(uniData)
+  }, [base, now])
 
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
@@ -358,7 +357,7 @@ export default function Pool({ base, pair, pool, seriesType, coming, background,
         </div>
       </div>
       <div className="pool-data top">
-        {/* <p className="apy center">APY {27}%</p> */}
+        {rewardBySeries && <p className="apy center">APY {getAPY()}%</p>}
         <div className="pool-data__detail flex-center flex-column full">
           <label className="light">Total amount staked:</label>
           <p>{poolSupplies[poolIndex] || 0}</p>

@@ -1,6 +1,6 @@
 export const pools = [
   {
-    farm: '$hrimp',
+    farm: '$HRIMP',
     base: 'LST',
     pair: 'ETH',
     pool: 'LST_WETH_UNIV2_$HRIMP_Pool',
@@ -8,5 +8,13 @@ export const pools = [
     seriesType: 0,
     rewardBase: '$hrimp',
     stake: 'LST-ETH-UNI-V2',
+    background: 'grad-1',
+    rewardBySeries: {
+      1: [12000000, 84],
+      2: [21600000, 242],
+      3: [10800000, 242],
+      4: [5400000, 242],
+      5: [2700000, 242],
+    }
   },
 ]
