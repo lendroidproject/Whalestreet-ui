@@ -13,6 +13,7 @@ import Account from './Account'
 
 import { OurTokens } from 'components/styles'
 import '@trendmicro/react-dropdown/dist/react-dropdown.css'
+import 'katex/dist/katex.min.css'
 
 const Wrapper = styled.div`
   height: 100vh;

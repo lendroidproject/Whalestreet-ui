@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import ReactTooltip from 'react-tooltip'
+import { InlineMath } from 'react-katex'
+
 import { getDuration, useTicker } from 'utils/hooks'
-import { addresses, pools } from 'layouts/constants'
 import { uniswapLiquidity } from 'utils/etherscan'
 import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
+import { format } from 'utils/number'
+import { addresses, pools } from 'layouts/constants'
 
 export const Wrapper = styled.div`
   width: 288px;
@@ -327,7 +330,7 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
 
   const getAPYInfo = () => {
     if (!uniData || !currentSeries || !rewardBySeries) return '-'
-    const [seriesReward] = rewardBySeries[currentSeries]
+    const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
     return (
@@ -335,17 +338,22 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
         <tbody>
           <tr>
             <td>{farm} Price:</td>
-            <td>${Number(tokenPriceUSD).toFixed(4)}</td>
+            <td>${format(tokenPriceUSD, 4)}</td>
           </tr>
           <tr>
-            <td>Series Reward:</td>
-            <td>${Number(seriesRewardUSD).toFixed(2)}</td>
+            <td>Daily reward:</td>
+            <td>${format(seriesRewardUSD / (epochCount / 3), 2)}</td>
           </tr>
           <tr>
             <td>
               {base}/{pair} Liquidity:
             </td>
-            <td>${Number(liquidityUSD).toFixed(2)}</td>
+            <td>${format(liquidityUSD, 2)}</td>
+          </tr>
+          <tr>
+            <td colSpan={2}>
+              <InlineMath math={`\\large APY = \\Large{\\frac {${format(seriesRewardUSD / (epochCount / 3), 2)} \\;\\times\\; 365} {${format(liquidityUSD, 2)}}} \\large{\\times\\; 100}`} />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -407,7 +415,7 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
         )}
         <div className="pool-data__detail flex-center flex-column full">
           <label className="light">Total amount staked:</label>
-          <p>{poolSupplies[poolIndex] || 0}</p>
+          <p>{format(poolSupplies[poolIndex] || 0, 8)}</p>
         </div>
       </div>
       <div className="pool-data">
@@ -451,7 +459,7 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
           </p>
         </>
       )}
-      <ReactTooltip id={`${pool}-apy`} effect="solid" multiline>
+      <ReactTooltip id={`${pool}-apy`} effect="solid" multiline delayHide={60 * 1000}>
         {getAPYInfo()}
       </ReactTooltip>
     </Wrapper>
