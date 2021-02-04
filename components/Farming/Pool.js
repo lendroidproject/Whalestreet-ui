@@ -459,7 +459,7 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
           </p>
         </>
       )}
-      <ReactTooltip id={`${pool}-apy`} effect="solid" multiline delayHide={60 * 1000}>
+      <ReactTooltip id={`${pool}-apy`} effect="solid" multiline>
         {getAPYInfo()}
       </ReactTooltip>
     </Wrapper>
