@@ -25,7 +25,7 @@ export async function getTokenPriceUSD(tokenAddress) {
     })
     const derivedETH = data?.token?.derivedETH
     const ethPrice = data?.bundle?.ethPrice
-  
+
     return new BigNumber(derivedETH || 0).multipliedBy(ethPrice || 0).toString()
   } catch (err) {
     console.log(err)
@@ -50,7 +50,7 @@ export async function getPoolLiquidityUSD(poolAddress) {
     const trackedReserveETH = data?.pair?.trackedReserveETH
     const ethPrice = data?.bundle?.ethPrice
 
-    return new BigNumber(trackedReserveETH || 0).multipliedBy(ethPrice || 0).toString()
+    return new BigNumber(ethPrice || 0).dividedBy(trackedReserveETH || 0).toString()
   } catch (err) {
     console.log(err)
   }

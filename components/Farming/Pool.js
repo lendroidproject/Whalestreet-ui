@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import ReactTooltip from 'react-tooltip'
 import { getDuration, useTicker } from 'utils/hooks'
 import { addresses, pools } from 'layouts/constants'
 import { uniswapLiquidity } from 'utils/etherscan'
@@ -42,6 +43,16 @@ export const Wrapper = styled.div`
 
       display: inline-flex;
       justify-content: center;
+
+      .tool-tip {
+        border: 1px solid white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        font-size: 11px;
+        line-height: 16px;
+        margin: 4px 0px 4px 6px;
+      }
     }
   }
 
@@ -307,11 +318,38 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
   const duration = getDuration(now, countdown * 1000)
 
   const getAPY = () => {
-    if (!uniData || !currentSeries || !rewardBySeries) return '-'
+    if (!uniData || !currentSeries || !rewardBySeries || !poolSupplies[poolIndex]) return '-'
     const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
-    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / liquidityUSD).toFixed(0)
+    const totalLiquidity = poolSupplies[poolIndex] * liquidityUSD
+    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / totalLiquidity).toFixed(0)
+  }
+
+  const getAPYInfo = () => {
+    if (!uniData || !currentSeries || !rewardBySeries || !poolSupplies[poolIndex]) return '-'
+    const [seriesReward] = rewardBySeries[currentSeries]
+    const { tokenPriceUSD, liquidityUSD } = uniData
+    const seriesRewardUSD = tokenPriceUSD * seriesReward
+    const totalLiquidity = poolSupplies[poolIndex] * liquidityUSD
+    return (
+      <table className="text-left">
+        <tbody>
+          <tr>
+            <td>{farm} Price:</td>
+            <td>${Number(tokenPriceUSD).toFixed(4)}</td>
+          </tr>
+          <tr>
+            <td>Series Reward:</td>
+            <td>${Number(seriesRewardUSD).toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>{base}/{pair} Liquidity:</td>
+            <td>${Number(totalLiquidity).toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
+    )
   }
 
   const { rewardRate } = library.methods[pool]
@@ -359,7 +397,14 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
         </div>
       </div>
       <div className="pool-data top">
-        {rewardBySeries && <p className="apy center">APY {getAPY()}%</p>}
+        {rewardBySeries && (
+          <p className="apy center">
+            APY {getAPY()}%{' '}
+            <span className="tool-tip cursor" data-tip data-for={`${pool}-apy`} data-iscapture="true">
+              &#8505;
+            </span>
+          </p>
+        )}
         <div className="pool-data__detail flex-center flex-column full">
           <label className="light">Total amount staked:</label>
           <p>{poolSupplies[poolIndex] || 0}</p>
@@ -406,6 +451,9 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
           </p>
         </>
       )}
+      <ReactTooltip id={`${pool}-apy`} effect="solid" multiline>
+        {getAPYInfo()}
+      </ReactTooltip>
     </Wrapper>
   )
 }

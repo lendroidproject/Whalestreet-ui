@@ -37,7 +37,11 @@ const magic = new MagicCss({
     ['box-shadow', ['narrow', '0 2px 4px 0 rgba(0, 0, 0, 0.5)']],
     ['box-shadow', ['dark', '6px 6px 17px 0 #121120']],
   ],
-  classes: [['light', [['font-wight', 'normal']]]],
+  classes: [
+    ['light', [['font-wight', 'normal']]],
+    ['text-left', [['text-align', 'left']]],
+    ['text-right', [['text-align', 'right']]],
+  ],
 })
 
 const theme = {
