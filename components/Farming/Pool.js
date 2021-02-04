@@ -318,20 +318,18 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
   const duration = getDuration(now, countdown * 1000)
 
   const getAPY = () => {
-    if (!uniData || !currentSeries || !rewardBySeries || !poolSupplies[poolIndex]) return '-'
+    if (!uniData || !currentSeries || !rewardBySeries) return '-'
     const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
-    const totalLiquidity = poolSupplies[poolIndex] * liquidityUSD
-    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / totalLiquidity).toFixed(0)
+    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / liquidityUSD).toFixed(0)
   }
 
   const getAPYInfo = () => {
-    if (!uniData || !currentSeries || !rewardBySeries || !poolSupplies[poolIndex]) return '-'
+    if (!uniData || !currentSeries || !rewardBySeries) return '-'
     const [seriesReward] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
-    const totalLiquidity = poolSupplies[poolIndex] * liquidityUSD
     return (
       <table className="text-left">
         <tbody>
@@ -344,8 +342,10 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
             <td>${Number(seriesRewardUSD).toFixed(2)}</td>
           </tr>
           <tr>
-            <td>{base}/{pair} Liquidity:</td>
-            <td>${Number(totalLiquidity).toFixed(2)}</td>
+            <td>
+              {base}/{pair} Liquidity:
+            </td>
+            <td>${Number(liquidityUSD).toFixed(2)}</td>
           </tr>
         </tbody>
       </table>
