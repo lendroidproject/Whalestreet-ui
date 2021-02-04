@@ -268,6 +268,7 @@ class Account extends Component {
             )
           )
         ),
+        Promise.all(uniV2s.map((token) => resolvePromise(library.methods[token].totalSupply()))),
         Promise.all(pools.map((token) => resolvePromise(library.methods[token].getBalance(address)))),
         Promise.all(pools.map((token) => resolvePromise(library.methods[token].getEarned(address)))),
         Promise.all(pools.map((token) => resolvePromise(library.methods[token].totalSupply()))),
@@ -287,6 +288,7 @@ class Account extends Component {
             _tokenBalances,
             _uniV2Balances,
             _uniV2Allowances,
+            _uniV2Supplies,
             _poolBalances,
             _poolEarnings,
             _poolSupplies,
@@ -307,6 +309,7 @@ class Account extends Component {
               .reduce((a, c) => [...a, ...c], [])
               .map((val) => library.web3.utils.fromWei(val))
               .map((val) => toNumber(val))
+            const uniV2Supplies = _uniV2Supplies.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
@@ -323,6 +326,7 @@ class Account extends Component {
               findSome(tokenBalances, 'tokenBalances') ||
               findSome(uniV2Balances, 'uniV2Balances') ||
               findSome(uniV2Allowances, 'uniV2Allowances') ||
+              findSome(uniV2Supplies, 'uniV2Supplies') ||
               findSome(poolBalances, 'poolBalances') ||
               findSome(poolEarnings, 'poolEarnings') ||
               findSome(poolSupplies, 'poolSupplies') ||
@@ -335,6 +339,7 @@ class Account extends Component {
                 tokenBalances,
                 uniV2Balances,
                 uniV2Allowances,
+                uniV2Supplies,
                 poolBalances,
                 poolEarnings,
                 poolSupplies,

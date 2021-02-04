@@ -7,13 +7,13 @@ import { getDuration, useTicker } from 'utils/hooks'
 import { uniswapLiquidity } from 'utils/etherscan'
 import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
-import { addresses, pools } from 'layouts/constants'
+import { addresses, pools, uniV2s } from 'layouts/constants'
 
 export const Wrapper = styled.div`
   width: 288px;
   max-width: 100%;
   border-radius: 12px;
-  background-color: var(--color-blue);
+  background-color: transparent;
   text-align: center;
   margin: 20px;
   color: var(--color-white);
@@ -305,9 +305,30 @@ const getSeriesEnd = (type, epoch) => {
   }
 }
 
-export default function Pool({ farm, base, pair, pool, seriesType, coming, background, rewardBySeries, onSelect, metamask, library }) {
+export default function Pool({
+  farm,
+  base,
+  pair,
+  pool,
+  uniV2,
+  seriesType,
+  coming,
+  background,
+  rewardBySeries,
+  onSelect,
+  metamask,
+  library,
+}) {
   const poolIndex = pools.findIndex((item) => item === pool)
-  const { poolEpochs = [], poolEpochPeriods = [], poolHearBeatTimes = [], poolBalances = [], poolSupplies = [] } = metamask
+  const uniIndex = uniV2s.findIndex((item) => item === uniV2)
+  const {
+    poolEpochs = [],
+    poolEpochPeriods = [],
+    poolHearBeatTimes = [],
+    poolBalances = [],
+    poolSupplies = [],
+    uniV2Supplies = [],
+  } = metamask
   const currentEpoch = poolEpochs[poolIndex] || 0
   const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
   const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
@@ -325,7 +346,9 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
     const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
-    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / liquidityUSD).toFixed(0)
+    const liquidityVolumn = (liquidityUSD / uniV2Supplies[uniIndex]) * poolSupplies[poolIndex]
+    console.log(uniV2, uniV2Supplies[uniIndex], poolSupplies[poolIndex], liquidityUSD)
+    return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / liquidityVolumn).toFixed(0)
   }
 
   const getAPYInfo = () => {
@@ -333,6 +356,7 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
     const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
+    const liquidityVolumn = (liquidityUSD / uniV2Supplies[uniIndex]) * poolSupplies[poolIndex]
     return (
       <table className="text-left">
         <tbody>
@@ -348,11 +372,16 @@ export default function Pool({ farm, base, pair, pool, seriesType, coming, backg
             <td>
               {base}/{pair} Liquidity:
             </td>
-            <td>${format(liquidityUSD, 2)}</td>
+            <td>${format(liquidityVolumn, 2)}</td>
           </tr>
           <tr>
             <td colSpan={2}>
-              <InlineMath math={`\\large APY = \\Large{\\frac {${format(seriesRewardUSD / (epochCount / 3), 2)} \\;\\times\\; 365} {${format(liquidityUSD, 2)}}} \\large{\\times\\; 100}`} />
+              <InlineMath
+                math={`\\large APY = \\Large{\\frac {${format(seriesRewardUSD / (epochCount / 3), 2)} \\;\\times\\; 365} {${format(
+                  liquidityVolumn,
+                  2
+                )}}} \\large{\\times\\; 100}`}
+              />
             </td>
           </tr>
         </tbody>

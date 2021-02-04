@@ -28,9 +28,9 @@ const magic = new MagicCss({
   ],
   variables: [
     ['border', ['input', '1px solid #d6d6d6']],
-    ['background', ['grad-1', 'linear-gradient(224.6deg, #464975 0%, #8A92B2 38.25%, #E653B8 75.11%, #C43C9A 100%)']],
-    ['background', ['grad-2', 'linear-gradient(224.37deg, #464975 0%, #8A92B2 38.25%, #55DCE5 75.11%, #56DD9C 100%)']],
-    ['background', ['grad-3', 'linear-gradient(224.74deg, #464975 0%, #8A92B2 38.25%, #F55256 74.25%, #FF0006 100%)']],
+    ['background', ['grad-1', 'linear-gradient(224.6deg, #464975B3 0%, #8A92B2B3 38.25%, #E653B8B3 75.11%, #C43C9AB3 100%)']],
+    ['background', ['grad-2', 'linear-gradient(224.37deg, #464975B3 0%, #8A92B2B3 38.25%, #55DCE5B3 75.11%, #56DD9CB3 100%)']],
+    ['background', ['grad-3', 'linear-gradient(224.74deg, #464975B3 0%, #8A92B2B3 38.25%, #F55256B3 74.25%, #FF0006B3 100%)']],
     ['background', ['opacity-05', 'rgba(0, 0, 0, 0.5)']],
     ['background', ['opacity-09', 'rgba(0, 0, 0, 0.92)']],
     ['box-shadow', '1px 7px 3px 0 rgba(0, 0, 0, 0.5)'],
