@@ -9,6 +9,8 @@ export const pools = [
     rewardBase: '$hrimp',
     stake: 'LST-ETH-UNI-V2',
     background: 'grad-2',
+    color: '#4ED19C',
+    icon: 'green',
     rewardBySeries: {
       1: [12000000, 84],
       2: [21600000, 242],

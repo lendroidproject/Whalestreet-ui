@@ -130,6 +130,17 @@ const Wrapper = styled.div`
       color: var(--color-red);
     }
   }
+
+  .__react_component_tooltip {
+    padding: 9px 9px 3px;
+    font-size: 12px;
+    line-height: 16px;
+
+    &.show {
+      opacity: 1;
+      z-index: 999;
+    }
+  }
 `
 
 const Header = styled.header`

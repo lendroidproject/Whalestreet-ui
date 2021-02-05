@@ -48,13 +48,23 @@ export const Wrapper = styled.div`
       justify-content: center;
 
       .tool-tip {
-        border: 1px solid white;
         border-radius: 50%;
         width: 16px;
         height: 16px;
         font-size: 11px;
         line-height: 16px;
         margin: 4px 0px 4px 6px;
+
+        background-image: url(/assets/info-icon.svg);
+        &.info-pink:hover {
+          background-image: url(/assets/info-pink.svg);
+        }
+        &.info-green:hover {
+          background-image: url(/assets/info-green.svg);
+        }
+        &.info-red:hover {
+          background-image: url(/assets/info-red.svg);
+        }
       }
     }
   }
@@ -314,6 +324,8 @@ export default function Pool({
   seriesType,
   coming,
   background,
+  color,
+  icon,
   rewardBySeries,
   onSelect,
   metamask,
@@ -368,18 +380,12 @@ export default function Pool({
             <td>${format(seriesRewardUSD / (epochCount / 3), 2)}</td>
           </tr>
           <tr>
-            <td>
-              {base}/{pair} Liquidity:
-            </td>
-            <td>${format(liquidityVolumn, 2)}</td>
-          </tr>
-          <tr>
             <td colSpan={2}>
               <InlineMath
-                math={`\\large APY = \\Large{\\frac {${format(seriesRewardUSD / (epochCount / 3), 2)} \\;\\times\\; 365} {${format(
-                  liquidityVolumn,
+                math={`\\large APY = \\Large{\\frac {${format(
+                  seriesRewardUSD / (epochCount / 3),
                   2
-                )}}} \\large{\\times\\; 100}`}
+                )} \\;\\times\\; 365} {${format(liquidityVolumn, 2)}}} \\large{\\times\\; 100}`}
               />
             </td>
           </tr>
@@ -420,7 +426,11 @@ export default function Pool({
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
   return (
-    <Wrapper className={`flex-center flex-column ${background ? `background-${background}` : ''}`} key={`${base}${pair}`} detail>
+    <Wrapper
+      className={`flex-center flex-column ${background ? `background-${background}` : ''}`}
+      key={`${base}${pair}`}
+      detail
+    >
       <div className="pool-info">
         <div className="pool-info__detail">
           <PoolIcon className="flex-center justify-center pool-info__icons">
@@ -436,20 +446,30 @@ export default function Pool({
         {rewardBySeries && (
           <p className="apy center">
             APY {getAPY()}%{' '}
-            <span className="tool-tip cursor" data-tip data-for={`${pool}-apy`} data-iscapture="true">
-              &#8505;
-            </span>
+            <span
+              className={`tool-tip cursor info-${icon}`}
+              data-tip
+              data-for={`${pool}-apy`}
+              data-iscapture="true"
+            ></span>
           </p>
         )}
         <div className="pool-data__detail flex-center flex-column full">
           <label className="light">Total amount staked:</label>
-          <p>{format(poolSupplies[poolIndex] || 0, 8)}</p>
+          <p>
+            $
+            {uniData && currentSeries
+              ? format((poolSupplies[poolIndex] || 0) * (uniData.liquidityUSD / uniV2Supplies[uniIndex]), 2)
+              : '-'}
+          </p>
         </div>
       </div>
       <div className="pool-data">
         <div className="pool-data__detail flex-center flex-column">
           <label className="light uppercase">Your stake</label>
-          <p className="reward">{poolBalances[poolIndex] > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%</p>
+          <p className="reward">
+            {poolBalances[poolIndex] > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%
+          </p>
         </div>
         {coming ? (
           <button className="uppercase red" disabled>
@@ -487,7 +507,14 @@ export default function Pool({
           </p>
         </>
       )}
-      <ReactTooltip id={`${pool}-apy`} effect="solid" multiline>
+      <ReactTooltip
+        id={`${pool}-apy`}
+        effect="solid"
+        multiline
+        border
+        borderColor={color}
+        backgroundColor="rgba(0,0,0,0.94)"
+      >
         {getAPYInfo()}
       </ReactTooltip>
     </Wrapper>
