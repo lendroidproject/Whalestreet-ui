@@ -39,18 +39,14 @@ export async function getPoolLiquidityUSD(poolAddress) {
       query: gql`
       {
         pair(id: "${poolAddress.toLowerCase()}") {
-          trackedReserveETH
-        }
-        bundle(id: "1") {
-          ethPrice
+          reserveUSD
         }
       }
       `
     });
-    const trackedReserveETH = data?.pair?.trackedReserveETH
-    const ethPrice = data?.bundle?.ethPrice
+    const reserveUSD = data?.pair?.reserveUSD
 
-    return new BigNumber(trackedReserveETH || 0).multipliedBy(ethPrice || 0).toString()
+    return new BigNumber(reserveUSD || 0).toString()
   } catch (err) {
     console.log(err)
   }
