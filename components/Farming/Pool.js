@@ -347,7 +347,6 @@ export default function Pool({
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
     const liquidityVolumn = (liquidityUSD / uniV2Supplies[uniIndex]) * poolSupplies[poolIndex]
-    console.log(uniV2, uniV2Supplies[uniIndex], poolSupplies[poolIndex], liquidityUSD)
     return (((seriesRewardUSD / (epochCount / 3)) * 365 * 100) / liquidityVolumn).toFixed(0)
   }
 
