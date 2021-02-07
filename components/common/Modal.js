@@ -10,7 +10,6 @@ export const Overlay = styled.div`
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: var(--color-opacity09);
 `
 
 export const Content = styled.div`
@@ -21,7 +20,7 @@ export default function Modal({ show, onClose, closeOnOutside, ...props }) {
   const [mouted] = useMounted()
   if (!mouted || !show) return null
   return ReactDOM.createPortal(
-    <Overlay onClick={closeOnOutside && onClose} className="modal flex align-center justify-center">
+    <Overlay onClick={closeOnOutside && onClose} className="modal flex align-center justify-center bg-opacity-09">
       <Content className="flex-all" onClick={(e) => e.stopPropagation()} {...props} />
     </Overlay>,
     document.body

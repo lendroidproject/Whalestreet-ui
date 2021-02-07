@@ -5,6 +5,7 @@ export const pools = [
     pair: 'ETH',
     pool: 'LST_WETH_UNIV2_$HRIMP_Pool',
     uniV2: 'LST_WETH_UNIV2',
+    uniPair: '0x9d23cb25ad23d73e0a723a47b146139d46ab5f91',
     seriesType: 0,
     rewardBase: '$hrimp',
     stake: 'LST-ETH-UNI-V2',

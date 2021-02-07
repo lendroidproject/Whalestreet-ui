@@ -145,8 +145,15 @@ const Wrapper = styled.div`
 
 const Header = styled.header`
   padding: 44px 0 24px;
-  max-width: 952px;
   margin: auto;
+
+  max-width: 952px;
+  @media all and (min-width: 2400px) {
+    max-width: 1428px;
+  }
+  @media all and (min-width: 3200px) {
+    max-width: 2380px;
+  }
 
   .menu a {
     display: flex;
@@ -174,20 +181,6 @@ const Header = styled.header`
       height: 50px;
     }
   }
-
-  @media all and (min-width: 2400px) {
-    padding: 64px 65px 44px;
-    > div {
-      transform: scale(1.5);
-    }
-  }
-
-  @media all and (min-width: 3200px) {
-    padding: 84px 65px 44px;
-    > div {
-      transform: scale(2.5);
-    }
-  }
 `
 
 const Content = styled.div`
@@ -198,28 +191,19 @@ const Content = styled.div`
     overflow: initial;
   }
 
-  * {
-    transition: all 0.2s;
-  }
-
   @media all and (min-width: 2400px) {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     video {
       height: 100%;
     }
-
-    section {
-      transform: scale(1.5);
-    }
   }
 
-  @media all and (min-width: 3200px) {
-    section {
-      transform: scale(2.5);
-    }
+  * {
+    transition: all 0.2s;
   }
 
   section {
@@ -228,13 +212,19 @@ const Content = styled.div`
     > p {
       font-size: 16px;
       line-height: 20px;
-
-      max-width: 952px;
       margin: 0 auto 24px;
 
       @media all and (max-width: 577px) {
         font-size: 12px;
         line-height: 16px;
+      }
+
+      max-width: 952px;
+      @media all and (min-width: 2400px) {
+        max-width: 1428px;
+      }
+      @media all and (min-width: 3200px) {
+        max-width: 2380px;
       }
     }
   }
@@ -285,18 +275,6 @@ const Footer = styled.footer`
     flex-wrap: wrap;
     .copyright {
       width: 100%;
-    }
-  }
-
-  @media all and (min-width: 2400px) {
-    > div {
-      transform: scale(1.5);
-    }
-  }
-
-  @media all and (min-width: 3200px) {
-    > div {
-      transform: scale(2.5);
     }
   }
 `
@@ -475,7 +453,11 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           <a className="uppercase" href="https://twitter.com/WhaleStreetoffl" target="_blank">
             Twitter
           </a>
-          <a className="uppercase" href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH" target="_blank">
+          <a
+            className="uppercase"
+            href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH"
+            target="_blank"
+          >
             Add LP
           </a>
           <a

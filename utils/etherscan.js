@@ -28,3 +28,4 @@ export const networkLabel = (network) => networkLabels[network].split(' ')[0]
 export const txLink = (hash, network) => `${links[network]}/tx/${hash}`
 export const tokenLink = (addr, network) => `${links[network]}/token/${addr}`
 export const uniswapLiquidity = (input, output = 'ETH') => `https://app.uniswap.org/#/add/${input}/${output}`
+export const uniswapPair = (pair) => `https://info.uniswap.org/pair/${pair}`

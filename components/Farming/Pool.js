@@ -4,7 +4,7 @@ import ReactTooltip from 'react-tooltip'
 import { InlineMath } from 'react-katex'
 
 import { getDuration, useTicker } from 'utils/hooks'
-import { uniswapLiquidity } from 'utils/etherscan'
+import { uniswapPair } from 'utils/etherscan'
 import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
 import { addresses, pools, uniV2s } from 'layouts/constants'
@@ -132,6 +132,10 @@ export const Wrapper = styled.div`
 
     td:first-child {
       text-align: left;
+    }
+
+    td span {
+      font-size: 10px;
     }
   }
 
@@ -321,6 +325,7 @@ export default function Pool({
   pair,
   pool,
   uniV2,
+  uniPair,
   seriesType,
   coming,
   background,
@@ -490,7 +495,9 @@ export default function Pool({
                 <td>{currentSeries}</td>
               </tr>
               <tr>
-                <td>Reward rate:</td>
+                <td>
+                  Rewards <span>({farm} / second)</span>:
+                </td>
                 <td>{rate.toFixed(8)}</td>
               </tr>
               <tr>
@@ -501,7 +508,7 @@ export default function Pool({
           </table>
           <p className="add-liquidity underline flex-center justify-center">
             {base}-{pair} Uniswap Pool
-            <a href={uniswapLiquidity(library.addresses[base])} target="_blank">
+            <a href={uniswapPair(uniPair)} target="_blank">
               <img src="/assets/link-icon.svg" />
             </a>
           </p>

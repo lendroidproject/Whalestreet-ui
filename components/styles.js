@@ -21,13 +21,20 @@ export const Statics = styled.div`
   border-radius: 12px;
   background-color: var(--color-black);
   color: var(--color-white);
-  max-width: 952px;
   margin: 0 auto 29px;
   padding: 11px 20px 7px;
   text-align: left;
   @media all and (max-width: 577px) {
     margin-bottom: 22px;
     padding: 7px 12px;
+  }
+
+  max-width: 952px;
+  @media all and (min-width: 2400px) {
+    max-width: 1428px;
+  }
+  @media all and (min-width: 3200px) {
+    max-width: 2380px;
   }
 
   .statics__item {

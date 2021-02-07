@@ -12,13 +12,11 @@ const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   opacity: 0;
-  background: transparent;
   transition: all 0.2s;
 
   &.show {
     z-index: 101;
     opacity: 1;
-    background: var(--color-opacity09);
   }
 `
 
@@ -56,7 +54,7 @@ export default connect(({ metamask: { network } }) => ({
   network,
 }))(function Promo({ text, show, onHide, network }) {
   return ReactDOM.createPortal(
-    <Wrapper className={`flex-all ${show ? 'show' : 'hide'}`} onMouseDown={() => onHide && onHide()}>
+    <Wrapper className={`flex-all bg-opaicity-09 ${show ? 'show' : 'hide'}`} onMouseDown={() => onHide && onHide()}>
       <Content className="center flex-center flex-column justify-center">
         <img src="/assets/loading.gif" alt="WhaleStreet" />
         <h1 className="uppercase">{text || 'LOADING'}... PLEASE WAIT</h1>

@@ -28,9 +28,18 @@ const magic = new MagicCss({
   ],
   variables: [
     ['border', ['input', '1px solid #d6d6d6']],
-    ['background', ['grad-1', 'linear-gradient(224.6deg, #464975B3 0%, #8A92B2B3 38.25%, #E653B8B3 75.11%, #C43C9AB3 100%)']],
-    ['background', ['grad-2', 'linear-gradient(224.37deg, #464975B3 0%, #8A92B2B3 38.25%, #55DCE5B3 75.11%, #56DD9CB3 100%)']],
-    ['background', ['grad-3', 'linear-gradient(224.74deg, #464975B3 0%, #8A92B2B3 38.25%, #F55256B3 74.25%, #FF0006B3 100%)']],
+    [
+      'background',
+      ['grad-1', 'linear-gradient(224.6deg, #464975B3 0%, #8A92B2B3 38.25%, #E653B8B3 75.11%, #C43C9AB3 100%)'],
+    ],
+    [
+      'background',
+      ['grad-2', 'linear-gradient(224.37deg, #464975B3 0%, #8A92B2B3 38.25%, #55DCE5B3 75.11%, #56DD9CB3 100%)'],
+    ],
+    [
+      'background',
+      ['grad-3', 'linear-gradient(224.74deg, #464975B3 0%, #8A92B2B3 38.25%, #F55256B3 74.25%, #FF0006B3 100%)'],
+    ],
     ['background', ['opacity-05', 'rgba(0, 0, 0, 0.5)']],
     ['background', ['opacity-09', 'rgba(0, 0, 0, 0.92)']],
     ['box-shadow', '1px 7px 3px 0 rgba(0, 0, 0, 0.5)'],
@@ -141,12 +150,14 @@ class App extends NextApp {
               }
               body { font-weight: bold; font-size: 16px; line-height: 24px; color: var(--color-black); }
               button, input { font-weight: bold; }
+
               .light { font-weight: normal; }
+              .full { width: 100%; }
+              .underline { text-decoration: underline; }
+
               @media all and (max-width: 577px) {
                 body { font-size: 12px; line-height: 17px; }
               }
-              .full { width: 100%; }
-              .underline { text-decoration: underline; }
 
               *::-webkit-scrollbar { width: 5px; }
               *::-webkit-scrollbar-track { background: transparent; }
