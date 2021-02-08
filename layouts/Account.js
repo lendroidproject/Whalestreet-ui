@@ -255,7 +255,8 @@ class Account extends Component {
 
     if (!isSupported) return
     if (address && connected) {
-      const resolvePromise = (promise, value = '0') => new Promise((resolve) => promise.then(resolve).catch(() => resolve(value)))
+      const resolvePromise = (promise, value = '0') =>
+        new Promise((resolve) => promise.then(resolve).catch(() => resolve(value)))
       Promise.all([
         library.web3.eth.getBalance(address),
         library.methods.web3.getBlock(),
@@ -264,7 +265,9 @@ class Account extends Component {
         Promise.all(
           uniV2s.map((token) =>
             Promise.all(
-              uniV2Pools[token].map((pool) => resolvePromise(library.methods[token].getAllowance(address, library.addresses[pool])))
+              uniV2Pools[token].map((pool) =>
+                resolvePromise(library.methods[token].getAllowance(address, library.addresses[pool]))
+              )
             )
           )
         ),
@@ -279,7 +282,9 @@ class Account extends Component {
           : Promise.all(pools.map((token) => resolvePromise(library.methods[token].EPOCH_PERIOD(), '28800'))),
         metamask.poolHearBeatTimes
           ? Promise.resolve()
-          : Promise.all(pools.map((token) => resolvePromise(library.methods[token].HEART_BEAT_START_TIME(), '1607212800'))),
+          : Promise.all(
+              pools.map((token) => resolvePromise(library.methods[token].HEART_BEAT_START_TIME(), '1607212800'))
+            ),
       ])
         .then(
           ([
@@ -303,13 +308,19 @@ class Account extends Component {
               return val < 0.1 ** Math.max(decimal - 5, 2) ? 0 : val
             }
             const balance = toNumber(library.web3.utils.fromWei(_balance))
-            const tokenBalances = _tokenBalances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
-            const uniV2Balances = _uniV2Balances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
+            const tokenBalances = _tokenBalances
+              .map((val) => library.web3.utils.fromWei(val))
+              .map((val) => toNumber(val))
+            const uniV2Balances = _uniV2Balances
+              .map((val) => library.web3.utils.fromWei(val))
+              .map((val) => toNumber(val))
             const uniV2Allowances = _uniV2Allowances
               .reduce((a, c) => [...a, ...c], [])
               .map((val) => library.web3.utils.fromWei(val))
               .map((val) => toNumber(val))
-            const uniV2Supplies = _uniV2Supplies.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
+            const uniV2Supplies = _uniV2Supplies
+              .map((val) => library.web3.utils.fromWei(val))
+              .map((val) => toNumber(val))
             const poolBalances = _poolBalances.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const poolEarnings = _poolEarnings.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
             const poolSupplies = _poolSupplies.map((val) => library.web3.utils.fromWei(val)).map((val) => toNumber(val))
@@ -382,13 +393,19 @@ class Account extends Component {
                   componentClass={({ className, children, ...props }) => {
                     const expanded = props['aria-expanded']
                     return isAdmin ? (
-                      <AdminAddress className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`} {...props}>
+                      <AdminAddress
+                        className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
+                        {...props}
+                      >
                         <img src="/assets/metamask.svg" alt="MetaMask" />
                         {children}
                         <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
                       </AdminAddress>
                     ) : (
-                      <Address className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`} {...props}>
+                      <Address
+                        className={`flex-center cursor ${className} ${expanded ? 'active' : 'inactive'}`}
+                        {...props}
+                      >
                         <img src="/assets/metamask.svg" alt="MetaMask" />
                         {children}
                         <img src={`/assets/arrow${expanded ? '-up' : '-down'}.svg`} alt="MetaMask" />
@@ -396,7 +413,8 @@ class Account extends Component {
                     )
                   }}
                 >
-                  {shorten(address)} {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
+                  {shorten(address)}{' '}
+                  {metamask.network && metamask.network !== 1 ? `(${networkLabel(metamask.network)})` : ''}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   {tokens.map((token, index) => (

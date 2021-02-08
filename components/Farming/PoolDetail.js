@@ -247,7 +247,20 @@ const Claim = styled(Stake)`
   }
 `
 
-function PoolDetail({ base, pair, pool, uniV2, rewardBase, background, stake, metamask, library, transactions, dispatch, onBack }) {
+function PoolDetail({
+  base,
+  pair,
+  pool,
+  uniV2,
+  rewardBase,
+  background,
+  stake,
+  metamask,
+  library,
+  transactions,
+  dispatch,
+  onBack,
+}) {
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
   const listIndex = uniV2PoolList.findIndex((item) => item === pool)
@@ -293,7 +306,13 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, background, stake, me
   }, [latestBlockTimestamp])
 
   const pendingTx = approveTx || stakeTx || unstakeTx || claimTx
-  const pendingText = stakeTx ? 'Depositing your stake' : unstakeTx ? 'Withdrawing your stake' : claimTx ? 'Claiming your rewards' : ''
+  const pendingText = stakeTx
+    ? 'Depositing your stake'
+    : unstakeTx
+    ? 'Withdrawing your stake'
+    : claimTx
+    ? 'Claiming your rewards'
+    : ''
 
   useEffect(() => {
     if (stakeTx && transactions[stakeTx]) {
@@ -328,7 +347,9 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, background, stake, me
           type: 'METAMASK',
           payload: {
             uniV2Allowances: uniV2Allowances.map((item, index) =>
-              listIndex === index ? Number(library.web3.utils.fromWei(receipt.events.Approval.returnValues.value)) : item
+              listIndex === index
+                ? Number(library.web3.utils.fromWei(receipt.events.Approval.returnValues.value))
+                : item
             ),
           },
         })
@@ -387,7 +408,11 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, background, stake, me
   }
 
   return (
-    <Wrapper className={`flex-center flex-column ${background ? `background-${background}` : ''}`} key={`${base}${pair}`} detail>
+    <Wrapper
+      className={`flex-center flex-column ${background ? `background-${background}` : ''}`}
+      key={`${base}${pair}`}
+      detail
+    >
       <button className="white uppercase" onClick={() => (mode ? setMode('') : onBack())}>
         <img src="/assets/back.svg" alt="Go Back" />
         Back
@@ -450,7 +475,11 @@ function PoolDetail({ base, pair, pool, uniV2, rewardBase, background, stake, me
             ) : (
               <div className="stake">
                 <div className="actions flex justify-center">
-                  <button className="uppercase red" onClick={() => handleApprove()} disabled={!uniV2Balance || approveTx}>
+                  <button
+                    className="uppercase red"
+                    onClick={() => handleApprove()}
+                    disabled={!uniV2Balance || approveTx}
+                  >
                     <img src="/assets/stake.svg" alt="Stake" />
                     Approve Pool
                   </button>
