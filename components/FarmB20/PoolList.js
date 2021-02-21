@@ -7,11 +7,12 @@ import Pool from '../Farming/Pool'
 import PoolDetail from '../Farming/PoolDetail'
 
 import { pools } from './constants'
+import { mediaSize } from 'utils/media'
 
 const Wrapper = styled.section`
   .pools {
     margin: -20px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       margin: -10px;
     }
   }

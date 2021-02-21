@@ -8,8 +8,10 @@ import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
 import { infuras, isSupportedNetwork, networkLabel, networks } from 'utils/etherscan'
 import { tokens, uniV2s, uniV2Labels, pools, uniV2Pools, addresses } from './constants'
+import { mediaSize, withMedia } from 'utils/media'
 
 const Wrapper = styled.div`
+  ${withMedia(null, 'transform', [null, 'scale(1.5)', 'scale(2)', null])}
   .connect {
     font-size: 14px;
     line-height: 15px;
@@ -22,6 +24,13 @@ const Wrapper = styled.div`
 const Balances = styled.div`
   z-index: 1;
   position: relative;
+
+  .mobile {
+    display: none;
+    ${mediaSize.mobile} {
+      display: initial;
+    }
+  }
 
   .balance-item {
     background: var(--color-blue);
@@ -36,11 +45,7 @@ const Balances = styled.div`
       height: 20px;
       margin-right: 4px;
     }
-
-    &.mobile {
-      display: none;
-    }
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       display: none;
     }
   }
@@ -61,12 +66,6 @@ const Balances = styled.div`
     *[role='presentation'] {
       &:not(:last-child) {
         border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-      }
-
-      @media all and (min-width: 577px) {
-        &.mobile {
-          display: none;
-        }
       }
     }
 

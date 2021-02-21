@@ -8,17 +8,18 @@ import { uniswapPair } from 'utils/etherscan'
 import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
 import { addresses, pools, uniV2s } from 'layouts/constants'
+import { mediaSize, withMedia } from 'utils/media'
 
 export const Wrapper = styled.div`
-  width: 288px;
+  ${withMedia(null, 'width', ['288px', '396px', '504px'])}
   max-width: 100%;
   border-radius: 12px;
   background-color: transparent;
   text-align: center;
   margin: 20px;
   color: var(--color-white);
-  @media all and (max-width: 577px) {
-    padding: 12px 16px 15px;
+  ${mediaSize.mobile} {
+    padding: 12px 16px 8px;
     margin: 10px;
     width: 100%;
     max-width: 374px;
@@ -29,15 +30,12 @@ export const Wrapper = styled.div`
   }
 
   p {
-    line-height: 36px;
     margin-bottom: 13px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       margin-bottom: 0;
     }
 
     &.apy {
-      font-size: 16px;
-      line-height: 24px;
       font-weight: normal;
       min-width: 114px;
       border-radius: 5px;
@@ -46,14 +44,14 @@ export const Wrapper = styled.div`
 
       display: inline-flex;
       justify-content: center;
+      ${withMedia(null, 'font-size', ['16px', '24px', '32px'])}
 
       .tool-tip {
         border-radius: 50%;
         width: 16px;
         height: 16px;
-        font-size: 11px;
-        line-height: 16px;
         margin: 4px 0px 4px 6px;
+        ${withMedia(null, 'font-size', ['11px', '17px', '22px', '12px'])}
 
         background-image: url(/assets/info-icon.svg);
         &.info-pink:hover {
@@ -71,8 +69,8 @@ export const Wrapper = styled.div`
 
   label.light {
     font-weight: normal;
-    font-size: 14px;
     line-height: 21px;
+    ${withMedia(null, 'font-size', ['14px', '21px', '28px', '11px'])}
   }
 
   label + p {
@@ -89,18 +87,23 @@ export const Wrapper = styled.div`
       max-width: 100%;
     }
     &__detail {
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         align-items: flex-start;
       }
     }
 
     &.top {
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         flex-direction: row-reverse;
 
         .apy {
-          min-width: 100px;
           margin-left: 15px;
+          margin-bottom: 12px;
+
+          span {
+            margin: 0;
+            margin-left: 10px;
+          }
         }
       }
     }
@@ -110,8 +113,8 @@ export const Wrapper = styled.div`
     width: 151px;
     border-radius: 7px;
     margin-bottom: 24px;
-    @media all and (max-width: 577px) {
-      width: 100px;
+    ${mediaSize.mobile} {
+      width: 114px;
       margin-left: 15px;
       margin-bottom: 12px;
     }
@@ -121,9 +124,9 @@ export const Wrapper = styled.div`
     text-align: right;
     width: 100%;
 
-    font-size: 14px;
-    line-height: 16px;
+    line-height: 1.2;
     font-weight: 100;
+    ${withMedia(null, 'font-size', ['14px', '20px', '25px', '12px'])}
 
     border-radius: 4px;
     margin: 0 6px;
@@ -135,13 +138,13 @@ export const Wrapper = styled.div`
     }
 
     td span {
-      font-size: 10px;
+      font-size: 70%;
+      white-space: nowrap;
     }
   }
 
   .add-liquidity {
-    font-size: 14px;
-    line-height: 18px;
+    ${withMedia(null, 'font-size', ['14px', '21px', '28px', '11px'])}
 
     margin-bottom: 0;
     width: 100%;
@@ -152,7 +155,7 @@ export const Wrapper = styled.div`
     }
   }
 
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     .pool-info,
     .pool-data {
       display: flex;
@@ -166,34 +169,35 @@ export const Wrapper = styled.div`
 
       h2,
       p {
-        font-size: 16px;
-        line-height: 24px;
         margin-top: 0;
         margin-bottom: 0;
+        ${withMedia(null, 'font-size', ['16px', '24px', '32px', '12px'])}
       }
     }
 
     .pool-info {
       padding-bottom: 10px;
-      border-bottom: 1px solid var(--color-border2);
 
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         flex-direction: column;
       }
     }
 
     .pool-data {
-      padding-top: 16px;
+      &.top {
+        padding-top: 16px;
+      }
 
       &__detail {
         flex-direction: column;
         text-align: left;
+        margin-bottom: 12px;
       }
 
       label.light {
-        font-size: 12px;
         line-height: 17px;
         white-space: nowrap;
+        ${withMedia(null, 'font-size', ['12px', '18px', '24px', '10px'])}
       }
     }
   }
@@ -201,7 +205,7 @@ export const Wrapper = styled.div`
 
 export const PoolIcon = styled.div`
   padding: 20px 0 10px;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     padding: 0;
     margin-right: 6px;
   }
@@ -210,7 +214,7 @@ export const PoolIcon = styled.div`
     width: 36px;
     height: 36px;
     margin: 0 3px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       width: 22px;
       height: 22px;
     }

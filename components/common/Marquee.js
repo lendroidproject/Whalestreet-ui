@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import DoubleMarquee from 'react-double-marquee'
+import { fontNormal } from 'utils/media'
+
 
 const Wrapper = styled.div`
-  font-size: 15px;
-  line-height: 22px;
+  ${fontNormal}
   padding: 3px;
   white-space: nowrap;
   position: absolute;

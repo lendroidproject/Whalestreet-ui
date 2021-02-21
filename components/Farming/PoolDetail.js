@@ -8,13 +8,14 @@ import MaxInput from 'components/common/MaxInput'
 import TxModal from 'components/common/TxModal'
 
 import { Wrapper as PoolWrapper, PoolIcon } from './Pool'
+import { mediaSize, withMedia } from 'utils/media'
 
 const Wrapper = styled(PoolWrapper)`
-  width: 654px;
+  ${withMedia(null, 'width', ['654px', '872px', '1000px'])}
   margin-top: 50px;
   position: relative;
   padding-top: 0;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     margin-top: 50px;
   }
 
@@ -23,7 +24,7 @@ const Wrapper = styled(PoolWrapper)`
     width: 100%;
     margin: 0;
     // border-bottom: 1px solid var(--color-light-blue);
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       padding: 0 0 10px;
       font-size: 16px;
       line-height: 24px;
@@ -31,7 +32,7 @@ const Wrapper = styled(PoolWrapper)`
 
     + div {
       padding: 16px 16px 24px;
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         padding: 16px 0 0;
       }
     }
@@ -46,7 +47,7 @@ const Wrapper = styled(PoolWrapper)`
     position: absolute;
     left: 0;
     top: -50px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       left: calc(50% - 38px);
       font-size: 20px;
     }
@@ -65,14 +66,14 @@ const PoolDetailIcon = styled(PoolIcon)`
 const Detail = styled.div`
   text-align: left;
   width: 100%;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     flex-direction: column;
     text-align: center;
   }
 
   label + p {
     margin-top: 12px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       margin-top: 4px;
       margin-bottom: 20px;
     }
@@ -80,15 +81,18 @@ const Detail = styled.div`
 
   .note {
     margin-top: 29px;
-    font-size: 16px;
-    line-height: 22px;
+    ${withMedia(null, 'font-size', ['16px', '24px', '32px', '12px'])}
     text-align: center;
     margin-bottom: 0;
+    ${mediaSize.mobile} {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
   }
 
   .actions {
     margin: 29px -5px -5px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       margin: 24px 0 0;
     }
 
@@ -99,7 +103,7 @@ const Detail = styled.div`
       align-items: center;
       margin: 5px;
       padding: 8px 12px;
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         margin: 0 5px;
         padding: 8px 10px;
         justify-content: center;
@@ -109,7 +113,7 @@ const Detail = styled.div`
         margin-right: 8px;
         width: 30px;
         height: 30px;
-        @media all and (max-width: 577px) {
+        ${mediaSize.mobile} {
           width: 20px;
           height: 20px;
         }
@@ -129,8 +133,7 @@ const Detail = styled.div`
   }
 
   .claim p {
-    max-width: 220px;
-    width: 220px;
+    ${withMedia(null, 'max-width', ['220px', 'unset'])}
     text-overflow: ellipsis;
     overflow: hidden;
   }
@@ -141,7 +144,7 @@ const Detail = styled.div`
   .claim {
     width: 40%;
   }
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     > .flex {
       flex-direction: column;
 
@@ -183,7 +186,7 @@ const Detail = styled.div`
 
 const Stake = styled.div`
   width: 100%;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     .flex {
       flex-direction: column;
     }
@@ -198,7 +201,7 @@ const Stake = styled.div`
     label + p {
       margin-top: 12px;
       margin-bottom: 0;
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         font-size: 20px;
         line-height: 29px;
         margin-top: 4px;
@@ -207,7 +210,7 @@ const Stake = styled.div`
     }
 
     input {
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         font-size: 20px;
         line-height: 29px;
       }
@@ -227,7 +230,7 @@ const Stake = styled.div`
     padding: 10px 50px;
     border-radius: 7px;
     margin-top: 35px;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       padding: 8px 50px;
       margin-top: 21px;
       margin-bottom: 8px;

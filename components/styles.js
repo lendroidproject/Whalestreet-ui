@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { mediaSize, withMedia, fontTitle, fontNormal } from 'utils/media'
 
 export const PageWrapper = styled.section`
   .watch-video {
@@ -10,7 +11,7 @@ export const PageWrapper = styled.section`
 
     img {
       margin-right: 10px;
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
         height: 10px;
       }
     }
@@ -24,31 +25,37 @@ export const Statics = styled.div`
   margin: 0 auto 29px;
   padding: 11px 20px 7px;
   text-align: left;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     margin-bottom: 22px;
     padding: 7px 12px;
-  }
-
-  max-width: 952px;
-  @media all and (min-width: 2400px) {
-    max-width: 1428px;
-  }
-  @media all and (min-width: 3200px) {
-    max-width: 2380px;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
   }
 
   .statics__item {
     margin: 10px 20px;
     white-space: nowrap;
-    @media all and (max-width: 577px) {
-      margin: 5px 10px;
-      width: calc(50% - 20px);
+
+    ${mediaSize.mobile} {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      p {
+        margin-top: 0;
+      }
+    }
+    span {
+      font-size: 120%;
     }
   }
 
   &.b20-sale {
     text-align: center;
-    font-size: 24px;
+    ${fontTitle}
     padding: 20px 40px;
     display: inline-flex;
 
@@ -57,7 +64,7 @@ export const Statics = styled.div`
     }
 
     .small {
-      font-size: 16px;
+      font-size: 66%;
     }
   }
 `
@@ -89,17 +96,12 @@ export const OurTokens = styled.div`
     background-color: #0600cc;
     box-shadow: 1px 7px 3px 0 rgba(0, 0, 0, 0.5);
 
-    font-size: 16px;
-    line-height: 1;
     text-transform: uppercase;
     padding: 8px 10px;
+    ${fontNormal}
 
     &:hover {
       background: var(--color-red);
-    }
-    @media all and (max-width: 577px) {
-      font-size: 16px;
-      line-height: 20px;
     }
   }
 `

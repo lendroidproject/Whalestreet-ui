@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { txLink } from 'utils/etherscan'
 import { connect } from 'react-redux'
+import { withMedia } from 'utils/media'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -27,6 +28,7 @@ const Content = styled.div`
   background-color: var(--color-blue);
   box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.5), 6px 2px 4px 0 rgba(0, 0, 0, 0.5);
   padding: 40px 30px 30px;
+  ${withMedia(null, 'zoom', [null, 1.5, 2])}
 
   h1 {
     margin-top: 24px;

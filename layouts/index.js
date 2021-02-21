@@ -14,19 +14,12 @@ import Account from './Account'
 import { OurTokens } from 'components/styles'
 import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 import 'katex/dist/katex.min.css'
+import { mediaSize, withMedia } from 'utils/media'
 
 const Wrapper = styled.div`
   height: 100vh;
   padding: 0 30px;
-
-  @media all and (max-width: 577px) {
-    padding: 0 20px;
-
-    .marquee {
-      opacity: 0;
-      z-index: -1;
-    }
-  }
+  ${withMedia(null, 'padding', ['0px 30px', '0px 45px', '0px, 60px', '0px 20px'])}
 
   .bg {
     position: fixed;
@@ -36,61 +29,50 @@ const Wrapper = styled.div`
     height: 100vh;
     z-index: -1;
     max-width: unset;
-    justify-content: stretch;
+    justify-content: center;
 
     img {
       width: 100%;
       min-height: 100%;
     }
+
+    ${withMedia('video', 'width', ['100%', 'unset', 'unset', 'unset'])}
+    ${withMedia('video', 'height', ['unset', '100%', '100%', '100%'])}
   }
 
   > * {
-    max-width: 1440px;
     margin: auto;
     width: 100%;
-    @media all and (min-width: 2400px) {
-      max-width: 2048px;
-    }
-    @media all and (min-width: 3200px) {
-      max-width: 2880px;
-    }
+    ${withMedia(null, 'max-width', ['1440px', '2048px', '2880px', 'unset'])}
+  }
+
+  .limited,
+  section > p {
+    ${withMedia(null, 'max-width', ['952px', '1428px', '2380px', 'unset'])}
+    ${withMedia('&.margin', 'max-width', ['968px', '1444px', '2396px', 'unset'])}
   }
 
   h1 {
-    font-size: 24px;
-    line-height: 36px;
     margin-bottom: 6px;
     color: var(--color-red);
     text-transform: uppercase;
-    @media all and (max-width: 577px) {
-      font-size: 20px;
-      line-height: 29px;
-    }
+    ${withMedia(null, 'font-size', ['24px', '36px', '48px', '20px'])}
   }
 
   h2 {
-    font-size: 20px;
-    line-height: 28px;
-    @media all and (max-width: 577px) {
-      font-size: 20px;
-      line-height: 24px;
-    }
+    ${withMedia(null, 'font-size', ['20px', '30px', '40px', '18px'])}
   }
 
   label {
     + p {
       margin-top: 6px;
+      ${withMedia(null, 'font-size', ['24px', '36px', '48px', '18px'])}
     }
   }
 
   p {
-    font-size: 24px;
-    line-height: 30px;
     margin-bottom: 0;
-    @media all and (max-width: 577px) {
-      font-size: 18px;
-      line-height: 26px;
-    }
+    ${withMedia(null, 'font-size', ['16px', '24px', '32px', '12px'])}
   }
 
   .buttons {
@@ -102,15 +84,8 @@ const Wrapper = styled.div`
   button {
     background-color: var(--color-black);
     color: var(--color-white);
-
-    font-size: 20px;
-    line-height: 25px;
-    padding: 10px;
-    @media all and (max-width: 577px) {
-      font-size: 16px;
-      line-height: 24px;
-      padding: 8px;
-    }
+    padding: 8px;
+    ${withMedia(null, 'font-size', ['20px', '30px', '40x', '16px'])}
 
     &:disabled {
       opacity: 0.8;
@@ -141,19 +116,18 @@ const Wrapper = styled.div`
       z-index: 999;
     }
   }
+
+  ${mediaSize.mobile} {
+    .marquee {
+      opacity: 0;
+      z-index: -1;
+    }
+  }
 `
 
 const Header = styled.header`
   padding: 44px 0 24px;
   margin: auto;
-
-  max-width: 952px;
-  @media all and (min-width: 2400px) {
-    max-width: 1428px;
-  }
-  @media all and (min-width: 3200px) {
-    max-width: 2380px;
-  }
 
   .menu a {
     display: flex;
@@ -165,41 +139,23 @@ const Header = styled.header`
     top: 58px;
   }
 
-  .logo {
-    height: 60px;
-  }
-
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     padding: 16px 24px 12px;
     flex-direction: column-reverse;
 
     .account {
       margin-bottom: 16px;
     }
-
-    .logo {
-      height: 50px;
-    }
   }
+  ${withMedia('.logo', 'height', ['60px', '80px', '100px', '50px'])}
 `
 
 const Content = styled.div`
   flex: 1;
   overflow: hidden auto;
   position: relative;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     overflow: initial;
-  }
-
-  @media all and (min-width: 2400px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    video {
-      height: 100%;
-    }
   }
 
   * {
@@ -210,22 +166,9 @@ const Content = styled.div`
     padding-bottom: 36px;
 
     > p {
-      font-size: 16px;
-      line-height: 20px;
-      margin: 0 auto 24px;
-
-      @media all and (max-width: 577px) {
-        font-size: 12px;
-        line-height: 16px;
-      }
-
-      max-width: 952px;
-      @media all and (min-width: 2400px) {
-        max-width: 1428px;
-      }
-      @media all and (min-width: 3200px) {
-        max-width: 2380px;
-      }
+      margin: 0 auto;
+      ${withMedia(null, 'font-size', ['16px', '24px', '32x', '12px'])}
+      ${withMedia(null, 'margin-bottom', ['24px', '32px', '48x', '16px'])}
     }
   }
 
@@ -247,7 +190,7 @@ const Footer = styled.footer`
   width: calc(100% + 60px);
   left: -30px;
   position: relative;
-  @media all and (max-width: 577px) {
+  ${mediaSize.mobile} {
     padding: 9px;
     width: calc(100% + 40px);
     left: -20px;
@@ -259,11 +202,7 @@ const Footer = styled.footer`
     white-space: nowrap;
     color: var(--color-black);
     text-decoration: none;
-    @media all and (max-width: 577px) {
-      font-size: 11px;
-      line-height: 16px;
-      margin: 3px 12px;
-    }
+    ${withMedia(null, 'font-size', ['16px', '24px', '32x', '12px'])}
   }
 
   .copyright {
@@ -271,7 +210,7 @@ const Footer = styled.footer`
     font-size: 90%;
   }
 
-  @media all and (max-width: 767px) {
+  ${mediaSize.tablet} {
     flex-wrap: wrap;
     .copyright {
       width: 100%;
@@ -362,7 +301,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
 
   return (
     <Wrapper className="flex-column">
-      <Header className="flex-center justify-between relative">
+      <Header className="flex-center justify-between relative limited">
         <div className="menu flex">
           {isAdmin && (
             <div className="hamburger">

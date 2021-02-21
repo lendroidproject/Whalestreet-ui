@@ -8,6 +8,7 @@ import withRedux from 'next-redux-wrapper'
 import configureStore from 'store'
 
 import Layout from 'layouts'
+import { mediaSize } from 'utils/media'
 
 import MagicCss from '@frontend-ninjas/magic-css'
 
@@ -148,16 +149,20 @@ class App extends NextApp {
                   inset 1px 1px var(--button-shadow), inset -2px -2px var(--button-face),
                   inset 2px 2px var(--window-frame);
               }
-              body { font-weight: bold; font-size: 16px; line-height: 24px; color: var(--color-black); }
-              button, input { font-weight: bold; }
+              body {
+                font-weight: bold;
+                line-height: 1.5;
+                color: var(--color-black);
+                font-size: 16px;
+              }
+              ${mediaSize.media3x} { body { font-size: 32px; } }
+              ${mediaSize.media2x} { body { font-size: 24px; } }
+              ${mediaSize.mobile} { body { font-size: 12px; } }
 
+              button, input { font-weight: bold; }
               .light { font-weight: normal; }
               .full { width: 100%; }
               .underline { text-decoration: underline; }
-
-              @media all and (max-width: 577px) {
-                body { font-size: 12px; line-height: 17px; }
-              }
 
               *::-webkit-scrollbar { width: 5px; }
               *::-webkit-scrollbar-track { background: transparent; }

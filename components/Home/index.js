@@ -15,21 +15,21 @@ import Promo from './Promo'
 
 import adminAssets from 'components/Admin/admin-assets'
 import { getAssets } from 'utils/api'
+import { mediaSize, withMedia } from 'utils/media'
 
 const B20_START = new Date('2021-01-24 01:45:00+000').getTime()
 const leadZero = (val) => `00${val}`.substr(-2)
 
 const RewardTokens = styled.div`
-  max-width: 966px;
   width: 90%;
   margin: -8px auto;
-  @media all and (max-width: 767px) {
+  ${mediaSize.tablet} {
     flex-wrap: wrap;
   }
 
   .row {
     width: 50%;
-    @media all and (max-width: 577px) {
+    ${mediaSize.mobile} {
       width: 100%;
     }
   }
@@ -49,11 +49,9 @@ const RewardTokens = styled.div`
 
     p {
       font-style: italic;
-      font-size: 18px;
       color: var(--color-white);
       margin-left: 12px;
-      @media all and (max-width: 577px) {
-      }
+      ${withMedia(null, 'font-size', ['18px', '27px', '36px', '13px'])}
     }
 
     img {
@@ -61,7 +59,7 @@ const RewardTokens = styled.div`
       height: 49px;
       background-color: var(--color-red);
       border-radius: 50%;
-      @media all and (max-width: 577px) {
+      ${mediaSize.mobile} {
       }
     }
 
@@ -152,7 +150,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           })
         }
       )
-      .catch(console.log) 
+      .catch(console.log)
   }
 
   useEffect(() => {
@@ -197,7 +195,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           <Promo show={video} onHide={() => setVideo(false)} />
         </p>
         {now < B20_START ? (
-          <Statics className="b20-sale center">
+          <Statics className="b20-sale center limited">
             <span className="small">B20 Capped Sale starts in</span>
             <Countdown
               date={B20_START}
@@ -213,10 +211,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             />
           </Statics>
         ) : (
-          <Statics className="flex-center flex-wrap justify-between">
+          <Statics className="flex-center flex-wrap justify-between limited">
             <div className="statics__item">
               <label>TVL</label>
-              <p><span style={{ fontSize: 30, lineHeight: 1, verticalAlign: 'bottom' }}>$</span>{format(data?.b20USDTotal, 0)}</p>
+              <p><span>$</span>{format(data?.b20USDTotal, 0)}</p>
             </div>
             {/* <div className="statics__item">
               <label>Treasury</label>
@@ -232,7 +230,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div>
           </Statics>
         )}
-        <RewardTokens className="flex">
+        <RewardTokens className="flex limited margin">
           <div className="row flex-column">
             <div className="reward-token cursor flex-center relative image" onClick={() => onModule('farm-b20')}>
               <img src="/assets/b20-token.svg" alt="Farm B20" />
