@@ -9,6 +9,7 @@ import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
 import { addresses, pools, uniV2s } from 'layouts/constants'
 import { mediaSize, withMedia } from 'utils/media'
+import Spinner from 'components/common/Spinner'
 
 export const Wrapper = styled.div`
   ${withMedia(null, 'width', ['288px', '396px', '504px'])}
@@ -433,6 +434,9 @@ export default function Pool({
   }, [base, now])
 
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
+
+  const loading = !uniData || !currentSeries || !rewardBySeries
+  if (loading) return <Spinner style={{ position: 'relative', minHeight: '50vh' }} />
 
   return (
     <Wrapper
