@@ -435,7 +435,6 @@ export default function Pool({
 
   useEffect(() => {
     const seconds = toSec(now)
-    if (seconds % 10 !== 0) return
     if (!uniData || seconds % 60 === 0) {
       loadUniData()
     }
@@ -444,7 +443,6 @@ export default function Pool({
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
   const loading = !uniData || !currentSeries || !rewardBySeries
-  if (loading) return <Spinner style={{ position: 'relative', minHeight: '50vh' }} />
 
   return (
     <Wrapper
@@ -452,94 +450,100 @@ export default function Pool({
       key={`${base}${pair}`}
       detail
     >
-      <div className="pool-info">
-        <div className="pool-info__detail">
-          <PoolIcon className="flex-center justify-center pool-info__icons">
-            <img src={`/assets/${base.toLowerCase()}-token.svg`} alt={base} />
-            <img src={`/assets/${pair.toLowerCase()}-token.svg`} alt={pair} />
-          </PoolIcon>
-          <h2>
-            {base}/{pair} POOL
-          </h2>
-        </div>
-      </div>
-      <div className="pool-data top">
-        {rewardBySeries && (
-          <p className="apy center">
-            APY {getAPY()}%{' '}
-            <span
-              className={`tool-tip cursor info-${icon}`}
-              data-tip
-              data-for={`${pool}-apy`}
-              data-iscapture="true"
-            ></span>
-          </p>
-        )}
-        <div className="pool-data__detail flex-center flex-column full">
-          <label className="light">Total amount staked:</label>
-          <p>
-            $
-            {uniData && currentSeries
-              ? format((poolSupplies[poolIndex] || 0) * (uniData.liquidityUSD / uniV2Supplies[uniIndex]), 2)
-              : '-'}
-          </p>
-        </div>
-      </div>
-      <div className="pool-data">
-        <div className="pool-data__detail flex-center flex-column">
-          <label className="light uppercase">Your stake</label>
-          <p className="reward">
-            {poolBalances[poolIndex] > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%
-          </p>
-        </div>
-        {coming ? (
-          <button className="uppercase red" disabled>
-            Select
-          </button>
-        ) : (
-          <button className="uppercase red" onClick={onSelect}>
-            Select
-          </button>
-        )}
-      </div>
-      {currentSeries > 0 && (
+      {loading ? (
+        <Spinner style={{ position: 'relative', minHeight: '50vh' }} />
+      ) : (
         <>
-          <table className="series background-opacity-05">
-            <tbody>
-              <tr>
-                <td>Current series:</td>
-                <td>{currentSeries}</td>
-              </tr>
-              <tr>
-                <td>
-                  Rewards <span>({farm} / second)</span>:
-                </td>
-                <td>{rate.toFixed(8)}</td>
-              </tr>
-              <tr>
-                <td>Series ends in:</td>
-                <td>{duration}</td>
-              </tr>
-            </tbody>
-          </table>
-          <p className="add-liquidity underline flex-center justify-center">
-            {base}-{pair} Uniswap Pool
-            <a href={uniswapPair(uniPair)} target="_blank">
-              <img src="/assets/link-icon.svg" />
-            </a>
-          </p>
+          <div className="pool-info">
+            <div className="pool-info__detail">
+              <PoolIcon className="flex-center justify-center pool-info__icons">
+                <img src={`/assets/${base.toLowerCase()}-token.svg`} alt={base} />
+                <img src={`/assets/${pair.toLowerCase()}-token.svg`} alt={pair} />
+              </PoolIcon>
+              <h2>
+                {base}/{pair} POOL
+              </h2>
+            </div>
+          </div>
+          <div className="pool-data top">
+            {rewardBySeries && (
+              <p className="apy center">
+                APY {getAPY()}%{' '}
+                <span
+                  className={`tool-tip cursor info-${icon}`}
+                  data-tip
+                  data-for={`${pool}-apy`}
+                  data-iscapture="true"
+                ></span>
+              </p>
+            )}
+            <div className="pool-data__detail flex-center flex-column full">
+              <label className="light">Total amount staked:</label>
+              <p>
+                $
+                {uniData && currentSeries
+                  ? format((poolSupplies[poolIndex] || 0) * (uniData.liquidityUSD / uniV2Supplies[uniIndex]), 2)
+                  : '-'}
+              </p>
+            </div>
+          </div>
+          <div className="pool-data">
+            <div className="pool-data__detail flex-center flex-column">
+              <label className="light uppercase">Your stake</label>
+              <p className="reward">
+                {poolBalances[poolIndex] > 0 && stakePercent < 0.01 ? '< 0.01' : stakePercent.toFixed(2)}%
+              </p>
+            </div>
+            {coming ? (
+              <button className="uppercase red" disabled>
+                Select
+              </button>
+            ) : (
+              <button className="uppercase red" onClick={onSelect}>
+                Select
+              </button>
+            )}
+          </div>
+          {currentSeries > 0 && (
+            <>
+              <table className="series background-opacity-05">
+                <tbody>
+                  <tr>
+                    <td>Current series:</td>
+                    <td>{currentSeries}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Rewards <span>({farm} / second)</span>:
+                    </td>
+                    <td>{rate.toFixed(8)}</td>
+                  </tr>
+                  <tr>
+                    <td>Series ends in:</td>
+                    <td>{duration}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p className="add-liquidity underline flex-center justify-center">
+                {base}-{pair} Uniswap Pool
+                <a href={uniswapPair(uniPair)} target="_blank">
+                  <img src="/assets/link-icon.svg" />
+                </a>
+              </p>
+            </>
+          )}
+          <ReactTooltip
+            id={`${pool}-apy`}
+            effect="solid"
+            multiline
+            border
+            borderColor={color}
+            backgroundColor="rgba(0,0,0,0.94)"
+          >
+            {getAPYInfo()}
+          </ReactTooltip>
         </>
       )}
-      <ReactTooltip
-        id={`${pool}-apy`}
-        effect="solid"
-        multiline
-        border
-        borderColor={color}
-        backgroundColor="rgba(0,0,0,0.94)"
-      >
-        {getAPYInfo()}
-      </ReactTooltip>
     </Wrapper>
   )
 }
