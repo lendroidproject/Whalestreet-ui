@@ -8,6 +8,7 @@ import PoolDetail from '../Farming/PoolDetail'
 
 import { pools } from './constants'
 import { mediaSize } from 'utils/media'
+import { useTicker } from 'utils/hooks'
 
 const Wrapper = styled.section`
   .pools {
@@ -21,6 +22,7 @@ const Wrapper = styled.section`
 export default connect((state) => state)(function PoolList({ farm = 'B20', metamask, library }) {
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
+  const [now] = useTicker()
 
   useEffect(() => {
     if (!basePools || basePools.length === 0 || basePools[0].farm !== farm) {
@@ -42,6 +44,7 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
             onBack={() => {
               setPool(null)
             }}
+            now={now}
           />
         </div>
       </Wrapper>
@@ -55,7 +58,8 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
           <a href="https://lucas-gilcanton.medium.com/3cc5e89656fa" target="_blank">
             Here's
           </a>{' '}
-          a step-by-step guide to provide liquidity to the B20-ETH Uniswap Pool. Choose wisely. For more information, check out{' '}
+          a step-by-step guide to provide liquidity to the B20-ETH Uniswap Pool. Choose wisely. For more information,
+          check out{' '}
           <a href="https://b20.whalestreet.xyz" target="_blank">
             https://b20.whalestreet.xyz
           </a>
@@ -70,6 +74,7 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
               onSelect={() => {
                 setPool(pool)
               }}
+              now={now}
             />
           ))}
         </div>

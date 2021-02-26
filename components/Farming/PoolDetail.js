@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import { uniV2s, pools, uniV2PoolList } from 'layouts/constants'
-import { getDuration, useTicker } from 'utils/hooks'
+import { getDuration } from 'utils/hooks'
 import MaxInput from 'components/common/MaxInput'
 import TxModal from 'components/common/TxModal'
 
@@ -263,6 +263,7 @@ function PoolDetail({
   transactions,
   dispatch,
   onBack,
+  now,
 }) {
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
@@ -294,7 +295,6 @@ function PoolDetail({
 
   const unstakeDisabled = currentEpoch === lastEpochStaked
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
-  const [now] = useTicker()
   const duration = getDuration(now, epochEndTime * 1000)
 
   const { epochEndTimeFromTimestamp } = library.methods[pool]

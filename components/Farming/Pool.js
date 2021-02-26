@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import ReactTooltip from 'react-tooltip'
 import { InlineMath } from 'react-katex'
 
-import { getDuration, useTicker } from 'utils/hooks'
+import { getDuration } from 'utils/hooks'
 import { uniswapPair } from 'utils/etherscan'
 import { getPoolLiquidityUSD, getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
@@ -324,6 +324,10 @@ const getSeriesEnd = (type, epoch) => {
   }
 }
 
+function toSec(number) {
+  return parseInt(number / 1000)
+}
+
 export default function Pool({
   farm,
   base,
@@ -340,6 +344,7 @@ export default function Pool({
   onSelect,
   metamask,
   library,
+  now,
 }) {
   const poolIndex = pools.findIndex((item) => item === pool)
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
@@ -355,7 +360,6 @@ export default function Pool({
   const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
   const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
 
-  const [now] = useTicker(60)
   const [[epoch, rate], setRewardRate] = useState([0, 0])
   const [uniData, setUniData] = useState(null)
 
@@ -430,7 +434,11 @@ export default function Pool({
   }
 
   useEffect(() => {
-    loadUniData()
+    const seconds = toSec(now)
+    if (seconds % 10 !== 0) return
+    if (!uniData || seconds % 60 === 0) {
+      loadUniData()
+    }
   }, [base, now])
 
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100

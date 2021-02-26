@@ -8,6 +8,7 @@ import PoolDetail from './PoolDetail'
 
 import { pools } from './constants'
 import { mediaSize } from 'utils/media'
+import { useTicker } from 'utils/hooks'
 
 const Wrapper = styled.section`
   .pools {
@@ -21,6 +22,7 @@ const Wrapper = styled.section`
 export default connect((state) => state)(function PoolList({ farm = '$hrimp', metamask, library }) {
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
+  const [now] = useTicker()
 
   useEffect(() => {
     if (!basePools || basePools.length === 0 || basePools[0].farm !== farm) {
@@ -46,6 +48,7 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
             onBack={() => {
               setPool(null)
             }}
+            now={now}
           />
         </div>
       </Wrapper>
@@ -73,6 +76,7 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
               onSelect={() => {
                 setPool(pool)
               }}
+              now={now}
             />
           ))}
         </div>
