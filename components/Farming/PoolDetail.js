@@ -389,8 +389,12 @@ function PoolDetail({
 
   const handleUnstake = () => {
     const { amount } = unstakeForm
-    const { unstake } = library.methods[pool]
-    unstake(library.web3.utils.toWei(amount.toString()), { from: address })
+    const { unstake, unstakeAndClaim } = library.methods[pool]
+    const transaction =
+      poolBalance === amount
+        ? unstakeAndClaim({ from: address })
+        : unstake(library.web3.utils.toWei(amount.toString()), { from: address })
+    transaction
       .send()
       .on('transactionHash', function (hash) {
         setUnstakeTx(hash)
@@ -459,7 +463,11 @@ function PoolDetail({
               <>
                 <div className="stake">
                   <div className="actions flex">
-                    <button className="uppercase red" onClick={() => handleMode('stake')} disabled={!uniV2Balance || isEnded}>
+                    <button
+                      className="uppercase red"
+                      onClick={() => handleMode('stake')}
+                      disabled={!uniV2Balance || isEnded}
+                    >
                       <img src="/assets/stake.svg" alt="Stake" />
                       Stake
                     </button>
