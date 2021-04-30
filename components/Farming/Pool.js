@@ -241,7 +241,7 @@ const getSeries = (type, epoch) => {
         ? 5
         : epoch > 620 && epoch <= 713
         ? 6
-        : 0
+        : 6
     case 2:
     case 3:
       return !epoch || epoch === 0
@@ -254,7 +254,7 @@ const getSeries = (type, epoch) => {
         ? 2
         : epoch > 347 && epoch <= 437
         ? 3
-        : 0
+        : 3
     default:
       return !epoch || epoch === 0
         ? 0
@@ -270,7 +270,7 @@ const getSeries = (type, epoch) => {
         ? 5
         : epoch > 1092 && epoch <= 3360
         ? 6
-        : 0
+        : 6
   }
 }
 
@@ -442,7 +442,7 @@ export default function Pool({
 
   const stakePercent = ((poolBalances[poolIndex] || 0) / (poolSupplies[poolIndex] || 1)) * 100
 
-  const loading = !uniData || !currentSeries || !rewardBySeries
+  const loading = !uniData || !currentSeries
 
   return (
     <Wrapper
