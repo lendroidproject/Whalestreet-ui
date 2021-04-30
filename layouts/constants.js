@@ -26,6 +26,16 @@ export const addresses = {
     LST_WETH_UNIV2_B20_Pool: '0x95004D48437E7D55f81D4fD0a4e24904890838b8',
   },
 }
+export const auctionAddresses = {
+  1: {
+    //
+  },
+  4: {
+    $HRIMP: '0x174d2E1B37558e996B43C6A239ED6F5788912c97',
+    AuctionRegistry: '0x41b9a67E01d719D2E479107266B239D6b12B63e7',
+    WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
+  },
+}
 export const tokens = ['B20', '$HRIMP', 'LST']
 export const uniV2s = ['B20_WETH_UNIV2', '$HRIMP_WETH_UNIV2', 'LST_WETH_UNIV2']
 export const uniV2Labels = ['B20-ETH Uniswap LP Token', '$HRIMP-ETH Uniswap LP Token', 'LST-ETH Uniswap LP Token']

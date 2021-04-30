@@ -365,7 +365,7 @@ export default function Pool({
 
   const currentSeries = getSeries(seriesType, epoch)
   const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, epoch)
-  const duration = getDuration(now, countdown * 1000)
+  const duration = getDuration(now, countdown * 1000, 'Ended')
 
   const getAPY = () => {
     if (!uniData || !currentSeries || !rewardBySeries) return '-'

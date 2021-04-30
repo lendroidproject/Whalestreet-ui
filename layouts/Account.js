@@ -7,7 +7,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Library from 'whalestreet-js'
 import { shorten } from 'utils/string'
 import { infuras, isSupportedNetwork, networkLabel, networks } from 'utils/etherscan'
-import { tokens, uniV2s, uniV2Labels, pools, uniV2Pools, addresses } from './constants'
+import { tokens, uniV2s, uniV2Labels, pools, uniV2Pools, addresses, auctionAddresses } from './constants'
 import { mediaSize, withMedia } from 'utils/media'
 
 const Wrapper = styled.div`
@@ -232,7 +232,20 @@ class Account extends Component {
         onEvent: handleEvent,
         addresses: addresses[this.state.network],
       })
-      dispatch({ type: 'INIT_CONTRACTS', payload: [library] })
+      const handleAuctionEvent = (event) => {
+        switch (event.event) {
+          default:
+            break
+        }
+      }
+      const auctions = null && Library.Auctions(provider, {
+        onEvent: handleAuctionEvent,
+        addresses: auctionAddresses[this.state.network],
+      })
+      dispatch({
+        type: 'INIT_CONTRACTS',
+        payload: [library, auctions],
+      })
       setTimeout(() => this.getBalance(), 2.5 * 1000)
     }
   }

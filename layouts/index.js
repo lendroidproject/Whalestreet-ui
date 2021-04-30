@@ -227,6 +227,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
 
   const router = useRouter()
   const isAdmin = router.pathname === '/market-admin'
+  const isPage = ['/', '/farming', '/farm-b20'].includes(router.route)
 
   useEffect(() => {
     if (fetched && address && address !== metamask.address) {
@@ -318,26 +319,28 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         {isSupported && termsAgreed && metamask && metamask.connected ? (
           <>
             {children}
-            <OurTokens className="center">
-              <h2>Tokens</h2>
-              <div className="buttons flex-center justify-center">
-                <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
-                  <button>
-                    $hrimp <img src="/assets/link-icon.svg" />
-                  </button>
-                </a>
-                <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
-                  <button>
-                    LST <img src="/assets/link-icon.svg" />
-                  </button>
-                </a>
-                <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
-                  <button disabled>
-                    NFT <img src="/assets/link-icon.svg" />
-                  </button>
-                </a>
-              </div>
-            </OurTokens>
+            {isPage && (
+              <OurTokens className="center">
+                <h2>Tokens</h2>
+                <div className="buttons flex-center justify-center">
+                  <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
+                    <button>
+                      $hrimp <img src="/assets/link-icon.svg" />
+                    </button>
+                  </a>
+                  <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
+                    <button>
+                      LST <img src="/assets/link-icon.svg" />
+                    </button>
+                  </a>
+                  <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
+                    <button disabled>
+                      NFT <img src="/assets/link-icon.svg" />
+                    </button>
+                  </a>
+                </div>
+              </OurTokens>
+            )}
           </>
         ) : metamask && metamask.connected && isSupported ? (
           <>
