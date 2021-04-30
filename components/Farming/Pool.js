@@ -274,7 +274,7 @@ const getSeries = (type, epoch) => {
   }
 }
 
-const getSeriesEnd = (type, epoch) => {
+export const getSeriesEnd = (type, epoch) => {
   switch (type) {
     case 1:
       return !epoch || epoch === 0

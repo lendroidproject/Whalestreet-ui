@@ -7,7 +7,7 @@ import { getDuration } from 'utils/hooks'
 import MaxInput from 'components/common/MaxInput'
 import TxModal from 'components/common/TxModal'
 
-import { Wrapper as PoolWrapper, PoolIcon } from './Pool'
+import { Wrapper as PoolWrapper, PoolIcon, getSeriesEnd } from './Pool'
 import { mediaSize, withMedia } from 'utils/media'
 
 const Wrapper = styled(PoolWrapper)`
@@ -264,6 +264,7 @@ function PoolDetail({
   dispatch,
   onBack,
   now,
+  seriesType,
 }) {
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
@@ -276,6 +277,8 @@ function PoolDetail({
     poolBalances = [],
     poolEarnings = [],
     poolEpochs = [],
+    poolEpochPeriods = [],
+    poolHearBeatTimes = [],
     poolLastEpochs = [],
   } = metamask
   const currentEpoch = poolEpochs[poolIndex] || 0
@@ -296,6 +299,11 @@ function PoolDetail({
   const unstakeDisabled = currentEpoch === lastEpochStaked
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
   const duration = getDuration(now, epochEndTime * 1000)
+
+  const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
+  const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
+  const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
+  const isEnded = countdown * 1000 < now
 
   const { epochEndTimeFromTimestamp } = library.methods[pool]
   useEffect(() => {
@@ -451,7 +459,7 @@ function PoolDetail({
               <>
                 <div className="stake">
                   <div className="actions flex">
-                    <button className="uppercase red" onClick={() => handleMode('stake')} disabled={!uniV2Balance}>
+                    <button className="uppercase red" onClick={() => handleMode('stake')} disabled={!uniV2Balance || isEnded}>
                       <img src="/assets/stake.svg" alt="Stake" />
                       Stake
                     </button>
