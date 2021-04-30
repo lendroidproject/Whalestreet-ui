@@ -468,13 +468,15 @@ export default function Pool({
           <div className="pool-data top">
             {rewardBySeries && (
               <p className="apy center">
-                APY {getAPY()}%{' '}
-                <span
-                  className={`tool-tip cursor info-${icon}`}
-                  data-tip
-                  data-for={`${pool}-apy`}
-                  data-iscapture="true"
-                ></span>
+                APY {duration ? getAPY() : 0}%{' '}
+                {duration && (
+                  <span
+                    className={`tool-tip cursor info-${icon}`}
+                    data-tip
+                    data-for={`${pool}-apy`}
+                    data-iscapture="true"
+                  ></span>
+                )}
               </p>
             )}
             <div className="pool-data__detail flex-center flex-column full">
@@ -542,16 +544,18 @@ export default function Pool({
               </p>
             </>
           )}
-          <ReactTooltip
-            id={`${pool}-apy`}
-            effect="solid"
-            multiline
-            border
-            borderColor={color}
-            backgroundColor="rgba(0,0,0,0.94)"
-          >
-            {getAPYInfo()}
-          </ReactTooltip>
+          {duration && (
+            <ReactTooltip
+              id={`${pool}-apy`}
+              effect="solid"
+              multiline
+              border
+              borderColor={color}
+              backgroundColor="rgba(0,0,0,0.94)"
+            >
+              {getAPYInfo()}
+            </ReactTooltip>
+          )}
         </>
       )}
     </Wrapper>
