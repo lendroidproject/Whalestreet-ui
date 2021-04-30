@@ -30,8 +30,8 @@ export function useTicker(seconds = 1) {
   return [now]
 }
 
-export function getDuration(start, end, error = '-') {
-  if (start >= end) return error
+export function getDuration(start, end) {
+  if (start >= end) return false
   let remaining = parseInt((end - start) / 1000)
   const seconds = `00${remaining % 60}`.slice(-2)
   remaining = (remaining - (remaining % 60)) / 60

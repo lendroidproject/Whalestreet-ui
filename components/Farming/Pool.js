@@ -365,7 +365,7 @@ export default function Pool({
 
   const currentSeries = getSeries(seriesType, epoch)
   const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, epoch)
-  const duration = getDuration(now, countdown * 1000, 'Ended')
+  const duration = getDuration(now, countdown * 1000)
 
   const getAPY = () => {
     if (!uniData || !currentSeries || !rewardBySeries) return '-'
@@ -508,20 +508,30 @@ export default function Pool({
             <>
               <table className="series background-opacity-05">
                 <tbody>
-                  <tr>
-                    <td>Current series:</td>
-                    <td>{currentSeries}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Rewards <span>({farm} / second)</span>:
-                    </td>
-                    <td>{rate.toFixed(8)}</td>
-                  </tr>
-                  <tr>
-                    <td>Series ends in:</td>
-                    <td>{duration}</td>
-                  </tr>
+                  {duration ? (
+                    <>
+                      <tr>
+                        <td>Current series:</td>
+                        <td>{currentSeries}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Rewards <span>({farm} / second)</span>:
+                        </td>
+                        <td>{rate.toFixed(8)}</td>
+                      </tr>
+                      <tr>
+                        <td>Series ends in:</td>
+                        <td>{duration}</td>
+                      </tr>
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={2} style={{ lineHeight: 1.4 }}>
+                        The reward cycle has ended. You can still claim your unclaimed rewards.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
               <p className="add-liquidity underline flex-center justify-center">
