@@ -530,7 +530,9 @@ export default function Pool({
                   ) : (
                     <tr>
                       <td colSpan={2} style={{ lineHeight: 1.4 }}>
-                        The reward cycle has ended. You can still claim your unclaimed rewards.
+                        The reward cycle has ended for this pool.
+                        <br />
+                        <br />
                       </td>
                     </tr>
                   )}
