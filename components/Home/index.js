@@ -79,12 +79,12 @@ export default connect((state) => state)(function Farming({ metamask, library, o
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
   const [now] = useTicker()
   const [assets, setAssets] = useState([])
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(null)
   const duration = getDuration(now, epochEndTime * 1000)
 
   const { latestBlockTimestamp } = metamask
   const { epochEndTimeFromTimestamp } = library.methods.LST_WETH_UNIV2_$HRIMP_Pool
-  const { totalSupply } = library.methods.B20;
+  const { totalSupply } = library.methods.B20
   const toNumber = library.web3.utils.fromWei
 
   useEffect(() => {
@@ -134,22 +134,14 @@ export default connect((state) => state)(function Farming({ metamask, library, o
   }, [metamask.network])
 
   const loadData = () => {
-    Promise.all([
-      getTokenPriceUSD(addresses[1].B20),
-      totalSupply()
-    ])
-      .then(
-        ([
+    Promise.all([getTokenPriceUSD(addresses[1].B20), totalSupply()])
+      .then(([b20USDPrice, b20TotalSupply]) => {
+        setData({
           b20USDPrice,
-          b20TotalSupply
-        ]) => {
-          setData({
-            b20USDPrice,
-            b20TotalSupply: toNumber(b20TotalSupply),
-            b20USDTotal: (new BigNumber(b20USDPrice)).multipliedBy(toNumber(b20TotalSupply)).toString()
-          })
-        }
-      )
+          b20TotalSupply: toNumber(b20TotalSupply),
+          b20USDTotal: new BigNumber(b20USDPrice).multipliedBy(toNumber(b20TotalSupply)).toString(),
+        })
+      })
       .catch(console.log)
   }
 
@@ -169,8 +161,8 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       <Wrapper className="center">
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
         <p className="intro">
-          Welcome. WhaleStreet has engineered the bundling and fractionalizing of the $2.7 mn B.20 bundle. You can now farm B20 tokens for
-          exciting rewards. Join the B20 discord{' '}
+          Welcome. WhaleStreet has engineered the bundling and fractionalizing of the $2.7 mn B.20 bundle. You can now
+          farm B20 tokens for exciting rewards. Join the B20 discord{' '}
           <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
             here
           </a>
@@ -214,7 +206,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           <Statics className="flex-center flex-wrap justify-between limited">
             <div className="statics__item">
               <label>TVL</label>
-              <p><span>$</span>{format(data?.b20USDTotal, 0)}</p>
+              <p>
+                <span>$</span>
+                {format(data?.b20USDTotal, 0)}
+              </p>
             </div>
             {/* <div className="statics__item">
               <label>Treasury</label>
@@ -246,7 +241,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div> */}
           </div>
           <div className="row flex-column">
-            <div className="reward-token cursor flex-center relative coming-soon" onClick={() => false && onModule('auctions')}>
+            <div
+              className={`reward-token cursor flex-center relative ${process.env.AUCTION_ENABLED ? '' : 'coming-soon'}`}
+              onClick={() => process.env.AUCTION_ENABLED && onModule('auctions')}
+            >
               <img src="/assets/gaffe-hoard.png" alt="Gaff NFT" />
               <p>Gaff NFT</p>
             </div>
@@ -265,7 +263,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
               <img src="/assets/get-b20.svg" alt="Get B20" />
               <p>Get B20</p>
             </a> */}
-            <div className="reward-token cursor flex-center relative coming-soon" onClick={() => false && onModule('whale-swap')}>
+            <div
+              className="reward-token cursor flex-center relative coming-soon"
+              onClick={() => false && onModule('whale-swap')}
+            >
               <img src="/assets/whaleswap.png" alt="Whale Swap" />
               <p>Whale Swap</p>
             </div>

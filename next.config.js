@@ -6,6 +6,7 @@ module.exports = withOffline({
   env: {
     NETWORKS: process.env.NETWORKS,
     INFURA_ID: process.env.INFURA_ID,
+    AUCTION_ENABLED: process.env.AUCTION_ENABLED === 'true',
   },
   trailingSlash: false,
   poweredByHeader: false,

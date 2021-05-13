@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { connect } from 'react-redux'
 
 import Spinner from 'components/common/Spinner'
-import Pool from '../Farming/Pool'
+import Tabs from 'components/Auctions/Tabs'
+import { PoolListWrapper } from '../Farming/PoolList'
+import Pool, { getSeriesEnd } from '../Farming/Pool'
 import PoolDetail from '../Farming/PoolDetail'
 
 import { pools } from './constants'
-import { mediaSize } from 'utils/media'
-import { useTicker } from 'utils/hooks'
-
-const Wrapper = styled.section`
-  .pools {
-    margin: -20px;
-    ${mediaSize.mobile} {
-      margin: -10px;
-    }
-  }
-`
+import { getDuration, useTicker } from 'utils/hooks'
 
 export default connect((state) => state)(function PoolList({ farm = 'B20', metamask, library }) {
+  const [active, setActive] = useState('ongoing')
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
   const [now] = useTicker()
@@ -31,9 +23,19 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
     }
   }, [farm])
 
+  const { poolEpochs = [], poolEpochPeriods = [], poolHeartBeatTimes = [] } = metamask
+  const tabPools = (basePools || []).filter(({ pool, seriesType }) => {
+    const poolIndex = pools.findIndex((item) => item.pool === pool)
+    const currentEpoch = poolEpochs[poolIndex] || 0
+    const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
+    const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
+    const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
+    return (active === 'ongoing') ^ !getDuration(now, countdown * 1000)
+  })
+
   if (selectedPool) {
     return (
-      <Wrapper className="center">
+      <PoolListWrapper className="center">
         <h1>Stake, Unstake &amp; Claim </h1>
         <p>Here, you can not only stake and unstake your pool tokens, but also claim your B20 rewards</p>
         <div className="flex-center justify-center">
@@ -47,11 +49,11 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
             now={now}
           />
         </div>
-      </Wrapper>
+      </PoolListWrapper>
     )
   } else {
     return basePools ? (
-      <Wrapper className="center">
+      <PoolListWrapper className="center">
         <h1>Farm B.20</h1>
         <p>
           Farm B20s. Stake pool tokens to get B20 rewards from any of the available pools.{' '}
@@ -64,8 +66,24 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
             https://b20.whalestreet.xyz
           </a>
         </p>
+        <Tabs
+          tab={active}
+          onTab={setActive}
+          options={[
+            {
+              value: 'ongoing',
+              label: 'Active',
+              // label: 'Currently active pools',
+            },
+            {
+              value: 'completed',
+              label: 'Archived',
+              // label: 'Archived pools',
+            },
+          ]}
+        />
         <div className="flex-wrap justify-center pools">
-          {basePools.map((pool) => (
+          {tabPools.map((pool) => (
             <Pool
               metamask={metamask}
               library={library}
@@ -78,7 +96,7 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
             />
           ))}
         </div>
-      </Wrapper>
+      </PoolListWrapper>
     ) : (
       <Spinner />
     )

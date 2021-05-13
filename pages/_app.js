@@ -26,6 +26,7 @@ const magic = new MagicCss({
     ['dark-grey', '#979797'],
     ['border', '#d6d6d6'],
     ['border2', '#5752fc'],
+    ['trans', 'rgba(255, 255, 255, 0.5)'],
   ],
   variables: [
     ['border', ['input', '1px solid #d6d6d6']],

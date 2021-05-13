@@ -351,14 +351,14 @@ export default function Pool({
   const {
     poolEpochs = [],
     poolEpochPeriods = [],
-    poolHearBeatTimes = [],
+    poolHeartBeatTimes = [],
     poolBalances = [],
     poolSupplies = [],
     uniV2Supplies = [],
   } = metamask
   const currentEpoch = poolEpochs[poolIndex] || 0
   const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
-  const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
+  const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
 
   const [[epoch, rate], setRewardRate] = useState([0, 0])
   const [uniData, setUniData] = useState(null)

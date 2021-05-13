@@ -278,7 +278,7 @@ function PoolDetail({
     poolEarnings = [],
     poolEpochs = [],
     poolEpochPeriods = [],
-    poolHearBeatTimes = [],
+    poolHeartBeatTimes = [],
     poolLastEpochs = [],
   } = metamask
   const currentEpoch = poolEpochs[poolIndex] || 0
@@ -301,7 +301,7 @@ function PoolDetail({
   const duration = getDuration(now, epochEndTime * 1000)
 
   const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
-  const HEART_BEAT_START_TIME = poolHearBeatTimes[poolIndex] || 0
+  const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
   const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
   const isEnded = countdown * 1000 < now
 

@@ -22,16 +22,24 @@ export default connect((state) => state)(function Auctions({
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
   const getCurrent = () => {
+    const { getAllowance } = library.methods.$HRIMP
     const { currentEpoch, currentPrice, epochEndTimeFromTimestamp } = library.methods.AuctionRegistry
     library.methods.web3
       .getBlock()
       .then((timestamp) => {
         Promise.all([
+          getAllowance(address),
           currentEpoch(),
           currentPrice().then(library.web3.utils.fromWei),
           epochEndTimeFromTimestamp(timestamp),
         ])
-          .then(([epoch, price, timestamp]) => {
+          .then(([a$HRIMP, epoch, price, timestamp]) => {
+            dispatch({
+              type: 'METAMASK',
+              payload: {
+                a$HRIMP,
+              },
+            })
             setCurrent({ epoch, price, timestamp })
           })
           .catch(console.log)
@@ -99,8 +107,8 @@ export default connect((state) => state)(function Auctions({
   }
   const getPurchase = () => {
     if (totalPurchase && totalPurchase > purchases.length) {
-      const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-      fetchPurchase(purchases.length).then(handlePurchases).catch(console.log)
+      // const { purchases: fetchPurchase } = library.methods.AuctionRegistry
+      // fetchPurchase(purchases.length).then(handlePurchases).catch(console.log)
     }
   }
   useEffect(() => {

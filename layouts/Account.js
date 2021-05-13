@@ -197,6 +197,7 @@ class Account extends Component {
       setTimeout(() => this.getBalance(), 2.5 * 1000)
     } else {
       const { dispatch } = this.props
+      let hook = null
       const handleEvent = (event) => {
         switch (event.event) {
           case 'Staked':
@@ -216,7 +217,7 @@ class Account extends Component {
               })
             } else {
               if (event.status !== 0) {
-                this.props.library.setProvider(provider, addresses[event.data.network])
+                ;(this.props.library || hook).setProvider(provider, addresses[event.data.network])
               }
               dispatch({
                 type: 'METAMASK',
@@ -232,20 +233,28 @@ class Account extends Component {
         onEvent: handleEvent,
         addresses: addresses[this.state.network],
       })
+      hook = library
       const handleAuctionEvent = (event) => {
         switch (event.event) {
           default:
             break
         }
       }
-      const auctions = null && Library.Auctions(provider, {
-        onEvent: handleAuctionEvent,
-        addresses: auctionAddresses[this.state.network],
-      })
-      dispatch({
-        type: 'INIT_CONTRACTS',
-        payload: [library, auctions],
-      })
+      if (process.env.AUCTION_ENABLED) {
+        const auctions = Library.Auctions(provider, {
+          onEvent: handleAuctionEvent,
+          addresses: auctionAddresses[this.state.network],
+        })
+        dispatch({
+          type: 'INIT_CONTRACTS',
+          payload: [library, auctions],
+        })
+      } else {
+        dispatch({
+          type: 'INIT_CONTRACTS',
+          payload: [library],
+        })
+      }
       setTimeout(() => this.getBalance(), 2.5 * 1000)
     }
   }
@@ -292,7 +301,7 @@ class Account extends Component {
         metamask.poolEpochPeriods
           ? Promise.resolve()
           : Promise.all(pools.map((token) => resolvePromise(library.methods[token].EPOCH_PERIOD(), '28800'))),
-        metamask.poolHearBeatTimes
+        metamask.poolHeartBeatTimes
           ? Promise.resolve()
           : Promise.all(
               pools.map((token) => resolvePromise(library.methods[token].HEART_BEAT_START_TIME(), '1607212800'))
@@ -312,7 +321,7 @@ class Account extends Component {
             _poolEpochs,
             _poolLastEpochs,
             _poolEpochPeriods,
-            _poolHearBeatTimes,
+            _poolHeartBeatTimes,
           ]) => {
             function toNumber(value, decimal = 12) {
               const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimal}})?`)
@@ -339,7 +348,7 @@ class Account extends Component {
             const poolEpochs = _poolEpochs.map(Number)
             const poolLastEpochs = _poolLastEpochs.map(Number)
             const poolEpochPeriods = metamask.poolEpochPeriods || _poolEpochPeriods.map(Number)
-            const poolHearBeatTimes = metamask.poolHearBeatTimes || _poolHearBeatTimes.map(Number)
+            const poolHeartBeatTimes = metamask.poolHeartBeatTimes || _poolHeartBeatTimes.map(Number)
 
             const findSome = (val, key) => val.some((item) => item !== metamask[key])
 
@@ -369,7 +378,7 @@ class Account extends Component {
                 poolEpochs,
                 poolLastEpochs,
                 poolEpochPeriods,
-                poolHearBeatTimes,
+                poolHeartBeatTimes,
               })
           }
         )

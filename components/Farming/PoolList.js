@@ -3,14 +3,22 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 
 import Spinner from 'components/common/Spinner'
-import Pool from './Pool'
+import Tabs from 'components/Auctions/Tabs'
+import Pool, { getSeriesEnd } from './Pool'
 import PoolDetail from './PoolDetail'
 
 import { pools } from './constants'
 import { mediaSize } from 'utils/media'
-import { useTicker } from 'utils/hooks'
+import { getDuration, useTicker } from 'utils/hooks'
 
-const Wrapper = styled.section`
+export const PoolListWrapper = styled.section`
+  .tabs {
+    border-width: 2px;
+    background: var(--color-trans);
+    li {
+      text-transform: uppercase;
+    }
+  }
   .pools {
     margin: -20px;
     ${mediaSize.mobile} {
@@ -20,6 +28,7 @@ const Wrapper = styled.section`
 `
 
 export default connect((state) => state)(function PoolList({ farm = '$hrimp', metamask, library }) {
+  const [active, setActive] = useState('ongoing')
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
   const [now] = useTicker()
@@ -31,9 +40,19 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
     }
   }, [farm])
 
+  const { poolEpochs = [], poolEpochPeriods = [], poolHeartBeatTimes = [] } = metamask
+  const tabPools = (basePools || []).filter(({ pool, seriesType }) => {
+    const poolIndex = pools.findIndex((item) => item.pool === pool)
+    const currentEpoch = poolEpochs[poolIndex] || 0
+    const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
+    const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
+    const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
+    return (active === 'ongoing') ^ !getDuration(now, countdown * 1000)
+  })
+
   if (selectedPool) {
     return (
-      <Wrapper className="center">
+      <PoolListWrapper className="center">
         <h1>Stake, Unstake &amp; Claim </h1>
         <p>
           You can stake and un-stake your pool tokens here.
@@ -51,11 +70,11 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
             now={now}
           />
         </div>
-      </Wrapper>
+      </PoolListWrapper>
     )
   } else {
     return basePools ? (
-      <Wrapper className="center">
+      <PoolListWrapper className="center">
         <h1>FARM $HRIMP</h1>
         <p>
           Provide liquidity to the{' '}
@@ -66,8 +85,24 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
           <br />
           By staking pool tokens, you can mine $hrimp.
         </p>
+        <Tabs
+          tab={active}
+          onTab={setActive}
+          options={[
+            {
+              value: 'ongoing',
+              label: 'Active',
+              // label: 'Currently active pools',
+            },
+            {
+              value: 'completed',
+              label: 'Archived',
+              // label: 'Archived pools',
+            },
+          ]}
+        />
         <div className="flex-wrap justify-center pools">
-          {basePools.map((pool) => (
+          {tabPools.map((pool) => (
             <Pool
               metamask={metamask}
               library={library}
@@ -80,7 +115,7 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
             />
           ))}
         </div>
-      </Wrapper>
+      </PoolListWrapper>
     ) : (
       <Spinner />
     )

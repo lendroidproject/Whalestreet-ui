@@ -103,7 +103,7 @@ export default function AuctionList({ current, getCurrent, allowance, onPurchase
                 <th className="price">Price</th>
                 <th className="remaining">Remaining Time</th>
                 <th className="actions" rowSpan={2}>
-                  <button onClick={onPurchase} disabled={pending || current.price === 0}>
+                  <button onClick={onPurchase} disabled={pending || Number(current.price) === 0}>
                     {allowance > 0 ? 'Purchase' : 'Unlock'}
                   </button>
                 </th>
@@ -115,7 +115,7 @@ export default function AuctionList({ current, getCurrent, allowance, onPurchase
                 <td>
                   <Price className="flex-center">
                     <img src="/assets/$hrimp-token.svg" alt="" />
-                    {current.price}
+                    {Number(current.price || 0).toFixed(2)}
                   </Price>
                 </td>
                 <td>
