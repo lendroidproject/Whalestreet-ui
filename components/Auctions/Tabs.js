@@ -27,8 +27,13 @@ const Wrapper = styled.ul`
 export default function Tabs({ tab, onTab, options, className = '' }) {
   return (
     <Wrapper className={`tabs center ${className}`}>
-      {options.map(({ value, label }) => (
-        <li key={value} onClick={() => onTab(value)} className={`cursor ${tab === value ? 'active' : ''}`}>
+      {options.map(({ value, label, disabled }) => (
+        <li
+          key={value}
+          onClick={() => !disabled && onTab(value)}
+          className={`cursor ${tab === value ? 'active' : ''}`}
+          style={disabled ? { cursor: 'not-allowed' } : {}}
+        >
           {label}
         </li>
       ))}

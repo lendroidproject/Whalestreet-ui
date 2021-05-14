@@ -12,26 +12,41 @@ import { getDuration, useTicker } from 'utils/hooks'
 
 export default connect((state) => state)(function PoolList({ farm = 'B20', metamask, library }) {
   const [active, setActive] = useState('ongoing')
-  const [basePools, setPools] = useState(null)
+  const [basePools, setPools] = useState([])
   const [selectedPool, setPool] = useState(null)
   const [now] = useTicker()
 
   useEffect(() => {
-    if (!basePools || basePools.length === 0 || basePools[0].farm !== farm) {
+    if (basePools.length === 0 || basePools[0].farm !== farm) {
       const basePools = pools.filter((item) => item.farm === farm)
       setPools(basePools)
     }
   }, [farm])
 
   const { poolEpochs = [], poolEpochPeriods = [], poolHeartBeatTimes = [] } = metamask
-  const tabPools = (basePools || []).filter(({ pool, seriesType }) => {
+  function isActive({ pool, seriesType }) {
     const poolIndex = pools.findIndex((item) => item.pool === pool)
     const currentEpoch = poolEpochs[poolIndex] || 0
     const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
     const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
     const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
-    return (active === 'ongoing') ^ !getDuration(now, countdown * 1000)
-  })
+    return getDuration(now, countdown * 1000)
+  }
+  const [ongoing, completed] = basePools.reduce(
+    ([ongoing, completed], pool) => {
+      if (isActive(pool)) ongoing.push(pool)
+      else completed.push(pool)
+      return [ongoing, completed]
+    },
+    [[], []]
+  )
+  const tabPools = active === 'ongoing' ? ongoing : completed
+
+  useEffect(() => {
+    if (ongoing.length + completed.length === 0) return
+    if (active === 'ongoing' && ongoing.length === 0) setActive('completed')
+    if (active === 'completed' && completed.length === 0) setActive('ongoing')
+  }, [active])
 
   if (selectedPool) {
     return (
@@ -52,7 +67,7 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
       </PoolListWrapper>
     )
   } else {
-    return basePools ? (
+    return basePools.length ? (
       <PoolListWrapper className="center">
         <h1>Farm B.20</h1>
         <p>
@@ -74,11 +89,13 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
               value: 'ongoing',
               label: 'Active',
               // label: 'Currently active pools',
+              disabled: ongoing.length === 0,
             },
             {
               value: 'completed',
               label: 'Archived',
               // label: 'Archived pools',
+              disabled: completed.length === 0,
             },
           ]}
         />
