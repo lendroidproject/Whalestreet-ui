@@ -93,7 +93,15 @@ export default connect((state) => state)(function Auctions({
     }
   }
   const [purchases, setPurchases] = useState([])
-  const handlePurchases = ({ auctionTokenId: id, epoch, purchaser, amount, timestamp }) => {
+  const handlePurchases = (purchase) => {
+    const { auctionTokenId: id, epoch, purchaser, y: amount, timestamp } = purchase
+    console.log(purchase, {
+      id,
+      epoch,
+      purchases: [purchaser],
+      amount: amount,
+      timestamp,
+    })
     setPurchases([
       {
         id,
@@ -107,8 +115,8 @@ export default connect((state) => state)(function Auctions({
   }
   const getPurchase = () => {
     if (totalPurchase && totalPurchase > purchases.length) {
-      // const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-      // fetchPurchase(purchases.length).then(handlePurchases).catch(console.log)
+      const { purchases: fetchPurchase } = library.methods.AuctionRegistry
+      fetchPurchase(purchases.length).then(handlePurchases).catch(console.log)
     }
   }
   useEffect(() => {
