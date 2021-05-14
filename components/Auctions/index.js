@@ -94,14 +94,7 @@ export default connect((state) => state)(function Auctions({
   }
   const [purchases, setPurchases] = useState([])
   const handlePurchases = (purchase) => {
-    const { auctionTokenId: id, epoch, purchaser, y: amount, timestamp } = purchase
-    console.log(purchase, {
-      id,
-      epoch,
-      purchases: [purchaser],
-      amount: amount,
-      timestamp,
-    })
+    const { auctionTokenId: id, epoch, account: purchaser, y: amount, timestamp } = purchase
     setPurchases([
       {
         id,
