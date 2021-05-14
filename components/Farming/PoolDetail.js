@@ -391,7 +391,7 @@ function PoolDetail({
     const { amount } = unstakeForm
     const { unstake, unstakeAndClaim } = library.methods[pool]
     const transaction =
-      poolBalance === amount
+      poolEarning > 0 && poolBalance === amount
         ? unstakeAndClaim({ from: address })
         : unstake(library.web3.utils.toWei(amount.toString()), { from: address })
     transaction
