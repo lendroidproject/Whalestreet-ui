@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 import { Epoc } from './AuctionList'
 
+const EPOCH_PERIOD = 28800
+
 const Wrapper = styled.div`
   z-index: 101;
 
@@ -36,7 +38,7 @@ const Close = styled.div`
   position: absolute;
   right: 0;
   top: -40px;
-  color: var(--color-red);
+  color: var(--color-red2);
   font-size: 18px;
   letter-spacing: 0.18px;
   line-height: 26px;
@@ -48,14 +50,14 @@ const Close = styled.div`
 
 const Auction = styled.div`
   border-radius: 12px;
-  background-color: var(--color-blue);
+  background-color: var(--color-blue2);
   color: var(--color-white);
   padding: 13px 10px;
   margin-bottom: 30px;
+  text-align: center;
 
   .epoc {
     width: 15%;
-    text-align: center;
   }
 
   .purchases {
@@ -94,8 +96,7 @@ const Duration = styled.div``
 
 const Graph = styled.div`
   border-radius: 12px;
-  background-color: var(--color-black);
-  box-shadow: var(--box-shadow-dark);
+  box-shadow: 0 0 11px 0 #D1D1D1;
   padding: 60px 15px;
 
   .recharts-surface {
@@ -104,18 +105,26 @@ const Graph = styled.div`
 
   .custom-tooltip {
     border-radius: 3px;
-    background-color: var(--color-white);
+    background-color: transparent;
     padding: 10px;
+    color: var(--color-red2);
 
     font-size: 10px;
     letter-spacing: 0.1px;
     line-height: 16px;
     font-weight: normal;
-    width: 107px;
+    width: 120px;
     text-align: center;
 
     transform: translate(-50%, -140%);
     position: relative;
+
+    &.green {
+      color: var(--color-green);
+    }
+    &.grey {
+      color: var(--color-grey2);
+    }
 
     &:after {
       content: '';
@@ -125,8 +134,12 @@ const Graph = styled.div`
       width: 15px;
       height: 15px;
       transform: rotate(45deg);
-      background: var(--color-white);
+      background: transparent;
     }
+  }
+
+  text {
+    stroke: #6e6e96;
   }
 `
 
@@ -134,49 +147,34 @@ export const getDate = (timestamp) => new Date(timestamp * 1000).toISOString().s
 
 const CustomTooltip = (props) => {
   const { active, payload } = props
-  if (active) {
-    return <div className="custom-tooltip">Start Price @ {payload[0].value}$hrimp</div>
+  if (active && payload && payload[0].payload.toolTip) {
+    return <div className={`custom-tooltip ${payload[0].payload.className}`}>{payload[0].payload.toolTip}</div>
   }
   return null
 }
 
-const data = [
-  {
-    name: '1h',
-    price: 24,
-  },
-  {
-    name: '2h',
-    price: 13,
-  },
-  {
-    name: '3h',
-    price: 28,
-  },
-  {
-    name: '4h',
-    price: 10,
-  },
-  {
-    name: '5h',
-    price: 14,
-  },
-  {
-    name: '6h',
-    price: 29,
-  },
-  {
-    name: '7h',
-    price: 9,
-  },
-  {
-    name: '8h',
-    price: 22,
-  },
-]
-
 export default function AuctionDetail({ auction, onClose }) {
-  const { id, epoch, purchases, amount, timestamp } = auction
+  const { id, epoch, purchases, timestamp, x, start, end } = auction
+
+  const data = []
+  const piece = EPOCH_PERIOD / 8
+  const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
+  const purchase = start - (start - end) * (EPOCH_PERIOD - x) / EPOCH_PERIOD
+  for (let i = 0; i <= 8; i++) {
+    const price = i < xPos ? start - ((start - purchase) * i) / xPos : end + ((purchase - end) * (8 - i)) / (8 - xPos)
+    data.push({
+      name: `${i}h`,
+      price,
+      toolTip:
+        i === 0
+          ? `Start Price @ ${price.toFixed(0)}$hrimp`
+          : i === xPos
+          ? `Purchase Price @ ${price.toFixed(0)}$hrimp`
+          : `${price.toFixed()}$hrimp`,
+      className: i === 0 ? `red` : i === xPos ? `red` : 'grey',
+    })
+  }
+
   return ReactDom.createPortal(
     <Wrapper className="auction-detail portal fill flex-all">
       <Overlay className="fill" />
@@ -190,8 +188,8 @@ export default function AuctionDetail({ auction, onClose }) {
             <DetailEpoc>{epoch}</DetailEpoc>
           </div>
           <div className="purchases">{purchases.length}</div>
-          <div className="starting">{amount.toFixed(2)}</div>
-          <div className="ending">{amount.toFixed(2)}</div>
+          <div className="starting">{start.toFixed(2)}</div>
+          <div className="ending">{end.toFixed(2)}</div>
           <div className="duration">
             <Duration>{getDate(timestamp)}</Duration>
           </div>
@@ -206,23 +204,8 @@ export default function AuctionDetail({ auction, onClose }) {
               <XAxis
                 dataKey="name"
                 tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dy: 10 }}
-              >
-                <Label
-                  value="Hours"
-                  offset={-30}
-                  position="insideBottom"
-                  style={{ fontWeight: 'normal', fill: 'white', fontSize: 14 }}
-                />
-              </XAxis>
-              <YAxis tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dx: -10 }}>
-                <Label
-                  value="$hrimp"
-                  offset={-10}
-                  position="insideLeft"
-                  angle={90}
-                  style={{ fontWeight: 'normal', fill: 'white', fontSize: 14 }}
-                />
-              </YAxis>
+              ></XAxis>
+              <YAxis tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dx: -10 }}></YAxis>
               <Tooltip
                 content={<CustomTooltip />}
                 offset={0}
@@ -230,12 +213,15 @@ export default function AuctionDetail({ auction, onClose }) {
                 cursor={{ stroke: '#0099F2', strokeDasharray: '3 3' }}
               />
               <Line
-                type="monotone"
                 dataKey="price"
-                stroke="#0099F2"
+                stroke="#bd84a3"
                 strokeWidth={2}
-                dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 8, strokeWidth: 2 }}
-                activeDot={{ strokeWidth: 0, fill: 'var(--color-red)', r: 7 }}
+                dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 0, strokeWidth: 2 }}
+                activeDot={{
+                  fill: 'var(--color-red2)',
+                  r: 6,
+                  boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
+                }}
               />
             </LineChart>
           </ResponsiveContainer>

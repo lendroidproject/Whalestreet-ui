@@ -6,11 +6,21 @@ import { PageWrapper } from 'components/styles'
 import Tabs from './Tabs'
 import AuctionList from './AuctionList'
 import AuctionTable from './AuctionTable'
+import { useTicker } from 'utils/hooks'
+
+const EPOCH_PERIOD = 28800
 
 const Wrapper = styled(PageWrapper)`
   .tabs {
     margin-top: 16px;
     margin-bottom: 60px;
+    border: 1px solid var(--color-red2);
+
+    li {
+      &.active {
+        background: var(--color-red2);
+      }
+    }
   }
 `
 
@@ -19,11 +29,12 @@ export default connect((state) => state)(function Auctions({
   auctions: library,
   dispatch,
 }) {
+  const [now] = useTicker(15)
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
+  const { currentEpoch, currentPrice, epochEndTimeFromTimestamp } = library.methods.AuctionRegistry
   const getCurrent = () => {
     const { getAllowance } = library.methods.$HRIMP
-    const { currentEpoch, currentPrice, epochEndTimeFromTimestamp } = library.methods.AuctionRegistry
     library.methods.web3
       .getBlock()
       .then((timestamp) => {
@@ -40,7 +51,7 @@ export default connect((state) => state)(function Auctions({
                 a$HRIMP,
               },
             })
-            setCurrent({ epoch, price, timestamp })
+            setCurrent({ epoch, price: Number(price), timestamp })
           })
           .catch(console.log)
       })
@@ -93,23 +104,54 @@ export default connect((state) => state)(function Auctions({
     }
   }
   const [purchases, setPurchases] = useState([])
+  const myPurchases = purchases.filter((item) => item.purchases[0] === address)
   const handlePurchases = (purchase) => {
-    const { auctionTokenId: id, epoch, account: purchaser, y: amount, timestamp } = purchase
-    setPurchases([
-      {
-        id,
-        epoch,
-        purchases: [purchaser],
-        amount: Number(library.web3.utils.fromWei(amount)),
-        timestamp,
-      },
-      ...purchases,
-    ])
+    const { auctionTokenId: id, epoch, account: purchaser, y, timestamp } = purchase
+    const amount = Number(library.web3.utils.fromWei(y))
+    epochEndTimeFromTimestamp(timestamp)
+      .then((bTimestamp) => {
+        console.log(JSON.parse(JSON.stringify(purchases)))
+        const previoutPurchase = purchases.pop()
+        const x = bTimestamp - timestamp
+        if (previoutPurchase) {
+          setPurchases([
+            ...purchases,
+            {
+              ...previoutPurchase,
+              start: amount,
+            },
+            {
+              id,
+              epoch,
+              purchases: [purchaser],
+              start: 1,
+              end: amount,
+              timestamp,
+              x,
+            },
+          ])
+        } else {
+          setPurchases([
+            {
+              id,
+              epoch,
+              purchases: [purchaser],
+              start: 1,
+              end: amount,
+              timestamp,
+              x,
+            },
+          ])
+        }
+      })
+      .catch(console.log)
   }
   const getPurchase = () => {
     if (totalPurchase && totalPurchase > purchases.length) {
       const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-      fetchPurchase(purchases.length).then(handlePurchases).catch(console.log)
+      fetchPurchase(totalPurchase - purchases.length - 1)
+        .then(handlePurchases)
+        .catch(console.log)
     }
   }
   useEffect(() => {
@@ -151,14 +193,17 @@ export default connect((state) => state)(function Auctions({
         />
         {active === 'ongoing' && (
           <AuctionList
+            now={now}
             current={current}
+            lastPurchase={purchases[0]}
             getCurrent={getCurrent}
             allowance={a$HRIMP}
             pending={approveTx || purchaseTx}
             onPurchase={handlePurchase}
+            purchased={myPurchases.length > 0}
           />
         )}
-        {active === 'completed' && <AuctionTable purchases={purchases} />}
+        {active === 'completed' && <AuctionTable purchases={purchases} current={current} />}
       </Wrapper>
     </>
   )

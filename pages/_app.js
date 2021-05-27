@@ -11,12 +11,15 @@ import Layout from 'layouts'
 import { mediaSize } from 'utils/media'
 
 import MagicCss from '@frontend-ninjas/magic-css'
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const magic = new MagicCss({
   fontFamily: 'Space Mono, monospace',
   colors: [
     ['red', '#eb0f0f'],
     ['red1', '#ff0006'],
+    ['red2', '#bd84a3'],
+    ['red3', '#ffacb8'],
     ['blue', '#0600cc'],
     ['yellow', '#fde92a'],
     ['gold', '#fff400'],
@@ -27,6 +30,12 @@ const magic = new MagicCss({
     ['border', '#d6d6d6'],
     ['border2', '#5752fc'],
     ['trans', 'rgba(255, 255, 255, 0.5)'],
+    ['trans07', 'rgba(255, 255, 255, 0.7)'],
+    ['blue1', '#8787bb'],
+    ['blue2', '#9898bc'],
+    ['light-purple', '#fae0df'],
+    ['green', '#2fb2ba'],
+    ['grey2', '#898989'],
   ],
   variables: [
     ['border', ['input', '1px solid #d6d6d6']],
@@ -155,6 +164,9 @@ class App extends NextApp {
                 line-height: 1.5;
                 color: var(--color-black);
                 font-size: 16px;
+              }
+              body.auctions {
+                color: var(--color-blue2);
               }
               ${mediaSize.media3x} { body { font-size: 32px; } }
               ${mediaSize.media2x} { body { font-size: 24px; } }

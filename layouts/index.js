@@ -123,6 +123,27 @@ const Wrapper = styled.div`
       z-index: -1;
     }
   }
+
+  &.auctions {
+    .balance-item {
+      background: var(--color-red2);
+      + div > .cursor {
+        background: var(--color-red2);
+      }
+    }
+    *[role='menu'] {
+      background: var(--color-red2);
+    }
+    button.blue {
+      background: var(--color-red2);
+    }
+    h1 {
+      color: var(--color-red2);
+    }
+    footer a {
+      color: var(--color-blue2);
+    }
+  }
 `
 
 const Header = styled.header`
@@ -229,6 +250,21 @@ export default connect((state) => state)(function Index({ library, metamask, chi
   const isAdmin = router.pathname === '/market-admin'
   const isPage = ['/', '/farming', '/farm-b20'].includes(router.route)
 
+  const [pageName, setPageName] = useState('')
+  useEffect(() => {
+    const newPage = router.route
+      .split('/')
+      .filter((item) => item)
+      .join('-')
+    if (pageName) {
+      document.body.classList.remove(pageName)
+    }
+    if (newPage) {
+      setPageName(newPage)
+      document.body.classList.add(newPage)
+    }
+  }, [router.route])
+
   useEffect(() => {
     if (fetched && address && address !== metamask.address) {
       setFetched(false)
@@ -300,8 +336,19 @@ export default connect((state) => state)(function Index({ library, metamask, chi
     )
   }
 
+  const back = (
+    <div className="bg flex-all">
+      {pageName === 'auctions' && <img src="/assets/bg_auction.jpg" alt="Auctions" />}
+      {pageName !== 'auctions' && (
+        <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
+          <source src="/assets/bg.mp4" type="video/mp4" />
+        </video>
+      )}
+    </div>
+  )
+
   return (
-    <Wrapper className="flex-column">
+    <Wrapper className={`flex-column ${pageName}`}>
       <Header className="flex-center justify-between relative limited">
         <div className="menu flex">
           {isAdmin && (
@@ -344,11 +391,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           </>
         ) : metamask && metamask.connected && isSupported ? (
           <>
-            <div className="bg flex-all">
-              <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
-                <source src="/assets/bg.mp4" type="video/mp4" />
-              </video>
-            </div>
+            {back}
             <div className="fill flex-all no-wallet">
               {!library ? (
                 <p>No connected wallet</p>
@@ -375,11 +418,7 @@ export default connect((state) => state)(function Index({ library, metamask, chi
           </>
         ) : (
           <>
-            <div className="bg flex-all">
-              <video poster="/assets/bg.jpg" autoPlay="autoPlay" loop="loop" muted>
-                <source src="/assets/bg.mp4" type="video/mp4" />
-              </video>
-            </div>
+            {back}
             <p className="fill flex-all no-wallet">{connectNetworks()}</p>
           </>
         )}
