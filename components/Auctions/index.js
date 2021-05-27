@@ -111,21 +111,22 @@ export default connect((state) => state)(function Auctions({
     epochEndTimeFromTimestamp(timestamp)
       .then((bTimestamp) => {
         console.log(JSON.parse(JSON.stringify(purchases)))
-        const previoutPurchase = purchases.pop()
+        const previousPurchase = purchases.pop()
         const x = bTimestamp - timestamp
-        if (previoutPurchase) {
+        if (previousPurchase) {
           setPurchases([
             ...purchases,
             {
-              ...previoutPurchase,
+              ...previousPurchase,
               start: amount,
+              end: previousPurchase.start
             },
             {
               id,
               epoch,
               purchases: [purchaser],
-              start: 1,
-              end: amount,
+              start: amount,
+              end: 1,
               timestamp,
               x,
             },
@@ -136,8 +137,8 @@ export default connect((state) => state)(function Auctions({
               id,
               epoch,
               purchases: [purchaser],
-              start: 1,
-              end: amount,
+              start: amount,
+              end: 1,
               timestamp,
               x,
             },
