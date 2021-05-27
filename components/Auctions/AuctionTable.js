@@ -335,7 +335,7 @@ export default function AuctionTable({ current, purchases }) {
       ) : (
         <ListWrapper className="auction-list">
           <Action className="action" onClick={() => setView('list')}>
-            <img src="/assets/table.svg" />
+            <img src="/assets/list.svg" />
           </Action>
           <PerfectScrollbar className="scrollview" option={{ suppressScrollY: true }}>
             {purchases.map((purchase) => (
