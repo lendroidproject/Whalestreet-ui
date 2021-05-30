@@ -174,9 +174,10 @@ export default connect((state) => state)(function Auctions({
       <Wrapper className="center">
         <h1>Auctions</h1>
         <p className="intro">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud laboris nisi ut aliquip ex ea commodo consequat. beatae
-          vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia.
+          On this page, deFi Keys (NFTs) can be purchased using the $HRIMP token.
+          Every epoch, the price of the deFi Key is set according to a Dutch Auction curve.
+          If an Key is not purchased during the current epoch, it rolls over to the next epoch with a reduced purchase price.
+          The rarity of a deFi Key (Common Rare, Legendary) is randomly computed during the time of its purchase.
         </p>
         <Tabs
           tab={active}
