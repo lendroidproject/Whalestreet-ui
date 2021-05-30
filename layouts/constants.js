@@ -32,7 +32,7 @@ export const auctionAddresses = {
   },
   4: {
     $HRIMP: '0x174d2E1B37558e996B43C6A239ED6F5788912c97',
-    AuctionRegistry: '0x41b9a67E01d719D2E479107266B239D6b12B63e7',
+    AuctionRegistry: '0xe0a497e86aC1732248a9941698013F236735b179',
     WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
   },
 }
