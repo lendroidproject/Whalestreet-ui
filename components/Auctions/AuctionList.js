@@ -74,7 +74,6 @@ export const Epoch = styled.div`
   border-radius: 50%;
 
   display: inline-flex;
-  padding: 0 5px;
   align-items: center;
   justify-content: center;
 `

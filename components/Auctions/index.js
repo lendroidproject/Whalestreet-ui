@@ -104,7 +104,7 @@ export default connect((state) => state)(function Auctions({
     }
   }
   const [purchases, setPurchases] = useState([])
-  const myPurchases = purchases.filter((item) => item.purchases[0] === address)
+  const myPurchases = purchases.filter((item) => ((item.purchases[0] === address) && (item.epoch === current?.epoch)))
   const handlePurchases = (purchase) => {
     const { auctionTokenId: id, epoch, account: purchaser, amount: y, timestamp } = purchase
     const amount = Number(library.web3.utils.fromWei(y))
