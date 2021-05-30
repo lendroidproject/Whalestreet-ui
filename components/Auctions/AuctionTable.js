@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import AuctionDetail, { DetailEpoch, getDate } from './AuctionDetail'
@@ -296,9 +296,17 @@ function AuctionView({ auction, setAuction }) {
 export default function AuctionTable({ current, purchases }) {
   const [view, setView] = useState('list')
   const [auction, setAuction] = useState(null)
+  const ps = useRef();
   useEffect(() => {
     setAuction(null)
   }, [])
+
+  useLayoutEffect(() => {
+    if (ps && ps.current) {
+      console.log(ps.current);
+      ps.current.scrollLeft = 10000;
+    }
+  }, [ps, ps.current, purchases])
 
   return (
     <>
@@ -337,7 +345,7 @@ export default function AuctionTable({ current, purchases }) {
           <Action className="action" onClick={() => setView('list')}>
             <img src="/assets/list.svg" />
           </Action>
-          <PerfectScrollbar className="scrollview" option={{ suppressScrollY: true }}>
+          <PerfectScrollbar className="scrollview" option={{ suppressScrollY: true }} containerRef={el => (ps.current = el)}>
             {purchases.map((purchase) => (
               <AuctionView key={purchase.id} auction={purchase} setAuction={setAuction} />
             ))}

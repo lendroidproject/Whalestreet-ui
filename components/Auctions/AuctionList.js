@@ -97,7 +97,7 @@ const Graph = styled.div`
     border-radius: 3px;
     background-color: transparent;
     padding: 10px;
-    color: var(--color-red2);
+    color: var(--color-red2)!important;
 
     font-size: 10px;
     letter-spacing: 0.1px;
@@ -233,7 +233,7 @@ export default function AuctionList({
               <tbody>
                 <tr>
                   <th className="epoch">Epoch</th>
-                  <th className="price">Price</th>
+                  <th className="price">Current Price</th>
                   <th className="remaining">Remaining Time</th>
                   <th className="actions" rowSpan={2}>
                     <button onClick={onPurchase} disabled={purchased || pending || Number(current.price) === 0}>
