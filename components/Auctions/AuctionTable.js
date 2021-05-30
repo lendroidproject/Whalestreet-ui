@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import AuctionDetail, { DetailEpoc, getDate } from './AuctionDetail'
+import AuctionDetail, { DetailEpoch, getDate } from './AuctionDetail'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 
 const EPOCH_PERIOD = 28800
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   margin: 0 auto 30px;
   position: relative;
 
-  .epoc {
+  .epoch {
     width: 15%;
     text-align: center;
   }
@@ -144,7 +144,7 @@ const AuctionItem = styled.div`
   }
 `
 
-const PurchasedEpoc = styled(DetailEpoc)`
+const PurchasedEpoc = styled(DetailEpoch)`
   color: var(--color-blue2);
 `
 
@@ -263,16 +263,16 @@ function AuctionView({ auction, setAuction }) {
         </ResponsiveContainer>
       </Graph>
       <div className="flex detail" key={id}>
-        <div className="epoc">
+        <div className="epoch">
           EPOCH
           <br />
           <span>{epoch}</span>
         </div>
-        <div className="purchases">
+        {/* <div className="purchases">
           PURCHASES
           <br />
           <span>{purchases.length}</span>
-        </div>
+        </div> */}
         <div className="starting">
           STARTING PRICE
           <br />
@@ -308,8 +308,8 @@ export default function AuctionTable({ current, purchases }) {
             <img src="/assets/table.svg" />
           </Action>
           <Header className="flex">
-            <div className="epoc">Epoc</div>
-            <div className="purchases">Purchases</div>
+            <div className="epoch">Epoch</div>
+            {/* <div className="purchases">Purchases</div> */}
             <div className="starting">Starting Price</div>
             <div className="ending">Ending Price</div>
             <div className="duration">Time</div>
@@ -317,10 +317,10 @@ export default function AuctionTable({ current, purchases }) {
           </Header>
           {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp }) => (
             <Auction key={id} className="flex">
-              <div className="epoc">
+              <div className="epoch">
                 <PurchasedEpoc>{epoch}</PurchasedEpoc>
               </div>
-              <div className="purchases">{purchases.length}</div>
+              {/* <div className="purchases">{purchases.length}</div> */}
               <div className="starting">{start.toFixed(2)}</div>
               <div className="ending">{(end || current?.price || 0).toFixed(2)}</div>
               <div className="duration">

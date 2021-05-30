@@ -3,7 +3,7 @@ import ReactDom from 'react-dom'
 import styled from 'styled-components'
 
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
-import { Epoc } from './AuctionList'
+import { Epoch } from './AuctionList'
 
 const EPOCH_PERIOD = 28800
 
@@ -56,7 +56,7 @@ const Auction = styled.div`
   margin-bottom: 30px;
   text-align: center;
 
-  .epoc {
+  .epoch {
     width: 15%;
   }
 
@@ -86,7 +86,7 @@ const Auction = styled.div`
   }
 `
 
-export const DetailEpoc = styled(Epoc)`
+export const DetailEpoch = styled(Epoch)`
   margin: auto;
   background-color: var(--color-white);
   color: var(--color-black);
@@ -184,10 +184,10 @@ export default function AuctionDetail({ auction, onClose }) {
           <img src="/assets/close-button.svg" alt="" />
         </Close>
         <Auction className="flex" key={id}>
-          <div className="epoc">
-            <DetailEpoc>{epoch}</DetailEpoc>
+          <div className="epoch">
+            <DetailEpoch>{epoch}</DetailEpoch>
           </div>
-          <div className="purchases">{purchases.length}</div>
+          {/* <div className="purchases">{purchases.length}</div> */}
           <div className="starting">{start.toFixed(2)}</div>
           <div className="ending">{end.toFixed(2)}</div>
           <div className="duration">

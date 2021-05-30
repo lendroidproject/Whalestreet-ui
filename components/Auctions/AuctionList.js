@@ -41,7 +41,7 @@ const Auction = styled.div`
     line-height: 29px;
   }
 
-  .epoc {
+  .epoch {
     width: 15%;
   }
 
@@ -68,7 +68,7 @@ const Auction = styled.div`
   }
 `
 
-export const Epoc = styled.div`
+export const Epoch = styled.div`
   height: 26px;
   min-width: 26px;
   border-radius: 50%;
@@ -232,7 +232,7 @@ export default function AuctionList({
             <table>
               <tbody>
                 <tr>
-                  <th className="epoc">Epoc</th>
+                  <th className="epoch">Epoch</th>
                   <th className="price">Price</th>
                   <th className="remaining">Remaining Time</th>
                   <th className="actions" rowSpan={2}>
@@ -243,7 +243,7 @@ export default function AuctionList({
                 </tr>
                 <tr>
                   <td>
-                    <Epoc>{purchase.epoch}</Epoc>
+                    <Epoch>{purchase.epoch}</Epoch>
                   </td>
                   <td>
                     <Price className="flex-center">
