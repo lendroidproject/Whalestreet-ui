@@ -164,7 +164,11 @@ export default function AuctionList({
     if (current) {
       const start = lastPurchase ? lastPurchase.end * 2 : 10000
       const x = current.timestamp - now / 1000
-      const currentPrice = ((start - 1) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
+      if (x < 0) {
+        if (x < -10) getCurrent()
+        return
+      }
+      const currentPrice = ((start - 1) * x + EPOCH_PERIOD) / EPOCH_PERIOD
       setPurcase({
         epoch: current.epoch,
         start,
@@ -177,7 +181,11 @@ export default function AuctionList({
       const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
       for (let i = 0; i <= 8; i++) {
         const price =
-          i < xPos ? start - ((start - currentPrice) * i) / xPos : 1 + ((currentPrice - 1) * (8 - i)) / (8 - xPos)
+          i === 8
+            ? 1
+            : i < xPos
+            ? start - ((start - currentPrice) * i) / xPos
+            : 1 + ((currentPrice - 1) * (8 - i)) / (8 - xPos)
         data.push({
           name: `${i}h`,
           price,

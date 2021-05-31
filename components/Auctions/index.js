@@ -113,7 +113,6 @@ export default connect((state) => state)(function Auctions({
     const amount = Number(library.web3.utils.fromWei(y))
     epochEndTimeFromTimestamp(timestamp)
       .then((bTimestamp) => {
-        console.log(JSON.parse(JSON.stringify(purchases)))
         const previousPurchase = purchases.pop()
         const x = bTimestamp - timestamp
         if (previousPurchase) {
