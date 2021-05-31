@@ -3,9 +3,7 @@ import ReactDom from 'react-dom'
 import styled from 'styled-components'
 
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
-import { Epoch } from './AuctionList'
-
-const EPOCH_PERIOD = 28800
+import { Epoch, EPOCH_PERIOD } from './AuctionList'
 
 const Wrapper = styled.div`
   z-index: 101;

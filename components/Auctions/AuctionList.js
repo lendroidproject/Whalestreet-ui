@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 import { getDuration } from 'utils/hooks'
 
-const EPOCH_PERIOD = 28800
+export const EPOCH_PERIOD = 60
 
 const Wrapper = styled.div`
   background: var(--color-trans07);

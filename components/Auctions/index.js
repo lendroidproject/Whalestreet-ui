@@ -4,11 +4,9 @@ import { connect } from 'react-redux'
 
 import { PageWrapper } from 'components/styles'
 import Tabs from './Tabs'
-import AuctionList from './AuctionList'
+import AuctionList, { EPOCH_PERIOD } from './AuctionList'
 import AuctionTable from './AuctionTable'
 import { useTicker } from 'utils/hooks'
-
-const EPOCH_PERIOD = 28800
 
 const Wrapper = styled(PageWrapper)`
   .tabs {
@@ -29,7 +27,7 @@ export default connect((state) => state)(function Auctions({
   auctions: library,
   dispatch,
 }) {
-  const [now] = useTicker(15)
+  const [now] = useTicker()
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
   const { currentEpoch, currentPrice, epochEndTimeFromTimestamp } = library.methods.AuctionRegistry

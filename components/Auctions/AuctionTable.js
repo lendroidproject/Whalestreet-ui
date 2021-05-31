@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import AuctionDetail, { DetailEpoch, getDate } from './AuctionDetail'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
-
-const EPOCH_PERIOD = 28800
+import { EPOCH_PERIOD } from './AuctionList'
 
 const Wrapper = styled.div`
   max-width: 788px;
