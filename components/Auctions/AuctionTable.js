@@ -322,8 +322,8 @@ export default function AuctionTable({ current, purchases }) {
             <div className="duration">Time</div>
             <div className="actions" />
           </Header>
-          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp }) => (
-            <Auction key={id} className="flex">
+          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp }, idx) => (
+            <Auction key={`${id}-${idx}`} className="flex">
               <div className="epoch">
                 <PurchasedEpoc>{epoch}</PurchasedEpoc>
               </div>

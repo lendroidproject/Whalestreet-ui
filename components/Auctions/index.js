@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
+import TxModal from 'components/common/TxModal'
 import { PageWrapper } from 'components/styles'
 import Tabs from './Tabs'
-import AuctionList, { EPOCH_PERIOD } from './AuctionList'
+import AuctionList from './AuctionList'
 import AuctionTable from './AuctionTable'
 import { useTicker } from 'utils/hooks'
 
@@ -101,8 +102,12 @@ export default connect((state) => state)(function Auctions({
       handleUnlock()
     }
   }
+
+  const pendingTx = approveTx || purchaseTx
+  const pendingText = purchaseTx ? 'Purchasing tokens' : approveTx ? 'Unlocking tokens' : ''
+
   const [purchases, setPurchases] = useState([])
-  const myPurchases = purchases.filter((item) => ((item.purchases[0] === address) && (item.epoch === current?.epoch)))
+  const myPurchases = purchases.filter((item) => item.purchases[0] === address && item.epoch === current?.epoch)
   const handlePurchases = (purchase) => {
     const { auctionTokenId: id, epoch, account: purchaser, amount: y, timestamp } = purchase
     const amount = Number(library.web3.utils.fromWei(y))
@@ -117,7 +122,7 @@ export default connect((state) => state)(function Auctions({
             {
               ...previousPurchase,
               start: amount,
-              end: previousPurchase.start
+              end: previousPurchase.start,
             },
             {
               id,
@@ -172,10 +177,10 @@ export default connect((state) => state)(function Auctions({
       <Wrapper className="center">
         <h1>Auctions</h1>
         <p className="intro">
-          On this page, deFi Keys (NFTs) can be purchased using the $HRIMP token.
-          Every epoch, the price of the deFi Key is set according to a Dutch Auction curve.
-          If an Key is not purchased during the current epoch, it rolls over to the next epoch with a reduced purchase price.
-          The rarity of a deFi Key (Common Rare, Legendary) is randomly computed during the time of its purchase.
+          On this page, deFi Keys (NFTs) can be purchased using the $HRIMP token. Every epoch, the price of the deFi Key
+          is set according to a Dutch Auction curve. If an Key is not purchased during the current epoch, it rolls over
+          to the next epoch with a reduced purchase price. The rarity of a deFi Key (Common Rare, Legendary) is randomly
+          computed during the time of its purchase.
         </p>
         <Tabs
           tab={active}
@@ -204,6 +209,7 @@ export default connect((state) => state)(function Auctions({
           />
         )}
         {active === 'completed' && <AuctionTable purchases={purchases} current={current} />}
+        <TxModal show={pendingTx} text={pendingText} color="purple" />
       </Wrapper>
     </>
   )

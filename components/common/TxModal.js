@@ -25,10 +25,14 @@ const Content = styled.div`
   width: 90%;
   max-width: 608px;
   border-radius: 12px;
-  background-color: var(--color-blue);
   box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.5), 6px 2px 4px 0 rgba(0, 0, 0, 0.5);
   padding: 40px 30px 30px;
   ${withMedia(null, 'zoom', [null, 1.5, 2])}
+
+  background-color: var(--color-blue);
+  &.purple {
+    background-color: var(--color-red2);
+  }
 
   h1 {
     margin-top: 24px;
@@ -36,6 +40,11 @@ const Content = styled.div`
     font-size: 24px;
     line-height: 36px;
     color: var(--color-yellow);
+  }
+  &.purple {
+    h1 {
+      color: var(--color-white);
+    }
   }
 
   p {
@@ -54,10 +63,13 @@ const Content = styled.div`
 
 export default connect(({ metamask: { network } }) => ({
   network,
-}))(function Promo({ text, show, onHide, network }) {
+}))(function Promo({ text, show, onHide, network, color = 'blue' }) {
   return ReactDOM.createPortal(
-    <Wrapper className={`flex-all background-opacity-09 ${show ? 'show' : 'hide'}`} onMouseDown={() => onHide && onHide()}>
-      <Content className="center flex-center flex-column justify-center">
+    <Wrapper
+      className={`flex-all background-opacity-09 ${show ? 'show' : 'hide'}`}
+      onMouseDown={() => onHide && onHide()}
+    >
+      <Content className={`center flex-center flex-column justify-center ${color}`}>
         <img src="/assets/loading.gif" alt="WhaleStreet" />
         <h1 className="uppercase">{text || 'LOADING'}... PLEASE WAIT</h1>
         <p>
