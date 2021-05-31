@@ -164,10 +164,6 @@ export default function AuctionList({
     if (current) {
       const start = lastPurchase ? lastPurchase.end * 2 : 10000
       const x = current.timestamp - now / 1000
-      if (x < 0) {
-        if (x < -10) getCurrent()
-        return
-      }
       const currentPrice = ((start - 1) * x + EPOCH_PERIOD) / EPOCH_PERIOD
       setPurcase({
         epoch: current.epoch,
