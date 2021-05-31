@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 import { getDuration } from 'utils/hooks'
 
-export const EPOCH_PERIOD = 60
+export const EPOCH_PERIOD = process.env.NETWORKS.includes(1) ? 28800 : 60
 
 const Wrapper = styled.div`
   background: var(--color-trans07);
@@ -96,7 +96,7 @@ const Graph = styled.div`
     border-radius: 3px;
     background-color: transparent;
     padding: 10px;
-    color: var(--color-red2)!important;
+    color: var(--color-red2) !important;
 
     font-size: 10px;
     letter-spacing: 0.1px;

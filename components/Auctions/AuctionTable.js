@@ -295,15 +295,15 @@ function AuctionView({ auction, setAuction }) {
 export default function AuctionTable({ current, purchases }) {
   const [view, setView] = useState('list')
   const [auction, setAuction] = useState(null)
-  const ps = useRef();
+  const ps = useRef()
   useEffect(() => {
     setAuction(null)
   }, [])
 
   useLayoutEffect(() => {
     if (ps && ps.current) {
-      console.log(ps.current);
-      ps.current.scrollLeft = 10000;
+      console.log(ps.current)
+      ps.current.scrollLeft = 10000
     }
   }, [ps, ps.current, purchases])
 
@@ -344,7 +344,11 @@ export default function AuctionTable({ current, purchases }) {
           <Action className="action" onClick={() => setView('list')}>
             <img src="/assets/list.svg" />
           </Action>
-          <PerfectScrollbar className="scrollview" option={{ suppressScrollY: true }} containerRef={el => (ps.current = el)}>
+          <PerfectScrollbar
+            className="scrollview"
+            option={{ suppressScrollY: true }}
+            containerRef={(el) => (ps.current = el)}
+          >
             {purchases.map((purchase) => (
               <AuctionView key={purchase.id} auction={purchase} setAuction={setAuction} />
             ))}
