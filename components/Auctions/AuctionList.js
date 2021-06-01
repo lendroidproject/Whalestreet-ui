@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
+import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Line, Area, ComposedChart } from 'recharts'
 import { getDuration } from 'utils/hooks'
 
 export const EPOCH_PERIOD = process.env.EPOCH_PERIOD
@@ -96,7 +96,7 @@ const Graph = styled.div`
     border-radius: 3px;
     background-color: transparent;
     padding: 10px;
-    color: var(--color-red2) !important;
+    color: var(--color-red2);
 
     font-size: 10px;
     letter-spacing: 0.1px;
@@ -134,6 +134,7 @@ const Graph = styled.div`
 
 const CustomTooltip = (props) => {
   const { active, payload } = props
+  console.log(active, payload)
   if (active && payload && payload[0].payload.toolTip) {
     return <div className={`custom-tooltip ${payload[0].payload.className}`}>{payload[0].payload.toolTip}</div>
   }
@@ -151,6 +152,7 @@ export default function AuctionList({
   purchased,
 }) {
   const duration = current && getDuration(now, current.timestamp * 1000)
+  const offset = current && Math.ceil((current.timestamp * 1000 - now) / 1000)
 
   useEffect(() => {
     if (current && !duration) {
@@ -162,11 +164,7 @@ export default function AuctionList({
   const [data, setData] = useState([])
 
   useEffect(() => {
-    if (current) {
-      const startTimestamp = Number(current.timestamp) - EPOCH_PERIOD
-      const x = (now / 1000) - startTimestamp;
-      const piece = EPOCH_PERIOD / 8
-      const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
+    if (current && (!purchase || offset < 5 || offset % 15 === 0)) {
       // if (purchase && purchase.xPos === xPos) return
       const start = lastPurchase
         ? current.epoch - lastPurchase.epoch === 1
@@ -174,37 +172,40 @@ export default function AuctionList({
           : lastPurchase.amount
         : current.maxY
       // const currentPrice = ((start - current.minY) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
-      const currentPrice = current.price;
+      const currentPrice = current.price
+      const currentTime = EPOCH_PERIOD - ((currentPrice - current.minY) / (start - current.minY)) * EPOCH_PERIOD
 
       setPurcase({
         epoch: current.epoch,
         start,
-        end: current.maxY,
+        end: current.minY,
         current: currentPrice,
-        xPos,
       })
 
-      const data = []
-      for (let i = 0; i <= 8; i++) {
-        const price = i === 8 ? current.minY : start - ((start - current.minY) * i) / 8
-        // : i < xPos
-        // ? start - ((start - currentPrice) * i) / xPos
-        // : current.maxY + ((currentPrice - current.maxY) * (8 - i)) / (8 - xPos)
-        data.push({
-          name: `${i}h`,
-          price,
-          toolTip:
-            i === 0
-              ? `Start Price @ ${price.toFixed(0)}$hrimp`
-              : i === xPos
-              ? `Current Price @ ${currentPrice.toFixed(0)}$hrimp`
-              : `${price.toFixed()}$hrimp`,
-          className: i === 0 ? `red` : i === xPos ? `green` : 'grey',
-        })
-      }
-      setData(data)
+      setData([
+        {
+          time: 0,
+          price: start,
+          toolTip: `Start Price @ ${start.toFixed(0)}$hrimp`,
+          className: 'red',
+        },
+        {
+          time: currentTime,
+          price: currentPrice,
+          toolTip: `Current Price @ ${currentPrice.toFixed(0)}$hrimp`,
+          current: currentPrice,
+          className: 'green',
+        },
+        {
+          time: EPOCH_PERIOD,
+          price: current.minY,
+          toolTip: `End Price @ ${current.minY.toFixed(0)}$hrimp`,
+          current: current.minY,
+          className: 'grey',
+        },
+      ])
     }
-  }, [current, lastPurchase, now])
+  }, [current, lastPurchase, offset])
 
   return (
     <Wrapper className="auction-list">
@@ -212,11 +213,14 @@ export default function AuctionList({
         <>
           <Graph>
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <ComposedChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal vertical={false} />
                 <XAxis
-                  dataKey="name"
+                  dataKey="time"
                   tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dy: 10 }}
+                  type="number"
+                  domain={[0, EPOCH_PERIOD]}
+                  tickFormatter={(value) => `${Number((value / 60 / 60).toFixed(1))}h`}
                 ></XAxis>
                 <YAxis tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dx: -10 }}></YAxis>
                 <Tooltip
@@ -235,8 +239,20 @@ export default function AuctionList({
                     r: 6,
                     boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
                   }}
+                  type="linearClosed"
                 />
-              </LineChart>
+                <Area
+                  dataKey="current"
+                  fill="#8884d8"
+                  stroke="#8884d8"
+                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 0, strokeWidth: 2 }}
+                  activeDot={{
+                    fill: '#94EBF0',
+                    r: 6,
+                    boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
+                  }}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </Graph>
           <Auction>
