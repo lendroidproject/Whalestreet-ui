@@ -363,7 +363,11 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         <Account isAdmin={isAdmin} />
       </Header>
       <Content>
-        {isSupported && termsAgreed && metamask && metamask.connected ? (
+        {isSupported &&
+        termsAgreed &&
+        metamask &&
+        metamask.connected &&
+        (router.route != '/Auction' || library.auctions) ? (
           <>
             {children}
             {isPage && (

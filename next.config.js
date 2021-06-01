@@ -7,6 +7,7 @@ module.exports = withOffline({
     NETWORKS: process.env.NETWORKS,
     INFURA_ID: process.env.INFURA_ID,
     AUCTION_ENABLED: process.env.AUCTION_ENABLED === 'true',
+    EPOCH_PERIOD: Number(process.env.EPOCH_PERIOD || 28800)
   },
   trailingSlash: false,
   poweredByHeader: false,

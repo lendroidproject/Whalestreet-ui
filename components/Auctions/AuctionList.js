@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 import { getDuration } from 'utils/hooks'
 
-export const EPOCH_PERIOD = process.env.NETWORKS.includes(1) ? 28800 : 60
+export const EPOCH_PERIOD = process.env.EPOCH_PERIOD
 
 const Wrapper = styled.div`
   background: var(--color-trans07);
@@ -183,7 +183,7 @@ export default function AuctionList({
 
       const data = []
       for (let i = 0; i <= 8; i++) {
-        const price = i === 8 ? current.minY : start - ((start - current.minY) * i) / xPos
+        const price = i === 8 ? current.minY : start - ((start - current.minY) * i) / 8
         // : i < xPos
         // ? start - ((start - currentPrice) * i) / xPos
         // : current.maxY + ((currentPrice - current.maxY) * (8 - i)) / (8 - xPos)
@@ -194,7 +194,7 @@ export default function AuctionList({
             i === 0
               ? `Start Price @ ${price.toFixed(0)}$hrimp`
               : i === xPos
-              ? `Current Price @ ${price.toFixed(0)}$hrimp`
+              ? `Current Price @ ${currentPrice.toFixed(0)}$hrimp`
               : `${price.toFixed()}$hrimp`,
           className: i === 0 ? `red` : i === xPos ? `green` : 'grey',
         })

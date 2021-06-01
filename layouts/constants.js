@@ -28,7 +28,9 @@ export const addresses = {
 }
 export const auctionAddresses = {
   1: {
-    //
+    $HRIMP: '0x9077F9e1eFE0eA72867ac89046b2a6264CbcaeF5',
+    AuctionRegistry: '0x6295224c5fC3F2f6E4B1f2E530c9ab8099841bc1',
+    WhaleSwap: '0x9142aF7F6F769f95edDDa4851F22859319090987',
   },
   4: {
     $HRIMP: '0x174d2E1B37558e996B43C6A239ED6F5788912c97',
