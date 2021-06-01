@@ -160,18 +160,21 @@ export default function AuctionList({
 
   const [purchase, setPurcase] = useState(null)
   const [data, setData] = useState([])
+
   useEffect(() => {
     if (current) {
-      const x = current.timestamp - now / 1000
+      const startTimestamp = Number(current.timestamp) - EPOCH_PERIOD
+      const x = (now / 1000) - startTimestamp;
       const piece = EPOCH_PERIOD / 8
       const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
-      if (purchase && purchase.xPos === xPos) return
+      // if (purchase && purchase.xPos === xPos) return
       const start = lastPurchase
         ? current.epoch - lastPurchase.epoch === 1
           ? lastPurchase.amount * 2
           : lastPurchase.amount
         : current.maxY
-      const currentPrice = ((start - current.minY) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
+      // const currentPrice = ((start - current.minY) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
+      const currentPrice = current.price;
 
       setPurcase({
         epoch: current.epoch,
