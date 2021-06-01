@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Line, Area, ComposedChart } from 'recharts'
+import {
+  ResponsiveContainer,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Line,
+  Area,
+  ReferenceDot,
+  Label,
+  ComposedChart,
+} from 'recharts'
 import { getDuration } from 'utils/hooks'
 
 export const EPOCH_PERIOD = process.env.EPOCH_PERIOD
@@ -127,14 +138,13 @@ const Graph = styled.div`
     }
   }
 
-  text {
+  text:not(.static-tip) {
     stroke: #6e6e96;
   }
 `
 
 const CustomTooltip = (props) => {
   const { active, payload } = props
-  console.log(active, payload)
   if (active && payload && payload[0].payload.toolTip) {
     return <div className={`custom-tooltip ${payload[0].payload.className}`}>{payload[0].payload.toolTip}</div>
   }
@@ -180,6 +190,7 @@ export default function AuctionList({
         start,
         end: current.minY,
         current: currentPrice,
+        time: currentTime,
       })
 
       setData([
@@ -192,7 +203,7 @@ export default function AuctionList({
         {
           time: currentTime,
           price: currentPrice,
-          toolTip: `Current Price @ ${currentPrice.toFixed(0)}$hrimp`,
+          // toolTip: `Current Price @ ${currentPrice.toFixed(0)}$hrimp`,
           current: currentPrice,
           className: 'green',
         },
@@ -228,12 +239,13 @@ export default function AuctionList({
                   offset={0}
                   allowEscapeViewBox={{ x: true, y: true }}
                   cursor={{ stroke: '#0099F2', strokeDasharray: '3 3' }}
+                  active
                 />
                 <Line
                   dataKey="price"
                   stroke="#bd84a3"
                   strokeWidth={2}
-                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 0, strokeWidth: 2 }}
+                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 6, strokeWidth: 2 }}
                   activeDot={{
                     fill: 'var(--color-red2)',
                     r: 6,
@@ -245,13 +257,41 @@ export default function AuctionList({
                   dataKey="current"
                   fill="#8884d8"
                   stroke="#8884d8"
-                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 0, strokeWidth: 2 }}
+                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 6, strokeWidth: 2 }}
                   activeDot={{
-                    fill: '#94EBF0',
+                    fill: 'var(--color-dark-grey)',
                     r: 6,
                     boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
                   }}
                 />
+                <ReferenceDot
+                  x={purchase.time}
+                  y={purchase.current}
+                  r={6}
+                  fill="#94EBF0"
+                  stroke="white"
+                  strokeWidth={2}
+                >
+                  <Label
+                    content={(props) => {
+                      const { x, y } = props.viewBox
+                      return (
+                        <g transform={`translate(${x},${y - 42})`}>
+                          <text x={0} y={0} fill="#2FB2BA" fontSize={10} className="static-tip">
+                            <tspan textAnchor="middle" x="0">
+                              Current Price @
+                            </tspan>
+                            <tspan textAnchor="middle" x="0" dy="16">
+                              {purchase.current}$hrimp
+                            </tspan>
+                          </text>
+                        </g>
+                      )
+                    }}
+                    offset={0}
+                    position="top"
+                  />
+                </ReferenceDot>
               </ComposedChart>
             </ResponsiveContainer>
           </Graph>
