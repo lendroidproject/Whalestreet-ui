@@ -31,26 +31,28 @@ export default connect((state) => state)(function Auctions({
   const [now] = useTicker()
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
-  const { currentEpoch, currentPrice, epochEndTimeFromTimestamp } = library.methods.AuctionRegistry
+  const { currentEpoch, currentPrice, epochEndTimeFromTimestamp, minY, maxY } = library.methods.AuctionRegistry
   const getCurrent = () => {
     const { getAllowance } = library.methods.$HRIMP
     library.methods.web3
       .getBlock()
-      .then((timestamp) => {
+      .then((bTimestamp) => {
         Promise.all([
           getAllowance(address),
           currentEpoch(),
           currentPrice().then(library.web3.utils.fromWei),
-          epochEndTimeFromTimestamp(timestamp),
+          epochEndTimeFromTimestamp(bTimestamp),
+          minY().then(library.web3.utils.fromWei).then(Number),
+          maxY().then(library.web3.utils.fromWei).then(Number),
         ])
-          .then(([a$HRIMP, epoch, price, timestamp]) => {
+          .then(([a$HRIMP, epoch, price, timestamp, minY, maxY]) => {
             dispatch({
               type: 'METAMASK',
               payload: {
                 a$HRIMP,
               },
             })
-            setCurrent({ epoch, price: Number(price), timestamp })
+            setCurrent({ epoch, price: Number(price), timestamp, minY, maxY, x: bTimestamp - timestamp })
           })
           .catch(console.log)
       })
@@ -120,6 +122,7 @@ export default connect((state) => state)(function Auctions({
             ...purchases,
             {
               ...previousPurchase,
+              amount,
               start: amount,
               end: previousPurchase.start,
             },
@@ -127,6 +130,7 @@ export default connect((state) => state)(function Auctions({
               id,
               epoch,
               purchases: [purchaser],
+              amount,
               start: amount,
               end: 1,
               timestamp,
@@ -139,6 +143,7 @@ export default connect((state) => state)(function Auctions({
               id,
               epoch,
               purchases: [purchaser],
+              amount,
               start: amount,
               end: 1,
               timestamp,

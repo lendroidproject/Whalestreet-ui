@@ -162,26 +162,31 @@ export default function AuctionList({
   const [data, setData] = useState([])
   useEffect(() => {
     if (current) {
-      const start = lastPurchase ? lastPurchase.end * 2 : 10000
       const x = current.timestamp - now / 1000
-      const currentPrice = ((start - 1) * x + EPOCH_PERIOD) / EPOCH_PERIOD
+      const piece = EPOCH_PERIOD / 8
+      const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
+      if (purchase && purchase.xPos === xPos) return
+      const start = lastPurchase
+        ? current.epoch - lastPurchase.epoch === 1
+          ? lastPurchase.amount * 2
+          : lastPurchase.amount
+        : current.maxY
+      const currentPrice = ((start - current.minY) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
+
       setPurcase({
         epoch: current.epoch,
         start,
-        end: 1,
+        end: current.maxY,
         current: currentPrice,
+        xPos,
       })
 
       const data = []
-      const piece = EPOCH_PERIOD / 8
-      const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
       for (let i = 0; i <= 8; i++) {
-        const price =
-          i === 8
-            ? 1
-            : i < xPos
-            ? start - ((start - currentPrice) * i) / xPos
-            : 1 + ((currentPrice - 1) * (8 - i)) / (8 - xPos)
+        const price = i === 8 ? current.minY : start - ((start - current.minY) * i) / xPos
+        // : i < xPos
+        // ? start - ((start - currentPrice) * i) / xPos
+        // : current.maxY + ((currentPrice - current.maxY) * (8 - i)) / (8 - xPos)
         data.push({
           name: `${i}h`,
           price,
