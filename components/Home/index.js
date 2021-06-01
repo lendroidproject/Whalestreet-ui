@@ -160,7 +160,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       </div>
       <Wrapper className="center">
         <h1>Yield Farming. NFT Collectibles. Massive Token Swaps.</h1>
-        <p className="intro">
+        {/* <p className="intro">
           Welcome. WhaleStreet has engineered the bundling and fractionalizing of the $2.7 mn B.20 bundle. You can now
           farm B20 tokens for exciting rewards. Join the B20 discord{' '}
           <a href="https://discord.com/invite/pEbSg4qp3y" target="_blank">
@@ -185,6 +185,9 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             Watch Video
           </a>
           <Promo show={video} onHide={() => setVideo(false)} />
+        </p> */}
+        <p className="intro">
+          Welcome. WhaleStreet Auctions are now live. Head over to the Auctions page by<br /> clicking the "Gaff NFT" link.
         </p>
         {now < B20_START ? (
           <Statics className="b20-sale center limited">
