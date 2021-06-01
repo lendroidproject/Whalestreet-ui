@@ -9,6 +9,7 @@ import {
   Line,
   Area,
   ReferenceDot,
+  ReferenceLine,
   Label,
   ComposedChart,
 } from 'recharts'
@@ -264,6 +265,7 @@ export default function AuctionList({
                     boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
                   }}
                 />
+                <ReferenceLine x={purchase.time} strokeDasharray="3 3" stroke="#94EBF0" />
                 <ReferenceDot
                   x={purchase.time}
                   y={purchase.current}
@@ -277,12 +279,12 @@ export default function AuctionList({
                       const { x, y } = props.viewBox
                       return (
                         <g transform={`translate(${x},${y - 42})`}>
-                          <text x={0} y={0} fill="#2FB2BA" fontSize={10} className="static-tip">
+                          <text x={0} y={0} fill="#2FB2BA" fontSize={10} fontWeight={100} className="static-tip">
                             <tspan textAnchor="middle" x="0">
                               Current Price @
                             </tspan>
                             <tspan textAnchor="middle" x="0" dy="16">
-                              {purchase.current}$hrimp
+                              {purchase.current.toFixed(2)}$hrimp
                             </tspan>
                           </text>
                         </g>
