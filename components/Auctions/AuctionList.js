@@ -177,11 +177,13 @@ export default function AuctionList({
   useEffect(() => {
     if (current && (!purchase || offset < 5 || offset % 15 === 0)) {
       // if (purchase && purchase.xPos === xPos) return
+      const t1 = parseInt(current.timestamp - now / 1000)
+      const max = t1 > 0 ? (current.price / t1) * EPOCH_PERIOD : current.maxY
       const start = lastPurchase
         ? current.epoch - lastPurchase.epoch === 1
           ? lastPurchase.amount * 2
           : lastPurchase.amount
-        : current.maxY
+        : max
       // const currentPrice = ((start - current.minY) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
       const currentPrice = current.price
       const currentTime = EPOCH_PERIOD - ((currentPrice - current.minY) / (start - current.minY)) * EPOCH_PERIOD

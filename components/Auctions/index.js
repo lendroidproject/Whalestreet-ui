@@ -29,7 +29,6 @@ export default connect((state) => state)(function Auctions({
   dispatch,
 }) {
   const [now] = useTicker()
-  const [now15] = useTicker(15)
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
   const { currentEpoch, currentPrice, epochEndTimeFromTimestamp, minY, maxY } = library.methods.AuctionRegistry
@@ -172,12 +171,6 @@ export default connect((state) => state)(function Auctions({
       getTotalPurchase()
     }
   }, [library])
-
-  useEffect(() => {
-    if (library) {
-      getCurrent()
-    }
-  }, [library, now15])
 
   return (
     <>
