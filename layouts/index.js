@@ -384,11 +384,11 @@ export default connect((state) => state)(function Index({ library, metamask, chi
                       LST <img src="/assets/link-icon.svg" />
                     </button>
                   </a>
-                  <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
+                  {/* <a href="#" target="_blank" onClick={(e) => e.preventDefault()}>
                     <button disabled>
                       NFT <img src="/assets/link-icon.svg" />
                     </button>
-                  </a>
+                  </a> */}
                 </div>
               </OurTokens>
             )}

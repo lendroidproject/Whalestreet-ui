@@ -4,6 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AuctionDetail, { DetailEpoch, getDate } from './AuctionDetail'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 import { EPOCH_PERIOD } from './AuctionList'
+import { format } from 'utils/number'
 
 const Wrapper = styled.div`
   max-width: 788px;
@@ -22,6 +23,11 @@ const Wrapper = styled.div`
   .starting {
     // width: 37%;
     width: 74%;
+
+    img {
+      height: 26px;
+      margin-right: 6px;
+    }
   }
 
   .ending {
@@ -341,7 +347,12 @@ export default function AuctionTable({ current, purchases }) {
               {/* <div className="purchases">{purchases.length}</div> */}
               {/* <div className="starting">{start.toFixed(2)}</div>
               <div className="ending">{(end || current?.price || 0).toFixed(2)}</div> */}
-              <div className="starting">{amount.toFixed(2)}</div>
+              <div className="starting">
+                <div className="flex-center justify-center">
+                  <img src="/assets/$hrimp-token.svg" alt="" />
+                  {format(amount)}
+                </div>
+              </div>
               <div className="duration">
                 <Duration>{getDate(timestamp)}</Duration>
               </div>

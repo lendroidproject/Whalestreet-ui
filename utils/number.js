@@ -13,6 +13,6 @@ const fmt = {
 
 BigNumber.config({ FORMAT: fmt })
 
-export function format(value = 0, decimals) {
+export function format(value = 0, decimals = 2) {
   return new BigNumber(value).toFormat(decimals)
 }

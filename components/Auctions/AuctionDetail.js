@@ -94,7 +94,7 @@ const Duration = styled.div``
 
 const Graph = styled.div`
   border-radius: 12px;
-  box-shadow: 0 0 11px 0 #D1D1D1;
+  box-shadow: 0 0 11px 0 #d1d1d1;
   padding: 60px 15px;
 
   .recharts-surface {
@@ -141,7 +141,12 @@ const Graph = styled.div`
   }
 `
 
-export const getDate = (timestamp) => new Date(timestamp * 1000).toISOString().split('T')[0]
+export const getDate = (timestamp) =>
+  new Date(timestamp * 1000)
+    .toISOString()
+    .split('T')
+    .map((a) => a.split('.')[0])
+    .join(' ')
 
 const CustomTooltip = (props) => {
   const { active, payload } = props
@@ -157,7 +162,7 @@ export default function AuctionDetail({ auction, onClose }) {
   const data = []
   const piece = EPOCH_PERIOD / 8
   const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
-  const purchase = start - (start - end) * (EPOCH_PERIOD - x) / EPOCH_PERIOD
+  const purchase = start - ((start - end) * (EPOCH_PERIOD - x)) / EPOCH_PERIOD
   for (let i = 0; i <= 8; i++) {
     const price = i < xPos ? start - ((start - purchase) * i) / xPos : end + ((purchase - end) * (8 - i)) / (8 - xPos)
     data.push({

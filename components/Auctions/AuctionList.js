@@ -14,6 +14,7 @@ import {
   ComposedChart,
 } from 'recharts'
 import { getDuration } from 'utils/hooks'
+import { format } from 'utils/number'
 
 export const EPOCH_PERIOD = process.env.EPOCH_PERIOD
 
@@ -200,7 +201,7 @@ export default function AuctionList({
         {
           time: 0,
           price: start,
-          toolTip: `Start Price @ ${start.toFixed(0)}$hrimp`,
+          toolTip: `Start Price @ ${format(start)}$hrimp`,
           className: 'red',
         },
         {
@@ -213,7 +214,7 @@ export default function AuctionList({
         {
           time: EPOCH_PERIOD,
           price: current.minY,
-          toolTip: `End Price @ ${current.minY.toFixed(0)}$hrimp`,
+          toolTip: `End Price @ ${format(current.minY)}$hrimp`,
           current: current.minY,
           className: 'grey',
         },
@@ -287,7 +288,7 @@ export default function AuctionList({
                                 Current Price @
                               </tspan>
                               <tspan textAnchor="middle" x="0" dy="16">
-                                {purchase.current.toFixed(2)}$hrimp
+                                {format(purchase.current)}$hrimp
                               </tspan>
                             </text>
                           </g>
@@ -320,7 +321,7 @@ export default function AuctionList({
                     <td>
                       <Price className="flex-center">
                         <img src="/assets/$hrimp-token.svg" alt="" />
-                        {Number(purchase.current || 0).toFixed(2)}
+                        {format(purchase.current || 0)}
                       </Price>
                     </td>
                     <td>
