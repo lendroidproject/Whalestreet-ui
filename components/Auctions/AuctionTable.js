@@ -20,7 +20,8 @@ const Wrapper = styled.div`
   }
 
   .starting {
-    width: 37%;
+    // width: 37%;
+    width: 74%;
   }
 
   .ending {
@@ -207,26 +208,30 @@ const Graph = styled.div`
 `
 
 function AuctionView({ auction, setAuction }) {
-  const { id, epoch, purchases, timestamp, x, start, end } = auction
+  const { id, epoch, timestamp, x, amount, start, end } = auction
 
-  const data = []
-  const piece = EPOCH_PERIOD / 8
-  const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
-  const purchase = start - ((start - end) * (EPOCH_PERIOD - x)) / EPOCH_PERIOD
-  for (let i = 0; i <= 8; i++) {
-    const price = i < xPos ? start - ((start - purchase) * i) / xPos : end + ((purchase - end) * (8 - i)) / (8 - xPos)
-    data.push({
-      name: `${i}h`,
-      price,
-      toolTip:
-        i === 0
-          ? `Start Price @ ${price.toFixed(0)}$hrimp`
-          : i === xPos
-          ? `Purchase Price @ ${price.toFixed(0)}$hrimp`
-          : `${price.toFixed()}$hrimp`,
-      className: i === 0 ? `red` : i === xPos ? `red` : 'grey',
-    })
-  }
+  const [data, setData] = useState([])
+  useEffect(() => {
+    const piece = EPOCH_PERIOD / 8
+    const xPos = Math.ceil((EPOCH_PERIOD - x) / piece)
+    const purchase = start - ((start - end) * (EPOCH_PERIOD - x)) / EPOCH_PERIOD
+    const data = []
+    for (let i = 0; i <= 8; i++) {
+      const price = i < xPos ? start - ((start - purchase) * i) / xPos : end + ((purchase - end) * (8 - i)) / (8 - xPos)
+      data.push({
+        name: `${i}h`,
+        price,
+        toolTip:
+          i === 0
+            ? `Start Price @ ${price.toFixed(0)}$hrimp`
+            : i === xPos
+            ? `Purchase Price @ ${price.toFixed(0)}$hrimp`
+            : `${price.toFixed()}$hrimp`,
+        className: i === 0 ? `red` : i === xPos ? `red` : 'grey',
+      })
+    }
+    setData(data)
+  }, [auction])
 
   return (
     <AuctionItem className="auction-detail portal">
@@ -272,7 +277,7 @@ function AuctionView({ auction, setAuction }) {
           <br />
           <span>{purchases.length}</span>
         </div> */}
-        <div className="starting">
+        {/* <div className="starting">
           STARTING PRICE
           <br />
           <span>{start.toFixed(2)}</span>
@@ -281,6 +286,11 @@ function AuctionView({ auction, setAuction }) {
           ENDING PRICE
           <br />
           <span>{end.toFixed(2)}</span>
+        </div> */}
+        <div className="purchases">
+          PURCHASE AMOUNT
+          <br />
+          <span>{amount.toFixed(2)}</span>
         </div>
         <div className="duration">
           TIME
@@ -311,16 +321,17 @@ export default function AuctionTable({ current, purchases }) {
     <>
       {view === 'list' ? (
         <Wrapper className="auction-table">
-          <Action className="action" onClick={() => setView('table')}>
+          {/* <Action className="action" onClick={() => setView('table')}>
             <img src="/assets/table.svg" />
-          </Action>
+          </Action> */}
           <Header className="flex">
             <div className="epoch">Epoch</div>
             {/* <div className="purchases">Purchases</div> */}
-            <div className="starting">Starting Price</div>
-            <div className="ending">Ending Price</div>
+            {/* <div className="starting">Starting Price</div>
+            <div className="ending">Ending Price</div> */}
+            <div className="starting">Purchase Amount</div>
             <div className="duration">Time</div>
-            <div className="actions" />
+            {/* <div className="actions" /> */}
           </Header>
           {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp }, idx) => (
             <Auction key={`${id}-${idx}`} className="flex">
@@ -328,14 +339,15 @@ export default function AuctionTable({ current, purchases }) {
                 <PurchasedEpoc>{epoch}</PurchasedEpoc>
               </div>
               {/* <div className="purchases">{purchases.length}</div> */}
-              <div className="starting">{start.toFixed(2)}</div>
-              <div className="ending">{(end || current?.price || 0).toFixed(2)}</div>
+              {/* <div className="starting">{start.toFixed(2)}</div>
+              <div className="ending">{(end || current?.price || 0).toFixed(2)}</div> */}
+              <div className="starting">{amount.toFixed(2)}</div>
               <div className="duration">
                 <Duration>{getDate(timestamp)}</Duration>
               </div>
-              <div className="actions flex-all">
+              {/* <div className="actions flex-all">
                 <img src="/assets/arrow-point-to-right.svg" alt="" className="cursor" onClick={() => setAuction(id)} />
-              </div>
+              </div> */}
             </Auction>
           ))}
         </Wrapper>

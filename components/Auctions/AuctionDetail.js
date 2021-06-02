@@ -86,8 +86,8 @@ const Auction = styled.div`
 
 export const DetailEpoch = styled(Epoch)`
   margin: auto;
-  background-color: var(--color-white);
-  color: var(--color-black);
+  // background-color: var(--color-white);
+  // color: var(--color-black);
 `
 
 const Duration = styled.div``

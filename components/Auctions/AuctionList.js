@@ -221,114 +221,125 @@ export default function AuctionList({
 
   return (
     <Wrapper className="auction-list">
-      {purchase && (
-        <>
-          <Graph>
-            <ResponsiveContainer width="100%" height={220}>
-              <ComposedChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal vertical={false} />
-                <XAxis
-                  dataKey="time"
-                  tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dy: 10 }}
-                  type="number"
-                  domain={[0, EPOCH_PERIOD]}
-                  tickFormatter={(value) => `${Number((value / 60 / 60).toFixed(1))}h`}
-                ></XAxis>
-                <YAxis tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dx: -10 }}></YAxis>
-                <Tooltip
-                  content={<CustomTooltip />}
-                  offset={0}
-                  allowEscapeViewBox={{ x: true, y: true }}
-                  cursor={{ stroke: '#0099F2', strokeDasharray: '3 3' }}
-                  active
-                />
-                <Line
-                  dataKey="price"
-                  stroke="#bd84a3"
-                  strokeWidth={2}
-                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 6, strokeWidth: 2 }}
-                  activeDot={{
-                    fill: 'var(--color-red2)',
-                    r: 6,
-                    boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
-                  }}
-                  type="linearClosed"
-                />
-                <Area
-                  dataKey="current"
-                  fill="#8884d8"
-                  stroke="#8884d8"
-                  dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 6, strokeWidth: 2 }}
-                  activeDot={{
-                    fill: 'var(--color-dark-grey)',
-                    r: 6,
-                    boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
-                  }}
-                />
-                <ReferenceLine x={purchase.time} strokeDasharray="3 3" stroke="#94EBF0" />
-                <ReferenceDot
-                  x={purchase.time}
-                  y={purchase.current}
-                  r={6}
-                  fill="#94EBF0"
-                  stroke="white"
-                  strokeWidth={2}
-                >
-                  <Label
-                    content={(props) => {
-                      const { x, y } = props.viewBox
-                      return (
-                        <g transform={`translate(${x},${y - 42})`}>
-                          <text x={0} y={0} fill="#2FB2BA" fontSize={10} fontWeight={100} className="static-tip">
-                            <tspan textAnchor="middle" x="0">
-                              Current Price @
-                            </tspan>
-                            <tspan textAnchor="middle" x="0" dy="16">
-                              {purchase.current.toFixed(2)}$hrimp
-                            </tspan>
-                          </text>
-                        </g>
-                      )
-                    }}
+      {purchase &&
+        (current.price > 0 ? (
+          <>
+            <Graph>
+              <ResponsiveContainer width="100%" height={220}>
+                <ComposedChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal vertical={false} />
+                  <XAxis
+                    dataKey="time"
+                    tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dy: 10 }}
+                    type="number"
+                    domain={[0, EPOCH_PERIOD]}
+                    tickFormatter={(value) => `${Number((value / 60 / 60).toFixed(1))}h`}
+                  ></XAxis>
+                  <YAxis tick={{ stroke: 'white', fontWeight: 'normal', fill: 'white', fontSize: 11, dx: -10 }}></YAxis>
+                  <Tooltip
+                    content={<CustomTooltip />}
                     offset={0}
-                    position="top"
+                    allowEscapeViewBox={{ x: true, y: true }}
+                    cursor={{ stroke: '#0099F2', strokeDasharray: '3 3' }}
+                    active
                   />
-                </ReferenceDot>
-              </ComposedChart>
-            </ResponsiveContainer>
-          </Graph>
-          <Auction>
-            <table>
-              <tbody>
-                <tr>
-                  <th className="epoch">Epoch</th>
-                  <th className="price">Current Price</th>
-                  <th className="remaining">Remaining Time</th>
-                  <th className="actions" rowSpan={2}>
-                    <button onClick={onPurchase} disabled={purchased || pending || Number(current.price) === 0}>
-                      {allowance > 0 ? 'Purchase' : 'Unlock'}
-                    </button>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <Epoch>{purchase.epoch}</Epoch>
-                  </td>
-                  <td>
-                    <Price className="flex-center">
-                      <img src="/assets/$hrimp-token.svg" alt="" />
-                      {Number(purchase.current || 0).toFixed(2)}
-                    </Price>
-                  </td>
-                  <td>
-                    <Remaining>{duration || '00:00:00'}</Remaining>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Auction>
-        </>
-      )}
+                  <Line
+                    dataKey="price"
+                    stroke="#bd84a3"
+                    strokeWidth={2}
+                    dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 6, strokeWidth: 2 }}
+                    activeDot={{
+                      fill: 'var(--color-red2)',
+                      r: 6,
+                      boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
+                    }}
+                    type="linearClosed"
+                  />
+                  <Area
+                    dataKey="current"
+                    fill="#8884d8"
+                    stroke="#8884d8"
+                    dot={{ stroke: 'white', fill: 'var(--color-dark-grey)', r: 6, strokeWidth: 2 }}
+                    activeDot={{
+                      fill: 'var(--color-dark-grey)',
+                      r: 6,
+                      boxShadow: '0 1px 7px 0 rgba(255,144,96,0.72)',
+                    }}
+                  />
+                  <ReferenceLine x={purchase.time} strokeDasharray="3 3" stroke="#94EBF0" />
+                  <ReferenceDot
+                    x={purchase.time}
+                    y={purchase.current}
+                    r={6}
+                    fill="#94EBF0"
+                    stroke="white"
+                    strokeWidth={2}
+                  >
+                    <Label
+                      content={(props) => {
+                        const { x, y } = props.viewBox
+                        return (
+                          <g transform={`translate(${x},${y - 42})`}>
+                            <text x={0} y={0} fill="#2FB2BA" fontSize={10} fontWeight={100} className="static-tip">
+                              <tspan textAnchor="middle" x="0">
+                                Current Price @
+                              </tspan>
+                              <tspan textAnchor="middle" x="0" dy="16">
+                                {purchase.current.toFixed(2)}$hrimp
+                              </tspan>
+                            </text>
+                          </g>
+                        )
+                      }}
+                      offset={0}
+                      position="top"
+                    />
+                  </ReferenceDot>
+                </ComposedChart>
+              </ResponsiveContainer>
+            </Graph>
+            <Auction>
+              <table>
+                <tbody>
+                  <tr>
+                    <th className="epoch">Epoch</th>
+                    <th className="price">Current Price</th>
+                    <th className="remaining">Remaining Time</th>
+                    <th className="actions" rowSpan={2}>
+                      <button onClick={onPurchase} disabled={purchased || pending || Number(current.price) === 0}>
+                        {allowance > 0 ? 'Purchase' : 'Unlock'}
+                      </button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td>
+                      <Epoch>{purchase.epoch}</Epoch>
+                    </td>
+                    <td>
+                      <Price className="flex-center">
+                        <img src="/assets/$hrimp-token.svg" alt="" />
+                        {Number(purchase.current || 0).toFixed(2)}
+                      </Price>
+                    </td>
+                    <td>
+                      <Remaining>{duration || '00:00:00'}</Remaining>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Auction>
+          </>
+        ) : (
+          <>
+            <p>
+              The auction for this epoch has ended.
+              <br />
+              The next auction begins in
+              <br />
+              <Remaining>{duration || '00:00:00'}</Remaining>
+            </p>
+          </>
+        ))}
     </Wrapper>
   )
 }
