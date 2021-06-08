@@ -1,49 +1,92 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import AuctionDetail, { DetailEpoch, getDate } from './AuctionDetail'
+import Pagination from 'components/common/Pagination'
+import Spinner from 'components/common/Spinner'
+import { DetailEpoch, getDate } from './AuctionDetail'
+import PurchaseDetail from './PurchaseDetail'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
 import { EPOCH_PERIOD } from './AuctionList'
 import { format } from 'utils/number'
+import { openseaLink } from 'utils/etherscan'
+import { shorten } from 'utils/string'
 
 const Wrapper = styled.div`
-  max-width: 788px;
+  max-width: 803px;
   margin: 0 auto 30px;
   position: relative;
+  font-size: 14px;
+  line-height: normal;
+  text-align: left;
 
   .epoch {
-    width: 15%;
-    text-align: center;
+    width: 10%;
   }
 
-  .purchases {
+  .nft {
     width: 30%;
+
+    .nft-thumb {
+      width: 42px;
+      height: 42px;
+      margin-right: 15px;
+
+      img, iframe {
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--color-border);
+      }
+    }
+
+    .nft-info {
+      p {
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      div {
+        font-size: 10px;
+        font-weight: normal;
+      }
+    }
   }
 
   .starting {
-    // width: 37%;
-    width: 74%;
+    width: 22%;
 
     img {
-      height: 26px;
+      height: 18px;
       margin-right: 6px;
     }
   }
 
-  .ending {
-    width: 37%;
+  .owner {
+    width: 20%;
   }
 
   .duration {
-    width: 33%;
+    width: 20%;
   }
 
   .actions {
     min-width: 32px;
 
     img {
-      height: 20px;
+      height: 13px;
     }
+  }
+
+  .font-12 {
+    font-size: 12px;
+  }
+
+  .pagination {
+    margin-top: 20px;
+  }
+  .loader {
+    top: 0;
+    background: var(--color-white);
+    opacity: 0.6;
   }
 `
 
@@ -105,7 +148,7 @@ const Header = styled.div`
   border-radius: 12px;
   background-color: var(--color-blue2);
   color: var(--color-white);
-  padding: 14px 10px;
+  padding: 16px 15px;
   text-transform: uppercase;
 `
 
@@ -115,7 +158,7 @@ const Auction = styled.div`
   border: 1px solid var(--color-light-purple);
   background-color: var(--color-white);
   color: var(--color-blue2);
-  padding: 13px 10px;
+  padding: 7px 15px;
 `
 
 const AuctionItem = styled.div`
@@ -308,7 +351,7 @@ function AuctionView({ auction, setAuction }) {
   )
 }
 
-export default function AuctionTable({ current, purchases }) {
+export default function AuctionTable({ current, purchases, loading, pagination }) {
   const [view, setView] = useState('list')
   const [auction, setAuction] = useState(null)
   const ps = useRef()
@@ -332,35 +375,53 @@ export default function AuctionTable({ current, purchases }) {
           </Action> */}
           <Header className="flex">
             <div className="epoch">Epoch</div>
-            {/* <div className="purchases">Purchases</div> */}
-            {/* <div className="starting">Starting Price</div>
-            <div className="ending">Ending Price</div> */}
+            <div className="nft">NFT</div>
             <div className="starting">Purchase Amount</div>
-            <div className="duration">Time</div>
-            {/* <div className="actions" /> */}
+            <div className="owner">Owned By</div>
+            <div className="duration">Date & Time</div>
+            <div className="actions" />
           </Header>
-          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp }, idx) => (
-            <Auction key={`${id}-${idx}`} className="flex">
+          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp, asset }, idx) => (
+            <Auction key={`${id}-${idx}`} className="flex-center">
               <div className="epoch">
                 <PurchasedEpoc>{epoch}</PurchasedEpoc>
               </div>
-              {/* <div className="purchases">{purchases.length}</div> */}
-              {/* <div className="starting">{start.toFixed(2)}</div>
-              <div className="ending">{(end || current?.price || 0).toFixed(2)}</div> */}
+              <div className="flex-center nft">
+                <div className="nft-thumb">
+                  {asset?.image_thumbnail_url ? (
+                    <img src={asset?.image_thumbnail_url} alt={asset?.name}/>
+                  ) : (
+                    <iframe src={asset?.animation_url} title={asset?.name}/>
+                  )}
+                </div>
+                <div className="nft-info">
+                  <p>{asset?.name}</p>
+                  <div>{asset?.collection?.name}</div>
+                </div>
+              </div>
               <div className="starting">
-                <div className="flex-center justify-center">
+                <div className="flex-center">
                   <img src="/assets/$hrimp-token.svg" alt="" />
                   {format(amount)}
                 </div>
               </div>
-              <div className="duration">
+              <div className="font-12 owner">
+                <a target="_blank" href={openseaLink(purchases[0])}>
+                  {shorten(purchases[0])}
+                </a>
+              </div>
+              <div className="font-12 duration">
                 <Duration>{getDate(timestamp)}</Duration>
               </div>
-              {/* <div className="actions flex-all">
+              <div className="actions flex-all">
                 <img src="/assets/arrow-point-to-right.svg" alt="" className="cursor" onClick={() => setAuction(id)} />
-              </div> */}
+              </div>
             </Auction>
           ))}
+          <div className="pagination">
+            <Pagination className="justify-center" {...pagination} />
+          </div>
+          {loading && <Spinner className="loader" />}
         </Wrapper>
       ) : (
         <ListWrapper className="auction-list">
@@ -379,7 +440,7 @@ export default function AuctionTable({ current, purchases }) {
         </ListWrapper>
       )}
       {auction && (
-        <AuctionDetail auction={purchases.find((item) => item.id === auction)} onClose={() => setAuction(null)} />
+        <PurchaseDetail purchase={purchases.find((item) => item.id === auction)} onClose={() => setAuction(null)} />
       )}
     </>
   )

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import qs from 'qs'
 
 import TxModal from 'components/common/TxModal'
 import { PageWrapper } from 'components/styles'
@@ -8,11 +9,13 @@ import Tabs from './Tabs'
 import AuctionList from './AuctionList'
 import AuctionTable from './AuctionTable'
 import { useTicker } from 'utils/hooks'
+import { getAssets } from 'utils/api'
+import { usePagination } from 'utils/pagination'
 
 const Wrapper = styled(PageWrapper)`
   .tabs {
     margin-top: 16px;
-    margin-bottom: 60px;
+    margin-bottom: 22px;
     border: 1px solid var(--color-red2);
 
     li {
@@ -20,6 +23,9 @@ const Wrapper = styled(PageWrapper)`
         background: var(--color-red2);
       }
     }
+  }
+  a {
+    color: #3D39C9;
   }
 `
 
@@ -31,6 +37,7 @@ export default connect((state) => state)(function Auctions({
   const [now] = useTicker()
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
+  const [loading, setLoading] = useState(false)
   const { currentEpoch, currentPrice, epochEndTimeFromTimestamp, minY, maxY } = library.methods.AuctionRegistry
   const getCurrent = () => {
     const { getAllowance } = library.methods.$HRIMP
@@ -110,60 +117,106 @@ export default connect((state) => state)(function Auctions({
 
   const [purchases, setPurchases] = useState([])
   const myPurchases = purchases.filter((item) => item.purchases[0] === address && item.epoch === current?.epoch)
-  const handlePurchases = (purchase) => {
-    const { auctionTokenId: id, epoch, account: purchaser, amount: y, timestamp } = purchase
-    const amount = Number(library.web3.utils.fromWei(y))
-    epochEndTimeFromTimestamp(timestamp)
-      .then((bTimestamp) => {
-        const previousPurchase = purchases.pop()
-        const x = bTimestamp - timestamp
-        if (previousPurchase) {
-          setPurchases([
-            ...purchases,
-            {
-              ...previousPurchase,
-              start: amount,
-              end: previousPurchase.start,
-            },
-            {
-              id,
-              epoch,
-              purchases: [purchaser],
-              amount,
-              start: amount,
-              end: 1,
-              timestamp,
-              x,
-            },
-          ])
-        } else {
-          setPurchases([
-            {
-              id,
-              epoch,
-              purchases: [purchaser],
-              amount,
-              start: amount,
-              end: 1,
-              timestamp,
-              x,
-            },
-          ])
-        }
-      })
-      .catch(console.log)
-  }
-  const getPurchase = () => {
-    if (totalPurchase && totalPurchase > purchases.length) {
+  // const handlePurchases = (purchase, asset) => {
+  //   const { auctionTokenId: id, auctionTokenAddress: tokenAddr, epoch, account: purchaser, amount: y, timestamp } = purchase
+  //   const amount = Number(library.web3.utils.fromWei(y))
+  //   epochEndTimeFromTimestamp(timestamp)
+  //     .then((bTimestamp) => {
+  //       const previousPurchase = purchases.pop()
+  //       const x = bTimestamp - timestamp
+  //       if (previousPurchase) {
+  //         setPurchases([
+  //           ...purchases,
+  //           {
+  //             ...previousPurchase,
+  //             start: amount,
+  //             end: previousPurchase.start,
+  //           },
+  //           {
+  //             id,
+  //             tokenAddr,
+  //             epoch,
+  //             purchases: [purchaser],
+  //             amount,
+  //             start: amount,
+  //             end: 1,
+  //             timestamp,
+  //             x,
+  //             asset,
+  //           },
+  //         ])
+  //       } else {
+  //         setPurchases([
+  //           {
+  //             id,
+  //             tokenAddr,
+  //             epoch,
+  //             purchases: [purchaser],
+  //             amount,
+  //             start: amount,
+  //             end: 1,
+  //             timestamp,
+  //             x,
+  //             asset,
+  //           },
+  //         ])
+  //       }
+  //     })
+  //     .catch(console.log)
+  // }
+  // const getPurchaseById = (id) => {
+  //   const { purchases: fetchPurchase } = library.methods.AuctionRegistry
+  //   let purchaseInfo
+  //   return fetchPurchase(id)
+  //     .then((purchase) => {
+  //       purchaseInfo = purchase;
+  //       return getAsset(purchase.auctionTokenAddress, purchase.auctionTokenId)
+  //     })
+  //     .then((result) => ({ purchase, asset: result.data }))
+  // }
+  const pagination = usePagination({ totalItems: totalPurchase, initialPageSize: 6, initialPage: 0 })
+  const getPurchasesByPage = async (pagination) => {
+    const { totalItems, startIndex, endIndex } = pagination;
+    if (totalItems) {
+      setLoading(true)
       const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-      fetchPurchase(totalPurchase - purchases.length - 1)
-        .then(handlePurchases)
-        .catch(console.log)
+      const ids = Array(endIndex - startIndex + 1).fill().map((_, idx) => (totalItems - 1 - startIndex - idx))
+      const purchases = await Promise.all(ids.map(id => fetchPurchase(id)))
+      const assets = await getAssets(
+        {
+          token_ids: purchases.map(({ auctionTokenId }) => auctionTokenId),
+          asset_contract_addresses: purchases.map(({ auctionTokenAddress }) => auctionTokenAddress),
+          limit: 50,
+          offset: 0,
+        },
+        {
+          paramsSerializer: (params) => {
+            return qs.stringify(params, { arrayFormat: 'repeat' })
+          },
+        }
+      ).then(result => (result?.data?.assets || []))
+      setPurchases(purchases.map((purchase) => {
+        const { auctionTokenId, auctionTokenAddress, epoch, account, amount, timestamp } = purchase
+        const asset = assets.find(a => a.token_id === purchase.auctionTokenId)
+        return {
+          id: auctionTokenId,
+          tokenAddr: auctionTokenAddress,
+          epoch,
+          purchases: [account],
+          amount: Number(library.web3.utils.fromWei(amount)),
+          start: Number(library.web3.utils.fromWei(amount)),
+          end: 1,
+          timestamp,
+          // x,
+          asset,
+        }
+      }))
+      setLoading(false)
     }
   }
   useEffect(() => {
-    getPurchase()
-  }, [totalPurchase, purchases])
+    getPurchasesByPage(pagination)
+  }, [pagination])
 
   useEffect(() => {
     if (library) {
@@ -211,7 +264,7 @@ export default connect((state) => state)(function Auctions({
             purchased={myPurchases.length > 0}
           />
         )}
-        {active === 'completed' && <AuctionTable purchases={purchases} current={current} />}
+        {active === 'completed' && <AuctionTable current={current} purchases={purchases} pagination={pagination} loading={loading}/>}
         <TxModal show={pendingTx} text={pendingText} color="purple" />
       </Wrapper>
     </>
