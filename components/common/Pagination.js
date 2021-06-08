@@ -10,7 +10,7 @@ const PaginationWrapper = styled.div`
     &.active {
       color: var(--color-red2);
     }
-    padding: 5px;
+    padding: 5px 7px;
     img {
       height: 13px;
     }

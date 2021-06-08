@@ -377,7 +377,7 @@ export default function AuctionTable({ current, purchases, loading, pagination }
             <div className="epoch">Epoch</div>
             <div className="nft">NFT</div>
             <div className="starting">Purchase Amount</div>
-            <div className="owner">Owned By</div>
+            <div className="owner">Purchased By</div>
             <div className="duration">Date & Time</div>
             <div className="actions" />
           </Header>
@@ -386,7 +386,7 @@ export default function AuctionTable({ current, purchases, loading, pagination }
               <div className="epoch">
                 <PurchasedEpoc>{epoch}</PurchasedEpoc>
               </div>
-              <div className="flex-center nft">
+              <div className="flex-center cursor nft" onClick={() => setAuction(id)}>
                 <div className="nft-thumb">
                   {asset?.image_thumbnail_url ? (
                     <img src={asset?.image_thumbnail_url} alt={asset?.name}/>
