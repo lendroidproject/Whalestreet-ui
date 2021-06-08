@@ -83,7 +83,7 @@ const OpenseaAccount = ({ account: { address, profile_img_url, user }, prefix })
     <img className="avatar" src={profile_img_url} />
     <span className="prefix">{prefix}</span>
     <a className="bold" href={openseaLink(address)} target="_blank">
-      {user?.username || address.substr(2, 6)}
+      {user?.username || address.substr(2, 6).toUpperCase()}
     </a>
   </OpenseaAccountWrapper>
 )
