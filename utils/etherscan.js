@@ -24,8 +24,14 @@ const links = {
   4: 'https://rinkeby.etherscan.io',
   42: 'https://kovan.etherscan.io',
 }
-export const networkLabel = (network) => networkLabels[network].split(' ')[0]
-export const txLink = (hash, network) => `${links[network]}/tx/${hash}`
-export const tokenLink = (addr, network) => `${links[network]}/token/${addr}`
+export const networkLabel = (network = networks[0]) => networkLabels[network].split(' ')[0]
+export const txLink = (hash, network = networks[0]) => `${links[network]}/tx/${hash}`
+export const tokenLink = (addr, network = networks[0]) => `${links[network]}/token/${addr}`
+export const addrLink = (addr, network = networks[0]) => `${links[network]}/address/${addr}`
 export const uniswapLiquidity = (input, output = 'ETH') => `https://app.uniswap.org/#/add/${input}/${output}`
 export const uniswapPair = (pair) => `https://info.uniswap.org/pair/${pair}`
+const openseaLinks = {
+  1: 'https://opensea.io',
+  4: 'https://testnets.opensea.io',
+}
+export const openseaLink = (addr, network = networks[0]) => `${openseaLinks[network]}/accounts/${addr}`

@@ -1,11 +1,13 @@
 import axios from 'axios'
 import tinyurl from 'tinyurl'
+import { networks } from './etherscan'
 
-const MAIN_NETWORK = process.env.MAIN_NETWORK
 const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY
 
+const network = networks[0]
+
 export function withBaseURL(path) {
-  const apiEndpoint = MAIN_NETWORK ? 'https://api.opensea.io/api/v1' : 'https://rinkeby-api.opensea.io/api/v1'
+  const apiEndpoint = network === 1 ? 'https://api.opensea.io/api/v1' : 'https://rinkeby-api.opensea.io/api/v1'
   return `${apiEndpoint}${path}`
 }
 
@@ -52,10 +54,10 @@ export function getAssets(params, options) {
   })
 }
 
-export function getAsset(ethAddr, nftAddr, nftId) {
+export function getAsset(nftAddr, nftId, ownerAddr) {
   return request({
     url: `/asset/${nftAddr}/${nftId}`,
-    params: { account_address: ethAddr },
+    params: { account_address: ownerAddr },
   })
 }
 
