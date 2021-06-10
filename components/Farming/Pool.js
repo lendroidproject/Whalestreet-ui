@@ -151,6 +151,10 @@ export const Wrapper = styled.div`
     width: 100%;
     margin: 12px;
 
+    a {
+      color: var(--color-white);
+    }
+
     img {
       margin-left: 6px;
     }
@@ -539,8 +543,8 @@ export default function Pool({
                 </tbody>
               </table>
               <p className="add-liquidity underline flex-center justify-center">
-                {base}-{pair} Uniswap Pool
                 <a href={uniswapPair(uniPair)} target="_blank">
+                  {base}-{pair} Uniswap Pool
                   <img src="/assets/link-icon.svg" />
                 </a>
               </p>
