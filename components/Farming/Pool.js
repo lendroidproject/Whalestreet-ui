@@ -319,7 +319,7 @@ export const getSeriesEnd = (type, epoch) => {
         : epoch > 84 && epoch <= 336
         ? 336
         : epoch > 336 && epoch <= 588
-        ? 556
+        ? 588
         : epoch > 588 && epoch <= 840
         ? 840
         : epoch > 840 && epoch <= 1092
