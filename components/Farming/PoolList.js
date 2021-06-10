@@ -93,7 +93,7 @@ export default connect((state) => state)(function PoolList({ farm = '$hrimp', me
         <h1>FARM $HRIMP</h1>
         <p>
           Provide liquidity to the{' '}
-          <a href="https://app.uniswap.org/#/add/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH" target="_blank">
+          <a href="https://app.uniswap.org/#/add/v2/0x4de2573e27e648607b50e1cfff921a33e4a34405/ETH" target="_blank">
             LST-ETH uniswap pool
           </a>{' '}
           to get pool tokens.
