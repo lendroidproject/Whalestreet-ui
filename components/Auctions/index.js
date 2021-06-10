@@ -196,7 +196,7 @@ export default connect((state) => state)(function Auctions({
         }
       ).then(result => (result?.data?.assets || []))
       setPurchases(purchases.map((purchase) => {
-        const { auctionTokenId, auctionTokenAddress, epoch, account, amount, timestamp } = purchase
+        const { auctionTokenId, auctionTokenAddress, epoch, account, amount, timestamp, feePercentage } = purchase
         const asset = assets.find(a => a.token_id === purchase.auctionTokenId)
         return {
           id: auctionTokenId,
@@ -207,6 +207,7 @@ export default connect((state) => state)(function Auctions({
           start: Number(library.web3.utils.fromWei(amount)),
           end: 1,
           timestamp,
+          feePercentage,
           // x,
           asset,
         }

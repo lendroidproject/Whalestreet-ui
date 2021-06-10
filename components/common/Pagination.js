@@ -32,8 +32,9 @@ export default function Pagination({
   previousEnabled,
   className = ''
 }) {
-  const startPage = Math.max(0, currentPage - 2)
-  const endPage = Math.min(totalPages - 1, currentPage + 2)
+  let startPage = Math.max(0, currentPage - 2)
+  const endPage = Math.min(totalPages - 1, startPage + 5)
+  startPage = Math.max(0, endPage - 5)
   const pages = Array(endPage - startPage + 1).fill().map((_, idx) => startPage + idx)
   return (
     <PaginationWrapper className={className}>

@@ -24,7 +24,7 @@ const Wrapper = styled.div`
   }
 
   .nft {
-    width: 30%;
+    width: 35%;
 
     .nft-thumb {
       width: 42px;
@@ -52,7 +52,7 @@ const Wrapper = styled.div`
   }
 
   .starting {
-    width: 22%;
+    width: 20%;
 
     img {
       height: 18px;
@@ -61,7 +61,11 @@ const Wrapper = styled.div`
   }
 
   .owner {
-    width: 20%;
+    width: 10%;
+  }
+
+  .rarity {
+    width: 13%;
   }
 
   .duration {
@@ -351,6 +355,16 @@ function AuctionView({ auction, setAuction }) {
   )
 }
 
+export const Rarity = {
+  Common: 'Common',
+  Rare: 'Rare',
+  Legendary: 'Legendary'
+}
+
+export function getRarity(feePercentage) {
+  return Number(feePercentage) === 50 ? Rarity.Common : Number(feePercentage) === 25 ? Rarity.Rare : Rarity.Legendary
+}
+
 export default function AuctionTable({ current, purchases, loading, pagination }) {
   const [view, setView] = useState('list')
   const [auction, setAuction] = useState(null)
@@ -361,7 +375,6 @@ export default function AuctionTable({ current, purchases, loading, pagination }
 
   useLayoutEffect(() => {
     if (ps && ps.current) {
-      console.log(ps.current)
       ps.current.scrollLeft = 10000
     }
   }, [ps, ps.current, purchases])
@@ -376,12 +389,13 @@ export default function AuctionTable({ current, purchases, loading, pagination }
           <Header className="flex">
             <div className="epoch">Epoch</div>
             <div className="nft">NFT</div>
+            <div className="rarity">Rarity</div>
             <div className="starting">Purchase Amount</div>
-            <div className="owner">Purchased By</div>
+            {/* <div className="owner">Purchased By</div> */}
             <div className="duration">Date & Time</div>
             <div className="actions" />
           </Header>
-          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp, asset }, idx) => (
+          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp, asset, feePercentage }, idx) => (
             <Auction key={`${id}-${idx}`} className="flex-center">
               <div className="epoch">
                 <PurchasedEpoc>{epoch}</PurchasedEpoc>
@@ -399,17 +413,22 @@ export default function AuctionTable({ current, purchases, loading, pagination }
                   <div>{asset?.collection?.name}</div>
                 </div>
               </div>
+              <div className="rarity">
+                <div className="flex-center">
+                  {getRarity(feePercentage)}
+                </div>
+              </div>
               <div className="starting">
                 <div className="flex-center">
                   <img src="/assets/$hrimp-token.svg" alt="" />
                   {format(amount)}
                 </div>
               </div>
-              <div className="font-12 owner">
+              {/* <div className="font-12 owner">
                 <a target="_blank" href={openseaLink(purchases[0])}>
                   {shorten(purchases[0])}
                 </a>
-              </div>
+              </div> */}
               <div className="font-12 duration">
                 <Duration>{getDate(timestamp)}</Duration>
               </div>
