@@ -20,11 +20,11 @@ const Wrapper = styled.div`
   text-align: left;
 
   .epoch {
-    width: 10%;
+    width: 9%;
   }
 
   .nft {
-    width: 35%;
+    width: 36%;
 
     .nft-thumb {
       width: 42px;
@@ -52,7 +52,7 @@ const Wrapper = styled.div`
   }
 
   .starting {
-    width: 20%;
+    width: 21%;
 
     img {
       height: 18px;
@@ -65,7 +65,13 @@ const Wrapper = styled.div`
   }
 
   .rarity {
-    width: 13%;
+    width: 15%;
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
   }
 
   .duration {
@@ -73,7 +79,7 @@ const Wrapper = styled.div`
   }
 
   .actions {
-    min-width: 32px;
+    min-width: 20px;
 
     img {
       height: 13px;
@@ -414,7 +420,8 @@ export default function AuctionTable({ current, purchases, loading, pagination }
                 </div>
               </div>
               <div className="rarity">
-                <div className="flex-center">
+                <div className={`flex-center`}>
+                  <img src={`/assets/${getRarity(feePercentage).toLowerCase()}.svg`} />
                   {getRarity(feePercentage)}
                 </div>
               </div>
