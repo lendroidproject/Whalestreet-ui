@@ -29,7 +29,7 @@ export const txLink = (hash, network = networks[0]) => `${links[network]}/tx/${h
 export const tokenLink = (addr, network = networks[0]) => `${links[network]}/token/${addr}`
 export const addrLink = (addr, network = networks[0]) => `${links[network]}/address/${addr}`
 export const uniswapLiquidity = (input, output = 'ETH') => `https://app.uniswap.org/#/add/${input}/${output}`
-export const uniswapPair = (pair) => `https://info.uniswap.org/pair/${pair}`
+export const uniswapPair = (pair) => `https://v2.info.uniswap.org/pair/${pair}`
 const openseaLinks = {
   1: 'https://opensea.io',
   4: 'https://testnets.opensea.io',
