@@ -61,7 +61,7 @@ const Content = styled.div`
   }
 `
 
-export default connect(({ metamask: { network } }) => ({
+export default connect(({ wallet: { network } }) => ({
   network,
 }))(function Promo({ text, show, onHide, network, color = 'blue' }) {
   return ReactDOM.createPortal(

@@ -111,7 +111,7 @@ export const Wrapper = styled.div`
   }
 
   .pool-data button {
-    width: 151px;
+    min-width: 151px;
     border-radius: 7px;
     margin-bottom: 24px;
     ${mediaSize.mobile} {
@@ -346,23 +346,16 @@ export default function Pool({
   icon,
   rewardBySeries,
   onSelect,
-  metamask,
+  account,
   library,
+  info,
+  poolInfo,
   now,
 }) {
+  const { poolEpoch: currentEpoch, poolEpochPeriod: EPOCH_PERIOD, poolHeartBeatTime: HEART_BEAT_START_TIME } = info
   const poolIndex = pools.findIndex((item) => item === pool)
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
-  const {
-    poolEpochs = [],
-    poolEpochPeriods = [],
-    poolHeartBeatTimes = [],
-    poolBalances = [],
-    poolSupplies = [],
-    uniV2Supplies = [],
-  } = metamask
-  const currentEpoch = poolEpochs[poolIndex] || 0
-  const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
-  const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
+  const { poolBalances = [], poolSupplies = [], uniV2Supplies = [] } = poolInfo
 
   const [[epoch, rate], setRewardRate] = useState([0, 0])
   const [uniData, setUniData] = useState(null)
@@ -372,7 +365,7 @@ export default function Pool({
   const duration = getDuration(now, countdown * 1000)
 
   const getAPY = () => {
-    if (!uniData || !currentSeries || !rewardBySeries) return '-'
+    if (!uniData || !currentSeries || !rewardBySeries || !poolInfo.poolSupplies) return '-'
     const [seriesReward, epochCount] = rewardBySeries[currentSeries]
     const { tokenPriceUSD, liquidityUSD } = uniData
     const seriesRewardUSD = tokenPriceUSD * seriesReward
@@ -487,7 +480,7 @@ export default function Pool({
               <label className="light">Total amount staked:</label>
               <p>
                 $
-                {uniData && currentSeries
+                {uniData && currentSeries && uniV2Supplies[uniIndex]
                   ? format((poolSupplies[poolIndex] || 0) * (uniData.liquidityUSD / uniV2Supplies[uniIndex]), 2)
                   : '-'}
               </p>
@@ -506,7 +499,7 @@ export default function Pool({
               </button>
             ) : (
               <button className="uppercase red" onClick={onSelect}>
-                Select
+                {account ? 'Select' : 'Connect Wallet'}
               </button>
             )}
           </div>

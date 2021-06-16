@@ -19,7 +19,7 @@ const Wrapper = styled.section`
   }
 `
 
-export default connect((state) => state)(function PoolList({ farm = 'LST', metamask, library }) {
+export default connect((state) => state)(function PoolList({ farm = 'LST', wallet, library }) {
   const [basePools, setPools] = useState(null)
   const [selectedPool, setPool] = useState(null)
   const [now] = useTicker()
@@ -42,7 +42,7 @@ export default connect((state) => state)(function PoolList({ farm = 'LST', metam
         </p>
         <div className="flex-center justify-center">
           <PoolDetail
-            metamask={metamask}
+            wallet={wallet}
             {...selectedPool}
             detail
             onBack={() => {
@@ -69,7 +69,7 @@ export default connect((state) => state)(function PoolList({ farm = 'LST', metam
         <div className="flex-wrap justify-center pools">
           {basePools.map((pool) => (
             <Pool
-              metamask={metamask}
+              wallet={wallet}
               library={library}
               {...pool}
               key={`${pool.base}${pool.pair}`}

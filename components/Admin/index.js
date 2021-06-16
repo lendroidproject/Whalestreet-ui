@@ -71,7 +71,7 @@ const HomeWrapper = styled.div`
   }
 `
 
-export default connect((state) => state)(function Home({ metamask, library, eventTimestamp }) {
+export default connect((state) => state)(function Home({ wallet, library, eventTimestamp }) {
   const filters = [
     {
       key: null,
@@ -106,10 +106,10 @@ export default connect((state) => state)(function Home({ metamask, library, even
       .catch(console.log)
   }
   useEffect(() => {
-    if (library && !data && metamask.address) {
+    if (library && !data && wallet.address) {
       loadData()
     }
-  }, [library, data, metamask])
+  }, [library, data, wallet])
   useEffect(() => {
     if (eventTimestamp && data && eventTimestamp > data.timestamp) {
       loadData()
@@ -117,7 +117,7 @@ export default connect((state) => state)(function Home({ metamask, library, even
   }, [eventTimestamp, data])
 
   useEffect(() => {
-    const tokenAssets = metamask.network === 1 ? adminAssets[metamask.network] : adminAssets[4]
+    const tokenAssets = wallet.network === 1 ? adminAssets[wallet.network] : adminAssets[4]
     if (tokenAssets && tokenAssets.length) {
       const queryAssets = async function () {
         try {
@@ -148,7 +148,7 @@ export default connect((state) => state)(function Home({ metamask, library, even
       }
       queryAssets()
     }
-  }, [metamask.network])
+  }, [wallet.network])
 
   if (loading) return <Spinner />
 

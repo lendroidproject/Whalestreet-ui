@@ -154,6 +154,7 @@ const CustomTooltip = (props) => {
 }
 
 export default function AuctionList({
+  account,
   now,
   current,
   lastPurchase,
@@ -180,11 +181,7 @@ export default function AuctionList({
       // if (purchase && purchase.xPos === xPos) return
       const t1 = parseInt(current.timestamp - now / 1000)
       const max = t1 > 0 ? (current.price / t1) * EPOCH_PERIOD : current.maxY
-      const start = lastPurchase
-        ? current.epoch - lastPurchase.epoch === 1
-          ? lastPurchase.amount * 2
-          : lastPurchase.amount
-        : max
+      const start = lastPurchase ? lastPurchase.amount * 2 : max
       // const currentPrice = ((start - current.minY) * (EPOCH_PERIOD - x) + EPOCH_PERIOD) / EPOCH_PERIOD
       const currentPrice = current.price
       const currentTime = EPOCH_PERIOD - ((currentPrice - current.minY) / (start - current.minY)) * EPOCH_PERIOD
@@ -310,7 +307,7 @@ export default function AuctionList({
                     <th className="remaining">Remaining Time</th>
                     <th className="actions" rowSpan={2}>
                       <button onClick={onPurchase} disabled={purchased || pending || Number(current.price) === 0}>
-                        {allowance > 0 ? 'Purchase' : 'Unlock'}
+                        {account ? (allowance > 0 ? 'Purchase' : 'Unlock') : 'Connect Wallet'}
                       </button>
                     </th>
                   </tr>

@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import * as ethUtil from 'ethereumjs-util'
 
-import { connectNetworks, isSupportedNetwork, tokenLink } from 'utils/etherscan'
 import { agreePrivacy, getPrivacy } from 'utils/requests'
 import PriceMarquee from 'components/common/PriceMarquee'
 import Spinner from 'components/common/Spinner'
@@ -15,6 +14,11 @@ import { OurTokens } from 'components/styles'
 import '@trendmicro/react-dropdown/dist/react-dropdown.css'
 import 'katex/dist/katex.min.css'
 import { mediaSize, withMedia } from 'utils/media'
+
+import useWallet from 'hooks/useWallet'
+import Library from 'whalestreet-js'
+import { isSupportedNetwork, networks, tokenLink, INFURAS } from 'utils/etherscan'
+import { addresses } from './constants'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -239,10 +243,47 @@ const Footer = styled.footer`
   }
 `
 
-export default connect((state) => state)(function Index({ library, metamask, children }) {
-  const isSupported = !metamask.network || isSupportedNetwork(metamask.network)
+const defaultNetwork = networks[0]
+
+export default connect((state) => state)(function Index({ library, wallet, account, children, dispatch }) {
+  const [, connectWallet] = useWallet()
+  const network = account?.network || wallet?.network || defaultNetwork
+
+  const handleEvent = (event, data) => {
+    dispatch({
+      type: event,
+      payload: data,
+    })
+  }
+  const handleConnect = () => {
+    connectWallet()
+      .then((provider) => {
+        if (provider) {
+          wallet.connect(provider)
+        }
+      })
+      .catch((err) => {
+        // tslint:disable-next-line: no-console
+        console.log('connectWallet', err)
+      })
+  }
+  useEffect(() => {
+    const wallet = new Library.Wallet({
+      network: defaultNetwork,
+      addresses,
+      INFURA_ID: `${INFURAS[defaultNetwork]}/${process.env.INFURA_ID}`,
+      OnEvent: handleEvent,
+      registers: ['farming'],
+    })
+    dispatch({
+      type: 'WALLET',
+      payload: [wallet, connectWallet],
+    })
+  }, [])
+
+  const isSupported = !wallet || isSupportedNetwork(network)
   const [[address, termsAgreed], handleTerms] = useState(['', false])
-  const setTermsAgreed = (flag) => handleTerms([metamask.address, flag])
+  const setTermsAgreed = (flag) => handleTerms([account.address, flag])
   const [fetched, setFetched] = useState(false)
   const [signning, setSignning] = useState(1)
 
@@ -260,19 +301,20 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       document.body.classList.remove(pageName)
     }
     if (newPage) {
-      setPageName(newPage)
       document.body.classList.add(newPage)
     }
+    setPageName(newPage)
   }, [router.route])
 
   useEffect(() => {
-    if (fetched && address && address !== metamask.address) {
+    if (!account) return
+    if (fetched && address && address !== account.address) {
       setFetched(false)
       setTermsAgreed(false)
-    } else if (!fetched && !termsAgreed && metamask.address) {
-      setFetched(true)
-      getPrivacy(metamask.address)
+    } else if (!fetched && !termsAgreed && account.address) {
+      getPrivacy(account.address)
         .then((data) => {
+          setFetched(true)
           if (data.result && data.result.signature) setTermsAgreed(true)
           else {
             setTermsAgreed(false)
@@ -281,59 +323,50 @@ export default connect((state) => state)(function Index({ library, metamask, chi
         })
         .catch(console.log)
     }
-  }, [metamask])
+  }, [account])
 
   useEffect(() => {
-    if (library && metamask.network && metamask.address && !termsAgreed && signning === -1) {
-      signTerms(metamask)
+    if (account?.address && !termsAgreed && signning === -1) {
+      signTerms(account)
     }
-  }, [library, metamask, termsAgreed, signning])
+  }, [library, account, termsAgreed, signning])
 
-  const signTerms = (metamask) => {
-    if ((!metamask.network && !metamask.address) || termsAgreed || signning == 1) return
+  const signTerms = (account) => {
+    if ((!account.network && !account.address) || termsAgreed || signning == 1) return
     setSignning(1)
     const message = `I acknowledge and accept the Terms and Conditions as specified in the link below
 
       https://whalestreet.xyz/assets/WH_Labs_International_Limited.pdf`
     const msg = ethUtil.bufferToHex(Buffer.from(message, 'utf8'))
 
-    const from = metamask.address
+    const from = account.address
 
     const params = [msg, from]
-    // const method = 'personal_sign'
 
-    library.web3.eth.personal.sign(
-      ...params,
-      // {
-      //   method,
-      //   params,
-      //   from,
-      // },
-      function (err, result) {
-        if (err || result.error) setSignning(0)
-        if (err) return console.error(err)
-        if (result.error) return console.error('ERROR', result)
+    library.web3.eth.personal.sign(...params, function (err, result) {
+      if (err || result.error) setSignning(0)
+      if (err) return console.error(err)
+      if (result.error) return console.error('ERROR', result)
 
-        const res = (result.result || result).slice(2)
-        const v = parseInt(res.slice(128, 130), 16) === 27 ? 0 : 1
-        const r = library.web3.utils.toBN(`0x${res.slice(0, 64)}`).toString()
-        const s = library.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
+      const res = (result.result || result).slice(2)
+      const v = parseInt(res.slice(128, 130), 16) === 27 ? 0 : 1
+      const r = library.web3.utils.toBN(`0x${res.slice(0, 64)}`).toString()
+      const s = library.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
 
-        agreePrivacy(from, {
-          network: metamask.network,
-          message,
-          signature: result.result || result,
-          v,
-          r,
-          s,
+      agreePrivacy(from, {
+        network: account.network,
+        message,
+        signature: result.result || result,
+        v,
+        r,
+        s,
+      })
+        .then((data) => {
+          setTermsAgreed(true)
         })
-          .then((data) => {
-            setTermsAgreed(true)
-          })
-          .catch(console.log)
-          .finally(() => setSignning(0))
-      }
-    )
+        .catch(console.log)
+        .finally(() => setSignning(0))
+    })
   }
 
   const back = (
@@ -346,6 +379,8 @@ export default connect((state) => state)(function Index({ library, metamask, chi
       )}
     </div>
   )
+
+  if (!wallet) return back
 
   return (
     <Wrapper className={`flex-column ${pageName}`}>
@@ -360,26 +395,42 @@ export default connect((state) => state)(function Index({ library, metamask, chi
             <img className="logo cursor" src="/assets/logo.svg" alt="WHALE STREET" />
           </Link>
         </div>
-        <Account isAdmin={isAdmin} />
+        <Account isAdmin={isAdmin} onConnect={() => handleConnect()} />
       </Header>
       <Content>
-        {isSupported &&
-        termsAgreed &&
-        metamask &&
-        metamask.connected &&
-        (router.route != '/Auction' || library.auctions) ? (
+        {isSupported && account && !termsAgreed ? (
+          fetched ? (
+            <div className="fill flex-all no-wallet">
+              <p>
+                Agree{' '}
+                <a href="/assets/WH_Labs_International_Limited.pdf" target="_blank">
+                  Terms
+                </a>{' '}
+                and{' '}
+                <a href="/assets/WH_Labs_Privacy.pdf" target="_blank">
+                  Privacy
+                </a>
+              </p>
+              <button onClick={() => signTerms(account)} disabled={signning === 1}>
+                I Agree
+              </button>
+            </div>
+          ) : (
+            <Spinner />
+          )
+        ) : (
           <>
             {children}
             {isPage && (
               <OurTokens className="center">
                 <h2>Tokens</h2>
                 <div className="buttons flex-center justify-center">
-                  <a href={tokenLink(library.addresses.$HRIMP, metamask.network)} target="_blank">
+                  <a href={tokenLink(addresses[network].$HRIMP, network)} target="_blank">
                     <button>
                       $hrimp <img src="/assets/link-icon.svg" />
                     </button>
                   </a>
-                  <a href={tokenLink(library.addresses.LST, metamask.network)} target="_blank">
+                  <a href={tokenLink(addresses[network].LST, network)} target="_blank">
                     <button>
                       LST <img src="/assets/link-icon.svg" />
                     </button>
@@ -393,39 +444,8 @@ export default connect((state) => state)(function Index({ library, metamask, chi
               </OurTokens>
             )}
           </>
-        ) : metamask && metamask.connected && isSupported ? (
-          <>
-            {back}
-            <div className="fill flex-all no-wallet">
-              {!library ? (
-                <p>No connected wallet</p>
-              ) : !fetched || signning ? (
-                <Spinner />
-              ) : (
-                <>
-                  <p>
-                    Agree{' '}
-                    <a href="/assets/WH_Labs_International_Limited.pdf" target="_blank">
-                      Terms
-                    </a>{' '}
-                    and{' '}
-                    <a href="/assets/WH_Labs_Privacy.pdf" target="_blank">
-                      Privacy
-                    </a>
-                  </p>
-                  <button onClick={() => signTerms(metamask)} disabled={signning === 1}>
-                    I Agree
-                  </button>
-                </>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            {back}
-            <p className="fill flex-all no-wallet">{connectNetworks()}</p>
-          </>
         )}
+        {back}
       </Content>
       <Footer className="flex-center">
         <div className="flex-center justify-center flex-wrap" style={{ width: '100%' }}>

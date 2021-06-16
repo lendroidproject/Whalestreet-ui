@@ -17,7 +17,7 @@ const Wrapper = styled(PageWrapper)`
   margin: auto;
 `
 
-export default connect((state) => state)(function WhaleSwap({ metamask: { address }, auctions: library, dispatch }) {
+export default connect((state) => state)(function WhaleSwap({ wallet: { address }, auctions: library, dispatch }) {
   const [active, setActive] = useState('new')
 
   return (

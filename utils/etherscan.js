@@ -4,6 +4,10 @@ export const infuras = {}
 networks.forEach((network, idx) => {
   infuras[network] = definedInfuras[idx]
 })
+export const INFURAS = {
+  1: 'https://mainnet.infura.io/v3',
+  42: 'https://kovan.infura.io/v3',
+}
 export const isSupportedNetwork = (network) => network && networks.includes(network)
 const networkLabels = {
   1: 'Mainnet',

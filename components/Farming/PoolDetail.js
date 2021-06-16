@@ -250,7 +250,7 @@ const Claim = styled(Stake)`
   }
 `
 
-function PoolDetail({
+export default function PoolDetail({
   base,
   pair,
   pool,
@@ -258,9 +258,10 @@ function PoolDetail({
   rewardBase,
   background,
   stake,
-  metamask,
+  account,
   library,
-  transactions,
+  info,
+  poolInfo,
   dispatch,
   onBack,
   now,
@@ -269,19 +270,20 @@ function PoolDetail({
   const uniIndex = uniV2s.findIndex((item) => item === uniV2)
   const poolIndex = pools.findIndex((item) => item === pool)
   const listIndex = uniV2PoolList.findIndex((item) => item === pool)
+  const address = account?.address
   const {
-    address,
     latestBlockTimestamp,
+    poolEpoch: currentEpoch,
+    poolEpochPeriod: EPOCH_PERIOD,
+    poolHeartBeatTime: HEART_BEAT_START_TIME,
+  } = info
+  const {
     uniV2Balances = [],
     uniV2Allowances = [],
     poolBalances = [],
     poolEarnings = [],
-    poolEpochs = [],
-    poolEpochPeriods = [],
-    poolHeartBeatTimes = [],
     poolLastEpochs = [],
-  } = metamask
-  const currentEpoch = poolEpochs[poolIndex] || 0
+  } = poolInfo
   const lastEpochStaked = poolLastEpochs[poolIndex] || 0
   const uniV2Balance = uniV2Balances[uniIndex] || 0
   const uniV2Allowance = uniV2Allowances[listIndex] || 0
@@ -300,8 +302,6 @@ function PoolDetail({
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
   const duration = getDuration(now, epochEndTime * 1000)
 
-  const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
-  const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
   const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
   const isEnded = countdown * 1000 < now
 
@@ -325,21 +325,6 @@ function PoolDetail({
     ? 'Claiming your rewards'
     : ''
 
-  useEffect(() => {
-    if (stakeTx && transactions[stakeTx]) {
-      setStakeTx(null)
-      if (mode === 'stake') setMode('')
-    }
-    if (unstakeTx && transactions[unstakeTx]) {
-      setUnstakeTx(null)
-      if (mode === 'unstake') setMode('')
-    }
-    if (claimTx && transactions[claimTx]) {
-      setClaimTx(null)
-      if (mode === 'claim') setMode('')
-    }
-  }, [transactions])
-
   const handleMode = (mode) => {
     mode === 'stake' && setStakeForm({ amount: 0 })
     mode === 'unstake' && setUnstakeForm({ amount: 0 })
@@ -348,7 +333,7 @@ function PoolDetail({
 
   const handleApprove = () => {
     const { approve } = library.methods[uniV2]
-    approve(library.addresses[pool], library.web3.utils.toWei((10 ** 8).toString()), { from: address })
+    approve(library.netAddresses[pool], library.web3.utils.toWei((10 ** 8).toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
         setApproveTx(hash)
@@ -572,5 +557,3 @@ function PoolDetail({
     </Wrapper>
   )
 }
-
-export default connect(({ metamask, library, transactions }) => ({ metamask, library, transactions }))(PoolDetail)

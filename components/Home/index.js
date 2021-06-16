@@ -11,7 +11,7 @@ import { getTokenPriceUSD } from 'utils/uniswap'
 import { format } from 'utils/number'
 import { addresses } from 'layouts/constants'
 import { PageWrapper as Wrapper, Statics } from 'components/styles'
-import Promo from './Promo'
+// import Promo from './Promo'
 
 import adminAssets from 'components/Admin/admin-assets'
 import { getAssets } from 'utils/api'
@@ -74,21 +74,21 @@ const RewardTokens = styled.div`
   }
 `
 
-export default connect((state) => state)(function Farming({ metamask, library, onModule }) {
-  const [video, setVideo] = useState(false)
+export default connect((state) => state)(function Farming(props) {
+  const { wallet, info = {}, farming: library, onModule } = props
+  // const [video, setVideo] = useState(false)
   const [[blockTimestamp, epochEndTime], setEpochEndTime] = useState([0, 0])
   const [now] = useTicker()
   const [assets, setAssets] = useState([])
   const [data, setData] = useState(null)
   const duration = getDuration(now, epochEndTime * 1000)
 
-  const { latestBlockTimestamp } = metamask
-  const { epochEndTimeFromTimestamp } = library.methods.LST_WETH_UNIV2_$HRIMP_Pool
-  const { totalSupply } = library.methods.B20
+  const { latestBlockTimestamp } = info
   const toNumber = library.web3.utils.fromWei
 
   useEffect(() => {
     if (latestBlockTimestamp && latestBlockTimestamp !== blockTimestamp) {
+      const { epochEndTimeFromTimestamp } = library.methods.LST_WETH_UNIV2_$HRIMP_Pool
       epochEndTimeFromTimestamp(latestBlockTimestamp)
         .then((endTime) => {
           if (endTime !== epochEndTime) setEpochEndTime([latestBlockTimestamp, endTime])
@@ -98,7 +98,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
   }, [latestBlockTimestamp])
 
   useEffect(() => {
-    const tokenAssets = metamask.network === 1 ? adminAssets[metamask.network] : adminAssets[4]
+    const tokenAssets = wallet.network === 1 ? adminAssets[wallet.network] : adminAssets[4]
     if (tokenAssets && tokenAssets.length) {
       const queryAssets = async function () {
         try {
@@ -131,9 +131,10 @@ export default connect((state) => state)(function Farming({ metamask, library, o
       }
       queryAssets()
     }
-  }, [metamask.network])
+  }, [wallet.network])
 
   const loadData = () => {
+    const { totalSupply } = library.methods.B20
     Promise.all([getTokenPriceUSD(addresses[1].B20), totalSupply()])
       .then(([b20USDPrice, b20TotalSupply]) => {
         setData({
@@ -147,9 +148,9 @@ export default connect((state) => state)(function Farming({ metamask, library, o
 
   useEffect(() => {
     loadData()
-  }, [metamask.network])
+  }, [wallet.network])
 
-  const isAdminOwner = false && assets?.[0]?.owner?.address === metamask.address
+  const isAdminOwner = false && assets?.[0]?.owner?.address === wallet.address
 
   return (
     <>
@@ -187,7 +188,8 @@ export default connect((state) => state)(function Farming({ metamask, library, o
           <Promo show={video} onHide={() => setVideo(false)} />
         </p> */}
         <p className="intro">
-          Welcome. WhaleStreet Auctions are now live. Head over to the Auctions page by<br /> clicking the "Gaff NFT" link.
+          Welcome. WhaleStreet Auctions are now live. Head over to the Auctions page by
+          <br /> clicking the "Gaff NFT" link.
         </p>
         {now < B20_START ? (
           <Statics className="b20-sale center limited">
@@ -220,7 +222,7 @@ export default connect((state) => state)(function Farming({ metamask, library, o
             </div> */}
             <div className="statics__item">
               <label>Current Epoch</label>
-              <p>{(metamask.poolEpochs && metamask.poolEpochs[0]) || '-'}</p>
+              <p>{info.poolEpoch}</p>
             </div>
             <div className="statics__item">
               <label>Next epoch in</label>

@@ -25,18 +25,23 @@ const Wrapper = styled(PageWrapper)`
     }
   }
   a {
-    color: #3D39C9;
+    color: #3d39c9;
   }
 `
 
 export default connect((state) => state)(function Auctions({
-  metamask: { address, a$HRIMP },
+  account,
+  wallet,
+  auctionInfo: { a$HRIMP } = {},
   auctions: library,
   dispatch,
+  connectWallet,
 }) {
+  const address = account?.address
   const [now] = useTicker()
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
+  const [lastPurchase, setLastPurchase] = useState(null)
   const [loading, setLoading] = useState(false)
   const { currentEpoch, currentPrice, epochEndTimeFromTimestamp, minY, maxY } = library.methods.AuctionRegistry
   const getCurrent = () => {
@@ -45,7 +50,7 @@ export default connect((state) => state)(function Auctions({
       .getBlock()
       .then((bTimestamp) => {
         Promise.all([
-          getAllowance(address),
+          address ? getAllowance(address) : Promise.resolve('0'),
           currentEpoch(),
           currentPrice().then(library.web3.utils.fromWei),
           epochEndTimeFromTimestamp(bTimestamp),
@@ -54,7 +59,7 @@ export default connect((state) => state)(function Auctions({
         ])
           .then(([a$HRIMP, epoch, price, timestamp, minY, maxY]) => {
             dispatch({
-              type: 'METAMASK',
+              type: 'AUCTION_INFO',
               payload: {
                 a$HRIMP,
               },
@@ -68,7 +73,7 @@ export default connect((state) => state)(function Auctions({
   const [approveTx, setApproveTx] = useState(null)
   const handleUnlock = () => {
     const { approve } = library.methods.$HRIMP
-    approve(library.addresses.AuctionRegistry, library.web3.utils.toWei((10 ** 8).toString()), { from: address })
+    approve(library.netAddresses.AuctionRegistry, library.web3.utils.toWei((10 ** 8).toString()), { from: address })
       .send()
       .on('transactionHash', function (hash) {
         setApproveTx(hash)
@@ -87,28 +92,53 @@ export default connect((state) => state)(function Auctions({
       })
   }
   const [totalPurchase, setTotalPurchase] = useState(0)
+  useEffect(() => {
+    if (totalPurchase > 0) {
+      const { purchases: fetchPurchase } = library.methods.AuctionRegistry
+      fetchPurchase(totalPurchase - 1)
+        .then((purchase) =>
+          setLastPurchase({
+            amount: Number(library.web3.utils.fromWei(purchase.amount)),
+          })
+        )
+        .catch(console.log)
+    }
+  }, [totalPurchase])
   const getTotalPurchase = () => {
     const { totalPurchases } = library.methods.AuctionRegistry
     totalPurchases().then(Number).then(setTotalPurchase).catch(console.log)
   }
   const [purchaseTx, setPurchaseTx] = useState(null)
   const handlePurchase = () => {
-    if (a$HRIMP > 0) {
-      const { purchase } = library.methods.AuctionRegistry
-      purchase({ from: address })
-        .send()
-        .on('transactionHash', function (hash) {
-          setPurchaseTx(hash)
+    if (!account) {
+      connectWallet()
+        .then((provider) => {
+          if (provider) {
+            wallet.connect(provider)
+          }
         })
-        .on('receipt', function (receipt) {
-          setPurchaseTx(null)
-          getTotalPurchase()
-        })
-        .on('error', (err) => {
-          setPurchaseTx(null)
+        .catch((err) => {
+          // tslint:disable-next-line: no-console
+          console.log('connectWallet', err)
         })
     } else {
-      handleUnlock()
+      if (a$HRIMP > 0) {
+        const { purchase } = library.methods.AuctionRegistry
+        purchase({ from: address })
+          .send()
+          .on('transactionHash', function (hash) {
+            setPurchaseTx(hash)
+          })
+          .on('receipt', function (receipt) {
+            setPurchaseTx(null)
+            getTotalPurchase()
+          })
+          .on('error', (err) => {
+            setPurchaseTx(null)
+          })
+      } else {
+        handleUnlock()
+      }
     }
   }
 
@@ -176,12 +206,14 @@ export default connect((state) => state)(function Auctions({
   // }
   const pagination = usePagination({ totalItems: totalPurchase, initialPageSize: 6, initialPage: 0 })
   const getPurchasesByPage = async (pagination) => {
-    const { totalItems, startIndex, endIndex } = pagination;
+    const { totalItems, startIndex, endIndex } = pagination
     if (totalItems) {
       setLoading(true)
       const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-      const ids = Array(endIndex - startIndex + 1).fill().map((_, idx) => (totalItems - 1 - startIndex - idx))
-      const purchases = await Promise.all(ids.map(id => fetchPurchase(id)))
+      const ids = Array(endIndex - startIndex + 1)
+        .fill()
+        .map((_, idx) => totalItems - 1 - startIndex - idx)
+      const purchases = await Promise.all(ids.map((id) => fetchPurchase(id)))
       const assets = await getAssets(
         {
           token_ids: purchases.map(({ auctionTokenId }) => auctionTokenId),
@@ -194,24 +226,26 @@ export default connect((state) => state)(function Auctions({
             return qs.stringify(params, { arrayFormat: 'repeat' })
           },
         }
-      ).then(result => (result?.data?.assets || []))
-      setPurchases(purchases.map((purchase) => {
-        const { auctionTokenId, auctionTokenAddress, epoch, account, amount, timestamp, feePercentage } = purchase
-        const asset = assets.find(a => a.token_id === purchase.auctionTokenId)
-        return {
-          id: auctionTokenId,
-          tokenAddr: auctionTokenAddress,
-          epoch,
-          purchases: [account],
-          amount: Number(library.web3.utils.fromWei(amount)),
-          start: Number(library.web3.utils.fromWei(amount)),
-          end: 1,
-          timestamp,
-          feePercentage,
-          // x,
-          asset,
-        }
-      }))
+      ).then((result) => result?.data?.assets || [])
+      setPurchases(
+        purchases.map((purchase) => {
+          const { auctionTokenId, auctionTokenAddress, epoch, account, amount, timestamp, feePercentage } = purchase
+          const asset = assets.find((a) => a.token_id === purchase.auctionTokenId)
+          return {
+            id: auctionTokenId,
+            tokenAddr: auctionTokenAddress,
+            epoch,
+            purchases: [account],
+            amount: Number(library.web3.utils.fromWei(amount)),
+            start: Number(library.web3.utils.fromWei(amount)),
+            end: 1,
+            timestamp,
+            feePercentage,
+            // x,
+            asset,
+          }
+        })
+      )
       setLoading(false)
     }
   }
@@ -235,8 +269,8 @@ export default connect((state) => state)(function Auctions({
         <h1>Auctions</h1>
         <p className="intro">
           On this page, deFi Keys (NFTs) can be purchased using the $HRIMP token. Every epoch, the price of the deFi Key
-          is set according to a Dutch Auction curve. If a Key is not purchased in an epoch, the auction rolls over to the
-          next epoch with the same starting price. The rarity of a deFi Key (Common, Rare, or Legendary) is randomly
+          is set according to a Dutch Auction curve. If a Key is not purchased in an epoch, the auction rolls over to
+          the next epoch with the same starting price. The rarity of a deFi Key (Common, Rare, or Legendary) is randomly
           calculated (using Chainlink VRF) at the time of its purchase.
         </p>
         <Tabs
@@ -255,9 +289,10 @@ export default connect((state) => state)(function Auctions({
         />
         {active === 'ongoing' && (
           <AuctionList
+            account={account}
             now={now}
             current={current}
-            lastPurchase={purchases[0]}
+            lastPurchase={lastPurchase}
             getCurrent={getCurrent}
             allowance={a$HRIMP}
             pending={approveTx || purchaseTx}
@@ -265,7 +300,9 @@ export default connect((state) => state)(function Auctions({
             purchased={myPurchases.length > 0}
           />
         )}
-        {active === 'completed' && <AuctionTable current={current} purchases={purchases} pagination={pagination} loading={loading}/>}
+        {active === 'completed' && (
+          <AuctionTable current={current} purchases={purchases} pagination={pagination} loading={loading} />
+        )}
         <TxModal show={pendingTx} text={pendingText} color="purple" />
       </Wrapper>
     </>

@@ -10,7 +10,9 @@ import PoolDetail from '../Farming/PoolDetail'
 import { pools } from './constants'
 import { getDuration, useTicker } from 'utils/hooks'
 
-export default connect((state) => state)(function PoolList({ farm = 'B20', metamask, library }) {
+export default connect((state) => state)(function PoolList(props) {
+  const { farm = 'B20', wallet, account, info = {}, poolInfo = {}, farming: library, dispatch, connectWallet } = props
+
   const [active, setActive] = useState('ongoing')
   const [basePools, setPools] = useState([])
   const [selectedPool, setPool] = useState(null)
@@ -23,12 +25,8 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
     }
   }, [farm])
 
-  const { poolEpochs = [], poolEpochPeriods = [], poolHeartBeatTimes = [] } = metamask
-  function isActive({ pool, seriesType }) {
-    const poolIndex = pools.findIndex((item) => item.pool === pool)
-    const currentEpoch = poolEpochs[poolIndex] || 0
-    const EPOCH_PERIOD = poolEpochPeriods[poolIndex] || 0
-    const HEART_BEAT_START_TIME = poolHeartBeatTimes[poolIndex] || 0
+  function isActive({ seriesType }) {
+    const { poolEpoch: currentEpoch, poolEpochPeriod: EPOCH_PERIOD, poolHeartBeatTime: HEART_BEAT_START_TIME } = info
     const countdown = HEART_BEAT_START_TIME + EPOCH_PERIOD * getSeriesEnd(seriesType, currentEpoch)
     return getDuration(now, countdown * 1000)
   }
@@ -55,7 +53,11 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
         <p>Here, you can not only stake and unstake your pool tokens, but also claim your B20 rewards</p>
         <div className="flex-center justify-center">
           <PoolDetail
-            metamask={metamask}
+            account={account}
+            library={library}
+            info={info}
+            poolInfo={poolInfo}
+            dispatch={dispatch}
             {...selectedPool}
             detail
             onBack={() => {
@@ -102,12 +104,25 @@ export default connect((state) => state)(function PoolList({ farm = 'B20', metam
         <div className="flex-wrap justify-center pools">
           {tabPools.map((pool) => (
             <Pool
-              metamask={metamask}
+              account={account}
               library={library}
+              info={info}
+              poolInfo={poolInfo}
               {...pool}
-              key={`${pool.base}${pool.pair}`}
+              key={pool.pool}
               onSelect={() => {
-                setPool(pool)
+                if (account) setPool(pool)
+                else
+                  connectWallet()
+                    .then((provider) => {
+                      if (provider) {
+                        wallet.connect(provider)
+                      }
+                    })
+                    .catch((err) => {
+                      // tslint:disable-next-line: no-console
+                      console.log('connectWallet', err)
+                    })
               }}
               now={now}
             />

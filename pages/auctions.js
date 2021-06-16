@@ -1,15 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SEO from 'layouts/seo'
 import Link from 'next/link'
+import { connect } from 'react-redux'
 
 import Auctions from 'components/Auctions'
+import Spinner from 'components/common/Spinner'
 
-export default function AuctionsPage() {
+export default connect((state) => state)(function AuctionsPage({ wallet, auctions: library }) {
+  useEffect(() => {
+    wallet.register('auctions')
+  }, [])
   return (
     <>
       <SEO title="Auctions" />
       {process.env.AUCTION_ENABLED ? (
-        <Auctions />
+        library ? (
+          <Auctions />
+        ) : (
+          <Spinner />
+        )
       ) : (
         <>
           <div className="bg flex-all">
@@ -23,4 +32,4 @@ export default function AuctionsPage() {
       )}
     </>
   )
-}
+})

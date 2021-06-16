@@ -2,25 +2,49 @@ import { createStore } from 'redux'
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'METAMASK':
-      return { ...state, metamask: { ...state.metamask, ...action.payload, connected: true } }
-    case 'INIT_CONTRACTS':
-      return { ...state, library: action.payload[0], auctions: action.payload[1] }
-    case 'STAKED':
-    case 'UNSTAKED':
-    case 'REWARDCLAIMED':
-      return { ...state, transactions: { ...state.transactions, ...action.payload } }
-    case 'DISCONNECT':
-      return { ...state, metamask: { connected: false } }
+    case 'WALLET': {
+      return {
+        ...state,
+        wallet: action.payload[0],
+        connectWallet: action.payload[1],
+      }
+    }
+    case 'ACCOUNT': {
+      return {
+        ...state,
+        account: action.payload,
+      }
+    }
+    case 'LIBRARY': {
+      return {
+        ...state,
+        [action.payload[0]]: action.payload[1],
+      }
+    }
+    case 'INFO': {
+      return {
+        ...state,
+        info: action.payload,
+      }
+    }
+    case 'POOL_INFO': {
+      return {
+        ...state,
+        poolInfo: action.payload,
+      }
+    }
+    case 'AUCTION_INFO': {
+      return {
+        ...state,
+        auctionInfo: action.payload,
+      }
+    }
     default:
       return state
   }
 }
 
-const defaults = {
-  metamask: {},
-  transactions: {},
-}
+const defaults = {}
 
 function Store(initialState = defaults) {
   return createStore(reducer, initialState)
