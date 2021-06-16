@@ -15,6 +15,7 @@ import {
 } from 'recharts'
 import { getDuration } from 'utils/hooks'
 import { format } from 'utils/number'
+import Spinner from 'components/common/Spinner'
 
 export const EPOCH_PERIOD = process.env.EPOCH_PERIOD
 
@@ -25,6 +26,8 @@ const Wrapper = styled.div`
   max-width: 820px;
   width: 90%;
   margin: auto;
+  position: relative;
+  min-height: 200px;
 `
 
 const Auction = styled.div`
@@ -220,9 +223,9 @@ export default function AuctionList({
   }, [current, lastPurchase, offset])
 
   return (
-    <Wrapper className="auction-list">
-      {purchase &&
-        (current.price > 0 ? (
+    <Wrapper className="auctiion-lst">
+      {purchase ? (
+        current.price > 0 ? (
           <>
             <Graph>
               <ResponsiveContainer width="100%" height={220}>
@@ -339,7 +342,10 @@ export default function AuctionList({
               <Remaining>{duration || '00:00:00'}</Remaining>
             </p>
           </>
-        ))}
+        )
+      ) : (
+        <Spinner />
+      )}
     </Wrapper>
   )
 }
