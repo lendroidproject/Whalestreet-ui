@@ -276,9 +276,9 @@ export default function PoolDetail({
     poolEpoch: currentEpoch,
     poolEpochPeriod: EPOCH_PERIOD,
     poolHeartBeatTime: HEART_BEAT_START_TIME,
+    uniV2Balances = [],
   } = info
   const {
-    uniV2Balances = [],
     uniV2Allowances = [],
     poolBalances = [],
     poolEarnings = [],

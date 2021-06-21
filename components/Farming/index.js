@@ -6,8 +6,9 @@ import { resolvePromise } from 'layouts/Account'
 import PoolList from './PoolList'
 
 export default connect((state) => state)(function Farming({ account, farming: library, poolInfo = {}, dispatch }) {
+  const address = account?.address
+  // const address = account?.address ? '<tester>' : undefined
   const fetchInfo = () => {
-    const address = account?.address
     Promise.all([
       Promise.all(
         uniV2s.map((token) =>
@@ -78,7 +79,7 @@ export default connect((state) => state)(function Farming({ account, farming: li
   }
   useEffect(() => {
     fetchInfo()
-  }, [account])
+  }, [address])
   return (
     <>
       <div className="bg flex-all">

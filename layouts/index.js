@@ -321,7 +321,11 @@ export default connect((state) => state)(function Index({ library, wallet, accou
             setSignning(-1)
           }
         })
-        .catch(console.log)
+        .catch((err) => {
+          console.log(err)
+          setTermsAgreed(false)
+          setSignning(-1)
+        })
     }
   }, [account])
 

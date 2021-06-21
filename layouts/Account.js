@@ -136,14 +136,10 @@ export const resolvePromise = (promise, value = '0') =>
 export default connect((state) => state)(function Account(props) {
   const token = pools[0]
   const { account = {}, wallet, info = {}, farming, dispatch, isAdmin, onConnect } = props
-  const [timer, setTimer] = useState(0)
-  const { address, network, balance } = account
+  let { address, network, balance } = account
+  // address = address ? '<tester>' : ''
   const { tokenBalances = [], uniV2Balances = [] } = info
 
-  useEffect(() => {
-    setTimer(setInterval(() => getBalance(), 15 * 1000))
-    return () => timer && clearInterval(timer)
-  }, [])
   useEffect(() => {
     getBalance()
   }, [address, network])
