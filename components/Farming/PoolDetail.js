@@ -407,6 +407,10 @@ export default function PoolDetail({
       })
   }
 
+  useEffect(() => {
+    if (!address) onBack();
+  }, [address])
+
   return (
     <Wrapper
       className={`flex-center flex-column ${background ? `background-${background}` : ''}`}
