@@ -245,7 +245,7 @@ const Footer = styled.footer`
 
 const defaultNetwork = networks[0]
 
-export default connect((state) => state)(function Index({ library, wallet, account, children, dispatch }) {
+export default connect((state) => state)(function Index({ wallet, account, children, dispatch }) {
   const [, connectWallet] = useWallet()
   const network = account?.network || wallet?.network || defaultNetwork
 
@@ -333,7 +333,7 @@ export default connect((state) => state)(function Index({ library, wallet, accou
     if (account?.address && !termsAgreed && signning === -1) {
       signTerms(account)
     }
-  }, [library, account, termsAgreed, signning])
+  }, [account, termsAgreed, signning])
 
   const signTerms = (account) => {
     if ((!account.network && !account.address) || termsAgreed || signning == 1) return
@@ -347,15 +347,15 @@ export default connect((state) => state)(function Index({ library, wallet, accou
 
     const params = [msg, from]
 
-    library.web3.eth.personal.sign(...params, function (err, result) {
+    wallet.web3.eth.personal.sign(...params, function (err, result) {
       if (err || result.error) setSignning(0)
       if (err) return console.error(err)
       if (result.error) return console.error('ERROR', result)
 
       const res = (result.result || result).slice(2)
       const v = parseInt(res.slice(128, 130), 16) === 27 ? 0 : 1
-      const r = library.web3.utils.toBN(`0x${res.slice(0, 64)}`).toString()
-      const s = library.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
+      const r = wallet.web3.utils.toBN(`0x${res.slice(0, 64)}`).toString()
+      const s = wallet.web3.utils.toBN(`0x${res.slice(64, 128)}`).toString()
 
       agreePrivacy(from, {
         network: account.network,
