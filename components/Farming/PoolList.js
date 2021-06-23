@@ -139,7 +139,7 @@ export default connect((state) => state)(function PoolList(props) {
               {...pool}
               key={pool.pool}
               onSelect={() => {
-                if (account) setPool(pool)
+                if (account?.address) setPool(pool)
                 else
                   connectWallet()
                     .then((provider) => {

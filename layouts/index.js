@@ -402,7 +402,7 @@ export default connect((state) => state)(function Index({ wallet, account, child
         <Account isAdmin={isAdmin} onConnect={() => handleConnect()} />
       </Header>
       <Content>
-        {isSupported && account && !termsAgreed ? (
+        {isSupported && account?.address && !termsAgreed ? (
           fetched ? (
             <div className="fill flex-all no-wallet">
               <p>

@@ -499,7 +499,7 @@ export default function Pool({
               </button>
             ) : (
               <button className="uppercase red" onClick={onSelect}>
-                {account ? 'Select' : 'Connect Wallet'}
+                {account?.address ? 'Select' : 'Connect Wallet'}
               </button>
             )}
           </div>
