@@ -519,7 +519,7 @@ export default function AuctionList({
   return (
     <Wrapper className="auction-list">
       {purchase ? (
-        current.price >= 0 ? (
+        current.price > 0 ? (
           <>
             <Auction>
               <Graph>
