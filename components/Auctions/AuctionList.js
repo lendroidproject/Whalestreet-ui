@@ -632,7 +632,7 @@ export default function AuctionList({
                           <div>
                             <p className="flex-center">
                               {rarity.name}
-                              <ReactTooltip
+                              {/* <ReactTooltip
                                 placement="top"
                                 overlay={<span>{rarity.description}</span>}
                                 getTooltipContainer={() => {
@@ -642,7 +642,7 @@ export default function AuctionList({
                                 }}
                               >
                                 <a className={`info-tooltip ${rarity.name.toLowerCase()}`}>i</a>
-                              </ReactTooltip>
+                              </ReactTooltip> */}
                             </p>
                             <span>{rarity.chance}%</span>
                           </div>
