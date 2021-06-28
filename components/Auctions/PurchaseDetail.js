@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 
   .portal-content {
     max-width: 623px;
-    width: 100%;
+    width: 95%;
     margin: 30px auto 0;
     position: relative;
     animation: fadeIn ease 0.5s;
@@ -21,6 +21,11 @@ const Wrapper = styled.div`
     }
     100% {
       opacity: 1;
+    }
+  }
+  @media(max-width: 767px) {
+    .portal-content {
+      max-width: 320px;
     }
   }
 `
@@ -90,6 +95,7 @@ const OpenseaAccount = ({ account: { address, profile_img_url, user }, prefix })
 
 const OpenseaAssetWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   .art {
     width: 220px;
     height: 220px;
@@ -101,7 +107,7 @@ const OpenseaAssetWrapper = styled.div`
     }
   }
   .info {
-    width: 343px;
+    max-width: 343px;
     > div {
       margin-bottom: 15px;
     }
@@ -120,6 +126,12 @@ const OpenseaAssetWrapper = styled.div`
       a {
         vertical-align: middle;
       }
+    }
+  }
+  @media(max-width: 767px) {
+    .art {
+      margin-right: 0;
+      margin-bottom: 20px;
     }
   }
 `

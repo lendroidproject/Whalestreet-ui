@@ -6,7 +6,7 @@ import Spinner from 'components/common/Spinner'
 import { DetailEpoch, getDate } from './AuctionDetail'
 import PurchaseDetail from './PurchaseDetail'
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Label } from 'recharts'
-import { EPOCH_PERIOD } from './AuctionList'
+import { EPOCH_PERIOD, Purchase, AuctionPurchase } from './AuctionList'
 import { format } from 'utils/number'
 import { openseaLink } from 'utils/etherscan'
 import { shorten } from 'utils/string'
@@ -18,73 +18,6 @@ const Wrapper = styled.div`
   font-size: 14px;
   line-height: normal;
   text-align: left;
-
-  .epoch {
-    width: 9%;
-  }
-
-  .nft {
-    width: 36%;
-
-    .nft-thumb {
-      width: 42px;
-      height: 42px;
-      margin-right: 15px;
-
-      img, iframe {
-        width: 100%;
-        height: 100%;
-        border: 2px solid var(--color-border);
-      }
-    }
-
-    .nft-info {
-      p {
-        font-size: 12px;
-        font-weight: bold;
-      }
-
-      div {
-        font-size: 10px;
-        font-weight: normal;
-      }
-    }
-  }
-
-  .starting {
-    width: 21%;
-
-    img {
-      height: 18px;
-      margin-right: 6px;
-    }
-  }
-
-  .owner {
-    width: 10%;
-  }
-
-  .rarity {
-    width: 15%;
-
-    img {
-      width: 20px;
-      height: 20px;
-      margin-right: 5px;
-    }
-  }
-
-  .duration {
-    width: 20%;
-  }
-
-  .actions {
-    min-width: 20px;
-
-    img {
-      height: 13px;
-    }
-  }
 
   .font-12 {
     font-size: 12px;
@@ -361,16 +294,6 @@ function AuctionView({ auction, setAuction }) {
   )
 }
 
-export const Rarity = {
-  Common: 'Common',
-  Rare: 'Rare',
-  Legendary: 'Legendary'
-}
-
-export function getRarity(feePercentage) {
-  return Number(feePercentage) === 50 ? Rarity.Common : Number(feePercentage) === 25 ? Rarity.Rare : Rarity.Legendary
-}
-
 export default function AuctionTable({ current, purchases, loading, pagination }) {
   const [view, setView] = useState('list')
   const [auction, setAuction] = useState(null)
@@ -389,10 +312,7 @@ export default function AuctionTable({ current, purchases, loading, pagination }
     <>
       {view === 'list' ? (
         <Wrapper className="auction-table">
-          {/* <Action className="action" onClick={() => setView('table')}>
-            <img src="/assets/table.svg" />
-          </Action> */}
-          <Header className="flex">
+          <AuctionPurchase className="flex-center auction-header">
             <div className="epoch">Epoch</div>
             <div className="nft">NFT</div>
             <div className="rarity">Rarity</div>
@@ -400,50 +320,8 @@ export default function AuctionTable({ current, purchases, loading, pagination }
             {/* <div className="owner">Purchased By</div> */}
             <div className="duration">Date & Time</div>
             <div className="actions" />
-          </Header>
-          {purchases.map(({ id, epoch, purchases, start, end, amount, timestamp, asset, feePercentage }, idx) => (
-            <Auction key={`${id}-${idx}`} className="flex-center">
-              <div className="epoch">
-                <PurchasedEpoc>{epoch}</PurchasedEpoc>
-              </div>
-              <div className="flex-center cursor nft" onClick={() => setAuction(id)}>
-                <div className="nft-thumb">
-                  {asset?.image_thumbnail_url ? (
-                    <img src={asset?.image_thumbnail_url} alt={asset?.name}/>
-                  ) : (
-                    <iframe src={asset?.animation_url} title={asset?.name}/>
-                  )}
-                </div>
-                <div className="nft-info">
-                  <p>{asset?.name}</p>
-                  <div>{asset?.collection?.name}</div>
-                </div>
-              </div>
-              <div className="rarity">
-                <div className={`flex-center`}>
-                  <img src={`/assets/${getRarity(feePercentage).toLowerCase()}.svg`} />
-                  {getRarity(feePercentage)}
-                </div>
-              </div>
-              <div className="starting">
-                <div className="flex-center">
-                  <img src="/assets/$hrimp-token.svg" alt="" />
-                  {format(amount)}
-                </div>
-              </div>
-              {/* <div className="font-12 owner">
-                <a target="_blank" href={openseaLink(purchases[0])}>
-                  {shorten(purchases[0])}
-                </a>
-              </div> */}
-              <div className="font-12 duration">
-                <Duration>{getDate(timestamp)}</Duration>
-              </div>
-              <div className="actions flex-all">
-                <img src="/assets/arrow-point-to-right.svg" alt="" className="cursor" onClick={() => setAuction(id)} />
-              </div>
-            </Auction>
-          ))}
+          </AuctionPurchase>
+          {purchases.map(purchase => <Purchase key={purchase.id} purchase={purchase} onClickPurchase={setAuction} />)}
           <div className="pagination">
             <Pagination className="justify-center" {...pagination} />
           </div>
@@ -466,7 +344,7 @@ export default function AuctionTable({ current, purchases, loading, pagination }
         </ListWrapper>
       )}
       {auction && (
-        <PurchaseDetail purchase={purchases.find((item) => item.id === auction)} onClose={() => setAuction(null)} />
+        <PurchaseDetail purchase={auction} onClose={() => setAuction(null)} />
       )}
     </>
   )

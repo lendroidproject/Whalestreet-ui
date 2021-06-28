@@ -41,8 +41,7 @@ export default connect((state) => state)(function Auctions({
   const [now] = useTicker()
   const [active, setActive] = useState('ongoing')
   const [current, setCurrent] = useState(null)
-  const [lastPurchase, setLastPurchase] = useState(null)
-  const [loading, setLoading] = useState(false)
+  
   const { currentEpoch, currentPrice, epochEndTimeFromTimestamp, minY, maxY } = library.methods.AuctionRegistry
   const getCurrent = () => {
     const { getAllowance } = library.methods.$HRIMP
@@ -91,23 +90,56 @@ export default connect((state) => state)(function Auctions({
         setApproveTx(null)
       })
   }
+  const [lastPurchase, setLastPurchase] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [totalPurchase, setTotalPurchase] = useState(0)
-  useEffect(() => {
-    if (totalPurchase > 0) {
-      const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-      fetchPurchase(totalPurchase - 1)
-        .then((purchase) =>
-          setLastPurchase({
-            amount: Number(library.web3.utils.fromWei(purchase.amount)),
-          })
-        )
-        .catch(console.log)
-    }
-  }, [totalPurchase])
   const getTotalPurchase = () => {
     const { totalPurchases } = library.methods.AuctionRegistry
     totalPurchases().then(Number).then(setTotalPurchase).catch(console.log)
   }
+  const getPurchaseById = async (id) => {
+    const { purchases: fetchPurchase } = library.methods.AuctionRegistry
+    const purchase = await fetchPurchase(id)
+    if (purchase) {
+      const assets = await getAssets(
+        {
+          token_ids: [purchase.auctionTokenId],
+          asset_contract_addresses: [purchase.auctionTokenAddress],
+          limit: 1,
+          offset: 0,
+        },
+        {
+          paramsSerializer: (params) => {
+            return qs.stringify(params, { arrayFormat: 'repeat' })
+          },
+        }
+      ).then((result) => result?.data?.assets || [])
+      const { auctionTokenId, auctionTokenAddress, epoch, account, amount, timestamp, feePercentage } = purchase
+      return {
+        id: auctionTokenId,
+        tokenAddr: auctionTokenAddress,
+        epoch,
+        purchases: [account],
+        amount: Number(library.web3.utils.fromWei(amount)),
+        start: Number(library.web3.utils.fromWei(amount)),
+        end: 1,
+        timestamp,
+        feePercentage,
+        // x,
+        asset: assets[0],
+      }
+    }
+  }
+  useEffect(() => {
+    const getLastPurchase = async () => {
+      if (totalPurchase > 0) {
+        const lastPurchase = await getPurchaseById(totalPurchase - 1)
+        setLastPurchase(lastPurchase)
+      }
+    }
+    getLastPurchase()
+  }, [totalPurchase])
+  
   const [purchaseTx, setPurchaseTx] = useState(null)
   const handlePurchase = () => {
     if (!account) {
@@ -144,66 +176,9 @@ export default connect((state) => state)(function Auctions({
 
   const pendingTx = approveTx || purchaseTx
   const pendingText = purchaseTx ? 'Purchasing tokens' : approveTx ? 'Unlocking tokens' : ''
-
   const [purchases, setPurchases] = useState([])
+  
   const myPurchases = purchases.filter((item) => item.purchases[0] === address && item.epoch === current?.epoch)
-  // const handlePurchases = (purchase, asset) => {
-  //   const { auctionTokenId: id, auctionTokenAddress: tokenAddr, epoch, account: purchaser, amount: y, timestamp } = purchase
-  //   const amount = Number(library.web3.utils.fromWei(y))
-  //   epochEndTimeFromTimestamp(timestamp)
-  //     .then((bTimestamp) => {
-  //       const previousPurchase = purchases.pop()
-  //       const x = bTimestamp - timestamp
-  //       if (previousPurchase) {
-  //         setPurchases([
-  //           ...purchases,
-  //           {
-  //             ...previousPurchase,
-  //             start: amount,
-  //             end: previousPurchase.start,
-  //           },
-  //           {
-  //             id,
-  //             tokenAddr,
-  //             epoch,
-  //             purchases: [purchaser],
-  //             amount,
-  //             start: amount,
-  //             end: 1,
-  //             timestamp,
-  //             x,
-  //             asset,
-  //           },
-  //         ])
-  //       } else {
-  //         setPurchases([
-  //           {
-  //             id,
-  //             tokenAddr,
-  //             epoch,
-  //             purchases: [purchaser],
-  //             amount,
-  //             start: amount,
-  //             end: 1,
-  //             timestamp,
-  //             x,
-  //             asset,
-  //           },
-  //         ])
-  //       }
-  //     })
-  //     .catch(console.log)
-  // }
-  // const getPurchaseById = (id) => {
-  //   const { purchases: fetchPurchase } = library.methods.AuctionRegistry
-  //   let purchaseInfo
-  //   return fetchPurchase(id)
-  //     .then((purchase) => {
-  //       purchaseInfo = purchase;
-  //       return getAsset(purchase.auctionTokenAddress, purchase.auctionTokenId)
-  //     })
-  //     .then((result) => ({ purchase, asset: result.data }))
-  // }
   const pagination = usePagination({ totalItems: totalPurchase, initialPageSize: 6, initialPage: 0 })
   const getPurchasesByPage = async (pagination) => {
     const { totalItems, startIndex, endIndex } = pagination
